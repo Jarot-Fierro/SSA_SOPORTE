@@ -3,21 +3,27 @@ from django.contrib.contenttypes.models import ContentType
 
 # campo del modelo Role -> app.model
 ROLE_FIELD_TO_MODEL = {
-    'establecimientos': 'establecimientos.establecimiento',
-    'paciente': 'personas.paciente',
-    'fichas': 'ficha.ficha',
-    'movimiento_ficha': 'ficha.movimientoficha',
-    'comunas': 'personas.comuna',
-    'pais': 'personas.pais',
-    'prevision': 'personas.prevision',
-    'profesion': 'personas.profesion',
-    'profesionales': 'personas.profesional',
-    'genero': 'personas.genero',
-    'sectores': 'establecimientos.sector',
-    'servicio_clinico': 'establecimientos.servicioclinico',
-    'reportes': None,  # si después quieres permisos custom
-    'soporte': None,
+    # === Mantenedores / catálogos ===
+    'mantenedores': None,  # permiso general de mantenedores
+
+    'establecimientos': 'establecimiento.establecimiento',
+    'organizacion': 'establecimiento.organizacion',
+
+    # === Inventario / activos ===
+    'plan': 'inventario.plan',
+    'chip': 'inventario.chip',
+    'celular': 'inventario.celular',
+    'computador': 'inventario.computador',
+    'toner': 'inventario.toner',
+    'impresora': 'inventario.impresora',
+
+    # === Operación ===
+    'transacciones': 'inventario.transaccion',
+
+    # === Usuarios / seguridad ===
+    'usuarios': 'auth.user',
 }
+
 
 # nivel de permiso -> acciones Django
 PERMISSION_LEVELS = {

@@ -8,3 +8,10 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+/vcs.xml
+/SSA_SOPORTE.iml
+/inspectionProfiles/Project_Default.xml
+/inspectionProfiles/profiles_settings.xml
+/misc.xml
+/material_theme_project_new.xml
+/copilot.data.migration.agent.xml

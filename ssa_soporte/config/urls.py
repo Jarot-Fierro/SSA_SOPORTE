@@ -6,5 +6,8 @@ from core.views import dashboard_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
+    path('', include('core.urls')),
     path('', dashboard_view, name='home'),
+    path('', include('establecimiento.urls')),
+
 ]

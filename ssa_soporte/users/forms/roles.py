@@ -1,6 +1,6 @@
 from django import forms
 
-from establecimiento.models import Establecimiento
+from establecimiento.models.establecimiento import Establecimiento
 from users.models import Role
 
 

@@ -1,0 +1,68 @@
+# ==========================
+# 🔥 Django / Python
+# ==========================
+
+# Entorno virtual
+.venv/
+env/
+venv/
+
+# Base de datos
+db.sqlite3
+
+# Archivos de configuración sensibles
+*.env
+*.env.*
+!.env.example   # puedes crear uno de ejemplo si quieres
+
+# Archivos compilados Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Media / archivos subidos
+uploads/
+
+# Staticfiles colectivos (se generan)
+staticfiles/
+
+
+# ==========================
+# 🛠 IDE y editores
+# ==========================
+
+# PyCharm / JetBrains
+.idea/
+
+# VSCode
+.vscode/
+
+# Archivos temporales
+*.log
+*.pot
+*.po~
+*.mo
+*.tmp
+*.swp
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Docker
+# ==========================
+docker-compose.override.yml
+*.pid
+/clinica/migrations/0003_alter_historicalmovimientoficha_estado_envio_and_more.py
+/personas/migrations/0003_alter_historicalpaciente_genero_and_more.py
+/log_importacion_fichas.txt
+/paciente_step1_limpio.csv
+/paciente_step2_reparado.csv
+/pacientes_txt_lineas_malas.csv

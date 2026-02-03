@@ -2,14 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from simple_history.models import HistoricalRecords
 
-from establecimiento.models import Establecimiento
-
 
 class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=200, unique=True)
     password = models.CharField(max_length=128)
-    establecimiento = models.ForeignKey('establecimientos.Establecimiento', on_delete=models.PROTECT, null=True,
+    establecimiento = models.ForeignKey('establecimiento.Establecimiento', on_delete=models.PROTECT, null=True,
                                         blank=True,
                                         verbose_name='Establecimiento'
                                         )
@@ -66,7 +64,7 @@ class Role(models.Model):
 
     usuarios = models.IntegerField(choices=PERMISSION_CHOICES, default=0)
 
-    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.PROTECT, null=True, blank=True)
+    establecimiento = models.ForeignKey('establecimiento.Establecimiento', on_delete=models.PROTECT, null=True, blank=True)
 
     history = HistoricalRecords()
 

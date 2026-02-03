@@ -30,7 +30,7 @@ class Categoria(StandardModel):
 
 class SubCategoria(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Subcategoría')
-    category = models.ForeignKey(
+    categoria = models.ForeignKey(
         Categoria,
         on_delete=models.CASCADE,
         verbose_name='Categoría'
@@ -69,7 +69,7 @@ class Propietario(StandardModel):
         return self.nombre
 
 
-class LicenceOs(StandardModel):
+class LicenciaOs(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre de la Licencia de SO"
     )

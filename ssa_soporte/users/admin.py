@@ -5,7 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 from simple_history.admin import SimpleHistoryAdmin
 
-from establecimiento.models import Establecimiento
+from establecimiento.models.establecimiento import Establecimiento
 from users.models import User, Role, UserRole
 
 
@@ -114,31 +114,58 @@ class UserRoleAdmin(admin.ModelAdmin):
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = (
-        'role_name', 'usuarios', 'comunas', 'establecimientos', 'fichas', 'genero', 'movimiento_ficha',
-        'pais', 'prevision', 'profesion', 'profesionales', 'sectores', 'servicio_clinico', 'soporte'
+        'role_name',
+
+        'mantenedores',
+        'establecimientos',
+        'organizacion',
+
+        'plan',
+        'chip',
+        'celular',
+        'computador',
+        'toner',
+        'impresora',
+
+        'transacciones',
+        'usuarios',
+
+        'establecimiento',
     )
+
     search_fields = ('role_name',)
 
     fieldsets = (
         ("Información del Rol", {
-            "fields": ("role_name", "establecimiento",)
+            "fields": (
+                "role_name",
+                "establecimiento",
+            )
         }),
 
         ("Mantenedores", {
             "fields": (
-                "pais", "sectores", "colores_sector", "profesion",
-                "prevision", "genero"
+                "mantenedores",
+                "establecimientos",
+                "organizacion",
             ),
         }),
 
-        ("Gestión General del Sistema", {
+        ("Activos / Inventario", {
             "fields": (
-                "usuarios", "comunas", "establecimientos", "servicio_clinico",
-                "profesionales", "soporte", "reportes"
+                "plan",
+                "chip",
+                "celular",
+                "computador",
+                "toner",
+                "impresora",
             ),
         }),
 
-        ("Sección Clínica", {
-            "fields": ("paciente", "fichas", "movimiento_ficha"),
+        ("Gestión del Sistema", {
+            "fields": (
+                "usuarios",
+                "transacciones",
+            ),
         }),
     )
