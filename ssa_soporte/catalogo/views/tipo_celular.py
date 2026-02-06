@@ -4,24 +4,24 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.views.generic import TemplateView
 
-from catalogo.forms.marca import FormMarca
-from catalogo.models import Marca
+from catalogo.forms.tipo_celular import FormTipoCelular
+from catalogo.models import TipoCelular
 from core.history import GenericHistoryListView
 from core.mixin import DataTableMixin
 from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 
-MODULE_NAME = 'Marcas'
+MODULE_NAME = 'TipoCelulars'
 
 
-class MarcaListView(DataTableMixin, TemplateView):
-    template_name = 'marca/list.html'
-    model = Marca
+class TipoCelularListView(DataTableMixin, TemplateView):
+    template_name = 'tipo_celular/list.html'
+    model = TipoCelular
     datatable_columns = ['ID', 'Nombre']
-    datatable_order_fields = ['id', None, 'marca__nombre']
-    datatable_search_fields = ['nombre__icontains', 'marca__nombre__icontains']
+    datatable_order_fields = ['id', None, 'tipo_celular__nombre']
+    datatable_search_fields = ['nombre__icontains', 'tipo_celular__nombre__icontains']
 
-    url_detail = 'detail_marcas'
-    url_update = 'update_marcas'
+    url_detail = 'detail_tipo_celular'
+    url_update = 'update_tipo_celular'
 
     def render_row(self, obj):
         return {
@@ -37,9 +37,9 @@ class MarcaListView(DataTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'title': 'Listado de Marcas',
-            'list_url': reverse_lazy('list_marcas'),
-            'create_url': reverse_lazy('marca_create'),
+            'title': 'Listado de TipoCelulars',
+            'list_url': reverse_lazy('list_tipo_celular'),
+            'create_url': reverse_lazy('tipo_celular_create'),
             'datatable_enabled': True,
             'datatable_order': [[0, 'asc']],
             'datatable_page_length': 100,
@@ -48,9 +48,9 @@ class MarcaListView(DataTableMixin, TemplateView):
         return context
 
 
-class MarcaDetailView(DetailView):
-    model = Marca
-    template_name = 'marca/detail.html'
+class TipoCelularDetailView(DetailView):
+    model = TipoCelular
+    template_name = 'tipo_celular/detail.html'
 
     def render_to_response(self, context, **response_kwargs):
         # Si es una solicitud AJAX, devolvemos solo el fragmento HTML
@@ -61,14 +61,14 @@ class MarcaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class MarcaCreateView(IncludeUserFormCreate, CreateView):
-    template_name = 'marca/form.html'
-    model = Marca
-    form_class = FormMarca
-    success_url = reverse_lazy('list_marcas')
+class TipoCelularCreateView(IncludeUserFormCreate, CreateView):
+    template_name = 'tipo_celular/form.html'
+    model = TipoCelular
+    form_class = FormTipoCelular
+    success_url = reverse_lazy('list_tipo_celular')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Marca creada correctamente')
+        messages.success(self.request, 'TipoCelular creada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -77,25 +77,25 @@ class MarcaCreateView(IncludeUserFormCreate, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Nuevo Marca'
+        context['title'] = 'Nuevo TipoCelular'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['module_name'] = MODULE_NAME
         return context
 
 
-class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
-    template_name = 'marca/form.html'
-    model = Marca
-    form_class = FormMarca
-    success_url = reverse_lazy('list_marcas')
+class TipoCelularUpdateView(IncludeUserFormUpdate, UpdateView):
+    template_name = 'tipo_celular/form.html'
+    model = TipoCelular
+    form_class = FormTipoCelular
+    success_url = reverse_lazy('list_tipo_celular')
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Marca creada correctamente')
+        messages.success(self.request, 'TipoCelular creada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -104,13 +104,13 @@ class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Marca'
+        context['title'] = 'Editar TipoCelular'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['module_name'] = MODULE_NAME
         return context
 
 
-class MarcaHistoryListView(GenericHistoryListView):
-    base_model = Marca
+class TipoCelularHistoryListView(GenericHistoryListView):
+    base_model = TipoCelular
     template_name = 'history/list.html'

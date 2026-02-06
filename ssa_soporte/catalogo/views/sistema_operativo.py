@@ -4,24 +4,24 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.views.generic import TemplateView
 
-from catalogo.forms.marca import FormMarca
-from catalogo.models import Marca
+from catalogo.forms.sistema_operativo import FormSistemaOperativo
+from catalogo.models import SistemaOperativo
 from core.history import GenericHistoryListView
 from core.mixin import DataTableMixin
 from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 
-MODULE_NAME = 'Marcas'
+MODULE_NAME = 'SistemaOperativos'
 
 
-class MarcaListView(DataTableMixin, TemplateView):
-    template_name = 'marca/list.html'
-    model = Marca
+class SistemaOperativoListView(DataTableMixin, TemplateView):
+    template_name = 'sistema_operativo/list.html'
+    model = SistemaOperativo
     datatable_columns = ['ID', 'Nombre']
-    datatable_order_fields = ['id', None, 'marca__nombre']
-    datatable_search_fields = ['nombre__icontains', 'marca__nombre__icontains']
+    datatable_order_fields = ['id', None, 'sistema_operativo__nombre']
+    datatable_search_fields = ['nombre__icontains', 'sistema_operativo__nombre__icontains']
 
-    url_detail = 'detail_marcas'
-    url_update = 'update_marcas'
+    url_detail = 'detail_sistema_operativo'
+    url_update = 'update_sistema_operativo'
 
     def render_row(self, obj):
         return {
@@ -37,9 +37,9 @@ class MarcaListView(DataTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'title': 'Listado de Marcas',
-            'list_url': reverse_lazy('list_marcas'),
-            'create_url': reverse_lazy('marca_create'),
+            'title': 'Listado de SistemaOperativos',
+            'list_url': reverse_lazy('list_sistema_operativo'),
+            'create_url': reverse_lazy('sistema_operativo_create'),
             'datatable_enabled': True,
             'datatable_order': [[0, 'asc']],
             'datatable_page_length': 100,
@@ -48,9 +48,9 @@ class MarcaListView(DataTableMixin, TemplateView):
         return context
 
 
-class MarcaDetailView(DetailView):
-    model = Marca
-    template_name = 'marca/detail.html'
+class SistemaOperativoDetailView(DetailView):
+    model = SistemaOperativo
+    template_name = 'sistema_operativo/detail.html'
 
     def render_to_response(self, context, **response_kwargs):
         # Si es una solicitud AJAX, devolvemos solo el fragmento HTML
@@ -61,14 +61,14 @@ class MarcaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class MarcaCreateView(IncludeUserFormCreate, CreateView):
-    template_name = 'marca/form.html'
-    model = Marca
-    form_class = FormMarca
-    success_url = reverse_lazy('list_marcas')
+class SistemaOperativoCreateView(IncludeUserFormCreate, CreateView):
+    template_name = 'sistema_operativo/form.html'
+    model = SistemaOperativo
+    form_class = FormSistemaOperativo
+    success_url = reverse_lazy('list_sistema_operativo')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Marca creada correctamente')
+        messages.success(self.request, 'SistemaOperativo creada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -77,25 +77,25 @@ class MarcaCreateView(IncludeUserFormCreate, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Nuevo Marca'
+        context['title'] = 'Nuevo SistemaOperativo'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['module_name'] = MODULE_NAME
         return context
 
 
-class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
-    template_name = 'marca/form.html'
-    model = Marca
-    form_class = FormMarca
-    success_url = reverse_lazy('list_marcas')
+class SistemaOperativoUpdateView(IncludeUserFormUpdate, UpdateView):
+    template_name = 'sistema_operativo/form.html'
+    model = SistemaOperativo
+    form_class = FormSistemaOperativo
+    success_url = reverse_lazy('list_sistema_operativo')
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Marca creada correctamente')
+        messages.success(self.request, 'SistemaOperativo creada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -104,13 +104,13 @@ class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Marca'
+        context['title'] = 'Editar SistemaOperativo'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['module_name'] = MODULE_NAME
         return context
 
 
-class MarcaHistoryListView(GenericHistoryListView):
-    base_model = Marca
+class SistemaOperativoHistoryListView(GenericHistoryListView):
+    base_model = SistemaOperativo
     template_name = 'history/list.html'

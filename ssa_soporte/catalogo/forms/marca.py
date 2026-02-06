@@ -11,7 +11,7 @@ class FormMarca(forms.ModelForm):
             attrs={
                 'id': 'nombre_marca',
                 'class': 'form-control',
-                'placeholder': 'Lebu',
+                'placeholder': 'Entel, HP, ',
                 'minlenght': '1',
                 'maxlenght': '100'
             }),

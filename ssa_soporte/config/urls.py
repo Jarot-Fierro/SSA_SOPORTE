@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include('core.urls')),
     path('', dashboard_view, name='home'),
     path('', include('establecimiento.urls')),
-
+    path('', include('catalogo.urls')),
 ]
