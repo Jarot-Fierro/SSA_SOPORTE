@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}SOP App{% endblock %}</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+          rel="stylesheet"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'adminlte3/plugins/fontawesome-free/css/all.min.css' %}"/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'adminlte3/plugins/bootstrap/css/bootstrap.min.css' %}"/>
+
+    <!-- DataTables -->
+    <link rel="stylesheet"
+          href="{% static 'adminlte3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'adminlte3/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'adminlte3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"/>
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'adminlte3/plugins/select2/css/select2.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'adminlte3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"/>
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet"
+          href="{% static 'adminlte3/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}"/>
+
+    <!-- InputMask -->
+    <link rel="stylesheet" href="{% static 'adminlte3/plugins/inputmask/jquery.inputmask.min.css' %}"/>
+
+    <!-- AdminLTE -->
+    <link rel="stylesheet" href="{% static 'adminlte3/css/adminlte.min.css' %}"/>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="{% static 'media/ssa_logo.webp' %}" alt="AdminLTELogo" height="60" width="60">
+  </div>
+
+    <!-- Navbar -->
+  {% include 'core/components/navbar.html' %}
+  <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    {% include 'core/components/sidebar.html' %}
+
+    <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">{{ bradcrumb }}</a></li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+  <div class="container-fluid">
+      {% block content %}{% endblock %}
+  </div>
+
+
+    <!-- /.content -->
+  </div>
+
+
+    <!-- /.content-wrapper -->
+  {% include 'core/components/footer.html' %}
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+
+</div>
+
+<!-- Generic Modal for read-only details -->
+<div class="modal fade" id="genericModal" tabindex="-1" role="dialog" aria-labelledby="genericModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="genericModalLabel">Detalle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center p-4">Cargando...</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="{% static 'adminlte3/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'adminlte3/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables core -->
+<script src="{% static 'adminlte3/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<!-- DataTables Buttons -->
+<script src="{% static 'adminlte3/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<!-- Dependencias para exportar botones -->
+<script src="{% static 'adminlte3/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'adminlte3/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+<!-- Select2 -->
+<script src="{% static 'adminlte3/plugins/select2/js/select2.min.js' %}"></script>
+<!-- SweetAlert2 -->
+<script src="{% static 'adminlte3/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'adminlte3/plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'adminlte3/js/adminlte.min.js' %}"></script>
+
+
+{{ form.media.js }}
+
+<!--    SCRIPT PARA INICIALIZAR CON AJAX DATATABLE-->
+<script>
+    $(function () {
+        {% if datatable_enabled %}
+            const tableEl = $("#Table");
+            if (tableEl.length) {
+                const table = tableEl.DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    lengthChange: true,
+                    autoWidth: false,
+                    pageLength: 10,
+                    order: {{ datatable_order|default:"[[0, 'asc']]"|safe }},
+                    ajax: {
+                        url: window.location.href,
+                        data: {
+                            datatable: 1  // Flag que tu vista ya reconoce
+                        }
+                    },
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    language: {
+                        url: "{% static 'adminlte3/plugins/datatables/es-ES.json' %}"
+                    },
+                    columns: [
+                        {data: 'ID'},  // Primer campo: ID
+                        {data: 'actions', orderable: false, searchable: false},  // Botones
+                        {% for col in columns %}
+                            {% if col != 'ID' %}
+                                {data: '{{ col }}'},
+                            {% endif %}
+                        {% endfor %}
+                    ],
+                });
+
+                table.buttons().container().appendTo('#Table_wrapper .col-md-6:eq(0)');
+            }
+        {% endif %}
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        const $rut = $('.id_rut, #id_rut');
+
+        // Permitir escribir cualquier formato
+        $rut.on('input', function () {
+            this.value = this.value.replace(/[^0-9kK]/g, '');
+        });
+
+        // Función para formatear
+        function formatRut(input) {
+            let rut = input.value.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+            if (rut.length <= 1) return;
+
+            let body = rut.slice(0, -1);
+            let dv = rut.slice(-1);
+            body = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            input.value = body + '-' + dv;
+        }
+
+        // Formatear al perder foco
+        $rut.on('blur', function () {
+            formatRut(this);
+        });
+
+        // 🔥 Formatear al cargar la página si el input ya trae un valor
+        $rut.each(function () {
+            if (this.value.trim() !== "") {
+                formatRut(this);
+            }
+        });
+    });
+</script>
+
+
+<!--    SCRIPT DE TELEFONO PERSONAL CON INPUTMASK-->
+<script>
+    $(document).ready(function () {
+        $('.telefono_personal').inputmask({
+            mask: "+56 9 9999 9999",
+            placeholder: "_",
+            showMaskOnHover: false,
+            showMaskOnFocus: true,
+            clearIncomplete: true
+        });
+    });
+</script>
+
+<!--  SCRIPT DE FECHA CON INPUTMASK  -->
+<script>
+    $(document).ready(function () {
+        $('.fecha-input').inputmask('datetime', {
+            inputFormat: "dd/mm/yyyy",
+            placeholder: "dd/mm/aaaa",
+            showMaskOnHover: false,
+            leapday: "29/02/",
+            clearIncomplete: true
+        });
+    });
+</script>
+
+<!--    SCRIPT PARA VER DETALLES DE UN REGISTRO, ES UN MODAL-->
+<script>
+    // Delegated handler for detail view buttons
+    $(document).on('click', '.view-btn', function (e) {
+        e.preventDefault();
+        const url = $(this).attr('href');
+        const $modal = $('#genericModal');
+        $modal.find('.modal-body').html('<div class="text-center p-4">Cargando...</div>');
+        $modal.modal('show');
+        $.ajax({
+            url: url,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).done(function (html) {
+            $modal.find('.modal-body').html(html);
+        }).fail(function () {
+            $modal.find('.modal-body').html('<div class="alert alert-danger">No se pudo cargar el detalle.</div>');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('input[required], select[required], textarea[required]').each(function () {
+
+            let id = $(this).attr('id')
+            if (!id) return
+
+            // Buscar el label asociado
+            let label = $('label[for="' + id + '"]')
+
+            if (label.length) {
+                label.addClass('required')
+            }
+        })
+    })
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[required], select[required], textarea[required]')
+            .forEach(field => {
+                const label = document.querySelector(`label[for="${field.id}"]`);
+                if (label && !label.innerHTML.includes('*')) {
+                    label.innerHTML += ' <span class="text-danger">*</span>';
+                }
+            });
+    });
+</script>
+
+
+{% block javascript %}
+{% endblock %}
+
+</body>
+</html>

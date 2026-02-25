@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Roles - {{ title|default:'Formulario' }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title mb-0">{{ title }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- Sección: Información del Rol -->
+    <h5 class="mt-3 mb-2">Información del Rol</h5>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="id_role_name">Nombre del Rol</label>
+            {{ form.role_name }}
+            {% for error in form.role_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="id_establecimiento">Establecimiento</label>
+            {{ form.establecimiento }}
+            {% for error in form.establecimiento.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Sección: Permisos del Sistema -->
+    <h5 class="mt-4 mb-2">Permisos del Sistema</h5>
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+            <label for="id_mantenedores">Mantenedores</label>
+            {{ form.mantenedores }}
+            {% for error in form.mantenedores.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="id_organizacion">Organización</label>
+            {{ form.organizacion }}
+            {% for error in form.organizacion.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="id_equipos">Equipos</label>
+            {{ form.equipos }}
+            {% for error in form.equipos.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="id_usuarios">Usuarios</label>
+            {{ form.usuarios }}
+            {% for error in form.usuarios.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    <div class="col-md-4 mb-3">
+            <label for="id_usuarios">Soporte</label>
+            {{ form.soporte }}
+            {% for error in form.soporte.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <a href="{% url 'roles_list' %}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+</form>
+        </div>
+    </div>
+{% endblock %}

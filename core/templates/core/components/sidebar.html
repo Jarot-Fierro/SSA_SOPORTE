@@ -1,0 +1,267 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+        <img src="{% static 'media/ssa_logo.webp' %}" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">SOPORTE SSA</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{% static 'media/logo_usuario.png' %}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">
+                    {% if request.user.first_name and request.user.last_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column"
+                data-widget="treeview"
+                role="menu"
+                data-accordion="false">
+
+                <!-- ================= MANTENEDORES ================= -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-cogs"></i>
+                        <p>
+                            Mantenedores
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-header">ORGANIZACIÓN</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_comunas' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Comunas</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_jefetic' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Jefes TIC</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_propietarios' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Propietarios</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_contrato' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Contratos</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">EQUIPAMIENTO</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_marcas' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Marcas</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_modelos' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Modelos</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_tipo_computador' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipo Computador</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_tipo_celular' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipo Celular</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_tipo_impresora' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipo Impresora</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_toner' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Toner</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">SOFTWARE</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_sistemas_operativos' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sistemas Operativos</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_microsoft_office' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Microsoft Office</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">CLASIFICACIÓN</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_categorias' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorías</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_subcategorias' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Subcategorías</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-header">SOPORTE</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_tipo_soporte' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipo Soporte</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <!-- ================= EQUIPOS ================= -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-laptop"></i>
+                        <p>
+                            Equipos
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_celular' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Equipo Móvil</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_computador' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Equipo Computacional</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'list_impresora' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Equipo Impresora</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-sitemap"></i>
+
+                        <p>
+                            Organización
+
+                        </p>
+                        <i class="right fas fa-angle-left"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_establecimientos' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Establecimientos</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_departamentos' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Departamentos</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_funcionarios' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Funcionarios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'usuarios_list' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Usuarios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'roles_list' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Roles</p>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
