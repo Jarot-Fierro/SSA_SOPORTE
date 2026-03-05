@@ -8,6 +8,7 @@ from catalogo.views.marca import *
 from catalogo.views.microsoft_office import *
 from catalogo.views.modelo import *
 from catalogo.views.propietario import *
+from catalogo.views.puesto_trabajo import *
 from catalogo.views.sistema_operativo import *
 from catalogo.views.subcategoria import *
 from catalogo.views.tipo_celular import *
@@ -133,5 +134,13 @@ urlpatterns = [
     path('actualizar-tipo_soporte/<int:pk>/detalle/', TipoSoporteUpdateView.as_view(),
          name='update_tipo_soporte'),
     path('historial-tipo_soporte/', TipoSoporteHistoryListView.as_view(), name='historical_tipo_soporte'),
+
+    # PUESTO TRABAJO
+    path('lista-puesto_trabajo/', PuestoTrabajoListView.as_view(), name='list_puesto_trabajo'),
+    path('detalle-puesto_trabajo/<int:pk>/detalle/', PuestoTrabajoDetailView.as_view(), name='detail_puesto_trabajo'),
+    path('crear-puesto_trabajo/', PuestoTrabajoCreateView.as_view(), name='create_puesto_trabajo'),
+    path('actualizar-puesto_trabajo/<int:pk>/detalle/', PuestoTrabajoUpdateView.as_view(),
+         name='update_puesto_trabajo'),
+    path('historial-puesto_trabajo/', PuestoTrabajoHistoryListView.as_view(), name='historical_puesto_trabajo'),
 
 ]

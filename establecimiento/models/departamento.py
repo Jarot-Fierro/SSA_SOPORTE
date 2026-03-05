@@ -19,3 +19,8 @@ class Departamento(StandardModel):
 
     def __str__(self):
         return f"{self.establecimiento.nombre} - {self.nombre}"
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)

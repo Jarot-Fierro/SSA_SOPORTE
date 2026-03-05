@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from catalogo.models import PuestoTrabajo
 from core.validations import validate_rut, format_rut, validate_spaces, validate_email
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.funcionario import Funcionario
@@ -56,6 +57,14 @@ class FormFuncionario(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control select2'})
     )
 
+    puesto_trabajo = forms.ModelChoiceField(
+        required=True,
+        label='Puesto de Trabajo',
+        queryset=PuestoTrabajo.objects.filter(status=True),
+        empty_label='Seleccione un Puesto',
+        widget=forms.Select(attrs={'class': 'form-control select2'})
+    )
+
     def clean_rut(self):
         rut = self.cleaned_data.get('rut')
         if not rut:
@@ -101,4 +110,5 @@ class FormFuncionario(forms.ModelForm):
             'correo',
             'departamento',
             'jefatura',
+            'puesto_trabajo'
         ]

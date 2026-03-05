@@ -3,6 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
+from equipo.models.celular import Celular
+from equipo.models.computador import Computador
+from equipo.models.impresora import Impresora
+from establecimiento.models.funcionario import Funcionario
+
 
 @login_required
 def dashboard_view(request):
@@ -22,8 +27,18 @@ def dashboard_view(request):
         'servicio_clinico': 0,
         'soporte': 0,
     }
+    cantidad_computador = Computador.objects.filter(status=True).count()
+    cantidad_celular = Celular.objects.filter(status=True).count()
+    cantidad_impresora = Impresora.objects.filter(status=True).count()
+    cantidad_funcionarios = Funcionario.objects.filter(status=True).count()
 
-    return render(request, 'core/dashboard.html')
+    return render(request, 'core/dashboard.html',
+                  {
+                      'cantidad_computador': cantidad_computador,
+                      'cantidad_celular': cantidad_celular,
+                      'cantidad_impresora': cantidad_impresora,
+                      'cantidad_funcionarios': cantidad_funcionarios,
+                  })
 
 
 @login_required

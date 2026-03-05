@@ -1,6 +1,7 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 
+from catalogo.models import PuestoTrabajo
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
 
@@ -13,6 +14,8 @@ class Funcionario(StandardModel):
 
     departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, null=True, blank=True,
                                      verbose_name='Departamento')
+    puesto_trabajo = models.ForeignKey(PuestoTrabajo, on_delete=models.CASCADE, null=True, blank=True,
+                                       verbose_name='Puesto de Trabajo')
     history = HistoricalRecords()
 
     class Meta:
@@ -21,3 +24,14 @@ class Funcionario(StandardModel):
 
     def __str__(self):
         return self.nombres
+
+    def save(self, *args, **kwargs):
+        if self.nombres:
+            self.nombres = self.nombres.upper()
+
+        if self.rut:
+            self.rut = self.rut.upper()
+
+        if self.correo:
+            self.correo = self.correo.lower()
+        super().save(*args, **kwargs)

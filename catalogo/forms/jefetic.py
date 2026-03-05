@@ -17,6 +17,19 @@ class FormJefeTic(forms.ModelForm):
             }),
         required=True
     )
+    posicion = forms.ChoiceField(
+        label='Posicion',
+        choices=[('JEFE DPTO TIC', 'JEFE DPTO TIC'), ('JEFE(S) DPTO TIC', 'JEFE(S) DPTO TIC')],
+        widget=forms.Select(
+            attrs={
+                'id': 'nombre_categoria',
+                'class': 'form-control',
+                'placeholder': '',
+                'minlenght': '1',
+                'maxlenght': '100'
+            }),
+        required=True
+    )
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre'].strip()
@@ -30,4 +43,4 @@ class FormJefeTic(forms.ModelForm):
 
     class Meta:
         model = JefeTic
-        fields = ['nombre']
+        fields = ['nombre', 'posicion']

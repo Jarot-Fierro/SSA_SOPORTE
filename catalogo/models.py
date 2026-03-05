@@ -15,6 +15,11 @@ class Marca(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class Categoria(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Categoría')
@@ -26,6 +31,11 @@ class Categoria(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
 
 
 class SubCategoria(StandardModel):
@@ -44,6 +54,11 @@ class SubCategoria(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class Modelo(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Modelo')
@@ -56,6 +71,11 @@ class Modelo(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class Propietario(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Propietario')
@@ -67,6 +87,11 @@ class Propietario(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
 
 
 class LicenciaOs(StandardModel):
@@ -82,6 +107,11 @@ class LicenciaOs(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class MicrosoftOffice(StandardModel):
     nombre = models.CharField(
@@ -95,6 +125,11 @@ class MicrosoftOffice(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
 
 
 class SistemaOperativo(StandardModel):
@@ -110,6 +145,11 @@ class SistemaOperativo(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class TipoCelular(StandardModel):
     nombre = models.CharField(
@@ -123,6 +163,11 @@ class TipoCelular(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
 
 
 class TipoComputador(StandardModel):
@@ -138,6 +183,11 @@ class TipoComputador(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class TipoImpresora(StandardModel):
     nombre = models.CharField(
@@ -152,6 +202,11 @@ class TipoImpresora(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class Toner(StandardModel):
     nombre = models.CharField(max_length=100)
@@ -164,9 +219,15 @@ class Toner(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class JefeTic(StandardModel):
     nombre = models.CharField(max_length=100)
+    posicion = models.CharField(max_length=100, null=True, blank=True)
     history = HistoricalRecords()
 
     class Meta:
@@ -175,6 +236,14 @@ class JefeTic(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+
+        if self.posicion:
+            self.posicion = self.posicion.upper()
+        super().save(*args, **kwargs)
 
 
 class Contrato(StandardModel):
@@ -188,6 +257,11 @@ class Contrato(StandardModel):
     def __str__(self):
         return self.nombre
 
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
 
 class TipoSoporte(StandardModel):
     nombre = models.CharField(max_length=100)
@@ -199,3 +273,25 @@ class TipoSoporte(StandardModel):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
+
+
+class PuestoTrabajo(StandardModel):
+    nombre = models.CharField(max_length=100)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = 'Puesto de Trabajo'
+        verbose_name_plural = 'Puesto de Trabajo'
+
+    def __str__(self):
+        return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.upper()
+        super().save(*args, **kwargs)
