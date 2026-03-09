@@ -18,6 +18,18 @@ class FormDepartamento(forms.ModelForm):
             }),
         required=True
     )
+    alias = forms.CharField(
+        label='Alias del Departamento',
+        widget=forms.TextInput(
+            attrs={
+                'id': 'alias_establecimiento',
+                'class': 'form-control',
+                'placeholder': 'TIC/RRHH/GES',
+                'minlenght': '1',
+                'maxlenght': '100'
+            }),
+        required=True
+    )
     direccion = forms.CharField(
         label='Dirección',
         widget=forms.TextInput(
@@ -55,4 +67,4 @@ class FormDepartamento(forms.ModelForm):
 
     class Meta:
         model = Departamento
-        fields = ['nombre', 'direccion', 'establecimiento']
+        fields = ['nombre', 'alias', 'direccion', 'establecimiento']

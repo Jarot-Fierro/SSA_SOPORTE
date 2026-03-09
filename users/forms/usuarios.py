@@ -75,7 +75,7 @@ class FormUsuario(forms.ModelForm):
         }),
         required=False
     )
-    roles = forms.ModelChoiceField(
+    rol = forms.ModelChoiceField(
         label='Rol',
         empty_label='Seleccione un Rol',
         queryset=Role.objects.all(),
@@ -142,7 +142,7 @@ class FormUsuario(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'roles', 'password1', 'password2', 'establecimiento']
+        fields = ['username', 'first_name', 'last_name', 'email', 'rol', 'password1', 'password2', 'establecimiento']
 
 
 class FormUsuarioUpdate(forms.ModelForm):
@@ -193,7 +193,7 @@ class FormUsuarioUpdate(forms.ModelForm):
         required=False
     )
 
-    roles = forms.ModelChoiceField(
+    rol = forms.ModelChoiceField(
         label='Rol',
         empty_label='Seleccione un Rol',
         queryset=Role.objects.all(),
@@ -232,7 +232,7 @@ class FormUsuarioUpdate(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'roles', 'is_active']
+        fields = ['username', 'first_name', 'last_name', 'email', 'rol', 'is_active']
 
 
 class FormUsuarioProfileUpdate(forms.ModelForm):

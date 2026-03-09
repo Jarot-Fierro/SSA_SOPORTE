@@ -31,6 +31,9 @@ class DepartamentoListView(DataTableMixin, TemplateView):
             'Establecimiento': (obj.establecimiento.nombre or '').upper(),
         }
 
+    def get_queryset(self):
+        return Departamento.objects.all()
+
     def get(self, request, *args, **kwargs):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest' and request.GET.get('datatable'):
             return self.get_datatable_response(request)

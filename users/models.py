@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from simple_history.models import HistoricalRecords
 
+from establecimiento.models.departamento import Departamento
+
 
 class Role(models.Model):
     PERMISSION_CHOICES = [
@@ -38,10 +40,15 @@ class User(AbstractUser):
                                         blank=True,
                                         verbose_name='Establecimiento'
                                         )
+    departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT, null=True,
+                                     blank=True,
+                                     verbose_name='Departamento'
+                                     )
+    usuario_soporte = models.BooleanField(default=False)
 
     rol = models.ForeignKey(Role, on_delete=models.PROTECT, null=True,
                             blank=True,
-                            verbose_name='Establecimiento'
+                            verbose_name='Rol'
                             )
 
     history = HistoricalRecords()

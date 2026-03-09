@@ -1,0 +1,149 @@
+{% extends 'base_soporte.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Titulo -->
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Soporte</h1>
+        </div>
+    </div>
+
+    <!-- Resumen -->
+    <div class="row">
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ tickets_abiertos|default:0 }}</h3>
+                    <p>Tickets abiertos</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ tickets_proceso|default:0 }}</h3>
+                    <p>En proceso</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ tickets_resueltos|default:0 }}</h3>
+                    <p>Resueltos</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ total_tickets|default:0 }}</h3>
+                    <p>Total tickets</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-list"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Botón crear ticket -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="" class="btn btn-lg btn-primary">
+                <i class="fas fa-plus"></i> Crear nuevo ticket
+            </a>
+        </div>
+    </div>
+
+    <!-- Tickets recientes -->
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Mis tickets recientes</h3>
+                </div>
+
+                <div class="card-body p-0">
+
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for ticket in tickets %}
+                            <tr>
+                                <td>#</td>
+                                <td></td>
+                                <td>
+
+                                    {% if ticket.estado == 'abierto' %}
+                                        <span class="badge badge-danger">Abierto</span>
+                                    {% elif ticket.estado == 'proceso' %}
+                                        <span class="badge badge-warning">En proceso</span>
+                                    {% elif ticket.estado == 'resuelto' %}
+                                        <span class="badge badge-success">Resuelto</span>
+                                    {% endif %}
+
+                                </td>
+
+                                <td>{{ ticket.created_at|date:"d-m-Y" }}</td>
+
+                                <td>
+                                    <a href="{% url 'detalle_ticket' ticket.id %}" class="btn btn-sm btn-info">
+                                        Ver
+                                    </a>
+                                </td>
+
+                            </tr>
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    No tienes tickets registrados
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

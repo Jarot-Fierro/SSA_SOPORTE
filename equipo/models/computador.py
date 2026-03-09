@@ -5,6 +5,7 @@ from catalogo.models import Marca, Modelo, TipoComputador, SistemaOperativo, Mic
     Contrato
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
+from establecimiento.models.establecimiento import Establecimiento
 from establecimiento.models.funcionario import Funcionario
 
 
@@ -77,6 +78,13 @@ class Computador(StandardModel):
         null=True,
         blank=True,
         related_name='computador_contrato'
+    )
+    establecimiento = models.ForeignKey(
+        Establecimiento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='computador_establecimiento'
     )
     de_baja = models.BooleanField(default=False)
     motivo_baja = models.TextField(null=True, blank=True)

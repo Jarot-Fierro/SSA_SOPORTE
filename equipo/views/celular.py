@@ -130,6 +130,13 @@ class CelularCreateView(IncludeUserFormCreate, CreateView):
     success_url = reverse_lazy('list_celular')
 
     def form_valid(self, form):
+        celular = form.save(commit=False)
+
+        # asignar establecimiento del usuario
+        celular.establecimiento = self.request.user.establecimiento
+
+        celular.save()
+
         messages.success(self.request, 'Celular creado correctamente')
         return super().form_valid(form)
 

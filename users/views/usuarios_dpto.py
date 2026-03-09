@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -15,11 +15,35 @@ from django.views.generic import UpdateView
 
 from core.mixin import DataTableMixin
 from users.forms.usuarios import UserResetPasswordForm
-from users.forms.usuarios_dpto import FormUsuarioDpto
+from users.forms.usuarios_dpto import FormUsuarioDpto, LoginFormDepto, FormUsuarioDptoUpdate
 
 MODULE_NAME = 'Usuarios'
 
 User = get_user_model()
+
+
+def login_view_depto(request):
+    if request.user.is_authenticated:
+        return redirect('user_depto')
+    if request.method == 'POST':
+        form = LoginFormDepto(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('user_depto')
+    else:
+        form = LoginFormDepto()
+
+    return render(request, 'usuarios_dpto/auth/login.html',
+                  {'form': form}
+                  )
+
+
+def user_depto(request):
+    return render(request, 'usuarios_dpto/tickets.html')
 
 
 class UserDptoListView(DataTableMixin, TemplateView):
@@ -29,7 +53,7 @@ class UserDptoListView(DataTableMixin, TemplateView):
     datatable_columns = ['ID', 'Usuario', 'Establecimiento', 'Último inicio']
 
     datatable_order_fields = [
-        'user_id', 'username',
+        'id', 'username',
         'establecimiento__nombre', 'last_login'
     ]
 
@@ -38,20 +62,21 @@ class UserDptoListView(DataTableMixin, TemplateView):
         'email__icontains', 'establecimiento__nombre__icontains'
     ]
 
-    url_update = 'usuarios_update'
-    url_detail = 'usuarios_detail'
+    url_update = 'usuarios_dpto_update'
+    url_detail = 'usuarios_dpto_detail'
 
     # FILTRA SOLO USUARIOS DEL MISMO ESTABLECIMIENTO QUE EL USUARIO LOGUEADO
     def get_base_queryset(self):
         user = self.request.user
 
-        if user.is_superuser:
-            return User.objects.all()
+        # if user.is_superuser:
+        #     return User.objects.all()
 
         if user.establecimiento:
             return User.objects.filter(
                 establecimiento=user.establecimiento,
-                is_active=True
+                is_active=True,
+                usuario_soporte=True,
             ).select_related('establecimiento')
 
         return User.objects.none()
@@ -60,7 +85,7 @@ class UserDptoListView(DataTableMixin, TemplateView):
         nombre = f"{obj.first_name or ''} {obj.last_name or ''}".strip()
 
         return {
-            'ID': obj.user_id,  # << tu PK real
+            'ID': obj.id,  # << tu PK real
             'Usuario': obj.username,
 
             'Establecimiento': obj.establecimiento.nombre if obj.establecimiento else '—',
@@ -102,7 +127,7 @@ class UserDptoCreateView(CreateView):
     template_name = 'usuarios_dpto/form.html'
     model = User
     form_class = FormUsuarioDpto
-    success_url = reverse_lazy('usuarios_list')
+    success_url = reverse_lazy('usuarios_dpto_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -142,8 +167,8 @@ class UserDptoCreateView(CreateView):
 class UserDptoUpdateView(UpdateView):
     template_name = 'usuarios_dpto/form.html'
     model = User
-    form_class = FormUsuarioDpto
-    success_url = reverse_lazy('usuarios_list')
+    form_class = FormUsuarioDptoUpdate
+    success_url = reverse_lazy('usuarios_dpto_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

@@ -14,7 +14,7 @@ class LoginRequiredMiddleware:
         if request.user.is_authenticated:
             return self.get_response(request)
 
-        if request.path not in ['/login/', '/admin/login/']:
-            return redirect(reverse('login'))
+        if request.path not in ['/login_view_depto/', '/admin/login/', '/user_depto/']:
+            return redirect(reverse('login_view_depto'))
 
         return self.get_response(request)

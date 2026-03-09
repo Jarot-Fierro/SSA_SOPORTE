@@ -14,23 +14,25 @@
 
                 <div class="row">
                     {% for field in form %}
-                        <div class="col-md-6 mb-3">
-                            <label for="id_{{ field.name }}">{{ field.label }}</label>
+                        {% if field.name != 'usuario_soporte' %}
+                            <div class="col-md-6 mb-3">
+                                <label for="id_{{ field.name }}">{{ field.label }}</label>
 
-                            {% if field.name == 'is_active' %}
-                                <br>
-                            {% endif %}
+                                {% if field.name == 'is_active' %}
+                                    <br>
+                                {% endif %}
 
-                            {{ field }}
+                                {{ field }}
 
-                            {% if field.help_text %}
-                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                            {% endif %}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
 
-                            {% for error in field.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        </div>
+                                {% for error in field.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
 
@@ -45,10 +47,19 @@
                 {% endif %}
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{% url 'usuarios_list' %}" class="btn btn-secondary mx-2">Cancelar</a>
+                    <a href="{% url 'usuarios_dpto_list' %}" class="btn btn-secondary mx-2">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%'
+        });
+    </script>
 {% endblock %}

@@ -125,6 +125,13 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
     success_url = reverse_lazy('list_impresora')
 
     def form_valid(self, form):
+        impresora = form.save(commit=False)
+
+        # asignar establecimiento del usuario
+        impresora.establecimiento = self.request.user.establecimiento
+
+        impresora.save()
+
         messages.success(self.request, 'Impresora creado correctamente')
         return super().form_valid(form)
 

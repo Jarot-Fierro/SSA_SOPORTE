@@ -25,6 +25,7 @@ urlpatterns = [
     path('roles/<int:pk>/', RoleDetailView.as_view(), name='roles_detail'),
 
     # DPTO
+    path('login-soporte/', login_view_depto, name='login_view_depto'),
     path('lista-usuarios_dpto/', UserDptoListView.as_view(), name='usuarios_dpto_list'),
     path('crear-usuario-dpto', UserDptoCreateView.as_view(), name='usuarios_dpto_create'),
     path('actualizar-usuario-dpto/<int:pk>/', UserDptoUpdateView.as_view(), name='usuarios_dpto_update'),
@@ -32,4 +33,6 @@ urlpatterns = [
     # path('usuarios_dpto/<int:pk>/reset-password/', UserDptoResetPasswordView.as_view(),
     #      name='usuarios_dpto_reset_password'),
     path('usuarios_dpto/cambiar-password/', UserDptoChangePasswordView.as_view(), name='usuarios_dpto_change_password'),
+
+    path('tickets/', user_depto, name='user_depto'),
 ]

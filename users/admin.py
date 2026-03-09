@@ -28,6 +28,8 @@ class UserResource(resources.ModelResource):
             'is_staff',
             'is_active',
             'establecimiento',
+            'departamento',
+            'usuario_soporte',
         )
         skip_unchanged = True
         report_skipped = True
@@ -72,6 +74,7 @@ class CustomUserAdmin(
         'email',
         'first_name',
         'last_name',
+        'usuario_soporte',
         'establecimiento',
         'is_staff',
         'is_active',
@@ -83,6 +86,7 @@ class CustomUserAdmin(
         'is_active',
         'establecimiento',
         'date_joined',
+        'usuario_soporte',
     )
 
     search_fields = (
@@ -94,9 +98,29 @@ class CustomUserAdmin(
 
     ordering = ('username',)
 
-    fieldsets = UserAdmin.fieldsets + (
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+
+        ('Información personal', {
+            'fields': ('first_name', 'last_name', 'email')
+        }),
+
         ('Información institucional', {
-            'fields': ('establecimiento',),
+            'fields': ('establecimiento', 'departamento', 'rol', 'usuario_soporte')
+        }),
+
+        ('Permisos', {
+            'fields': (
+                'is_active',
+                'is_staff',
+                'is_superuser',
+                'groups',
+                'user_permissions'
+            ),
+        }),
+
+        ('Fechas importantes', {
+            'fields': ('last_login', 'date_joined')
         }),
     )
 

@@ -1,6 +1,5 @@
+from django.contrib.auth.models import User
 from django.utils.deprecation import MiddlewareMixin
-
-from users.models import UserRole
 
 
 class UserRolesMiddleware(MiddlewareMixin):
@@ -17,7 +16,7 @@ class UserRolesMiddleware(MiddlewareMixin):
             request.establecimiento = user.establecimiento
 
             # Traer roles asignados al usuario
-            roles = UserRole.objects.filter(user_id=user).select_related('role_id')
+            roles = User.objects.filter(id=user.id)
 
             permisos = {
                 "mantenedores": 0,

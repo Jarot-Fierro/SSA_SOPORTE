@@ -70,8 +70,6 @@ class ComputadorListView(DataTableMixin, TemplateView):
     url_detail = 'detail_computador'
     url_update = 'update_computador'
     computadores = Computador.objects.all()
-    for i in computadores:
-        print(i)
 
     def render_row(self, obj):
         return {
@@ -139,6 +137,13 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
     success_url = reverse_lazy('list_computador')
 
     def form_valid(self, form):
+        computador = form.save(commit=False)
+
+        # asignar establecimiento del usuario
+        computador.establecimiento = self.request.user.establecimiento
+
+        computador.save()
+
         messages.success(self.request, 'Computador creado correctamente')
         return super().form_valid(form)
 

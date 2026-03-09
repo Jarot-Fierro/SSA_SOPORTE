@@ -4,6 +4,7 @@ from simple_history.models import HistoricalRecords
 from catalogo.models import Marca, Modelo, TipoCelular, Propietario, JefeTic, Contrato
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
+from establecimiento.models.establecimiento import Establecimiento
 from establecimiento.models.funcionario import Funcionario
 
 
@@ -53,6 +54,13 @@ class Celular(StandardModel):
         null=True,
         blank=True,
         related_name='celular_contrato'
+    )
+    establecimiento = models.ForeignKey(
+        Establecimiento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='celular_establecimiento'
     )
     de_baja = models.BooleanField(default=False)
     motivo_baja = models.TextField(null=True, blank=True)
