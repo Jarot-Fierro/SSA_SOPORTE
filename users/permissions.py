@@ -21,7 +21,7 @@ ROLE_FIELD_TO_MODEL = {
     'transacciones': 'transaccion',
 
     # === Usuarios / seguridad ===
-    'usuarios': 'auth.user',
+    'usuarios': 'users.user',
 }
 
 # nivel de permiso -> acciones Django

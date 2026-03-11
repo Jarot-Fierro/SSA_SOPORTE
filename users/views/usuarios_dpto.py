@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -40,10 +39,6 @@ def login_view_depto(request):
     return render(request, 'usuarios_dpto/auth/login.html',
                   {'form': form}
                   )
-
-
-def user_depto(request):
-    return render(request, 'usuarios_dpto/tickets.html')
 
 
 class UserDptoListView(DataTableMixin, TemplateView):
@@ -144,6 +139,7 @@ class UserDptoCreateView(CreateView):
 
         # Asignar el establecimiento al usuario que se creará
         form.instance.establecimiento = self.request.user.establecimiento
+        form.instance.departamento = self.request.user.departamento
 
         # Crear usuario
         user = form.save()

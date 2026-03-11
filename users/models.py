@@ -76,3 +76,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def nombre_completo(self):
+        return f"{self.first_name} {self.last_name}".strip()

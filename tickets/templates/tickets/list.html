@@ -1,0 +1,96 @@
+{% extends 'base_soporte.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Resumen -->
+    <div class="row">
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ tickets_abiertos|default:0 }}</h3>
+                    <p>Tickets abiertos</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ tickets_proceso|default:0 }}</h3>
+                    <p>En proceso</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ tickets_resueltos|default:0 }}</h3>
+                    <p>Resueltos</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ total_tickets|default:0 }}</h3>
+                    <p>Total tickets</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-list"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center w-100">
+                <div class="col">
+                    <h5 class="mb-0">Listado de Soportes Enviados</h5>
+                </div>
+                <div class="col-auto text-end">
+                    <a href="" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i> Reporte
+                    </a>
+                </div>
+                <div class="col-auto text-end">
+                    <a href="{% url 'ticket_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nuevo Soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="Table" class="table table-bordered table-striped table-sm">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Acciones</th>
+                    {% for col in columns %}
+                        {% if col != 'ID' %}
+                            <th>{{ col }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

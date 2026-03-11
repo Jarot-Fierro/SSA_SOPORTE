@@ -9,11 +9,11 @@ from users.models import User, Role
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="RUT",
+        label="RUT o Alias",
         widget=forms.TextInput(attrs={
             'id': 'id_rut',
             'class': 'form-control',
-            'placeholder': 'Ej: 12.345.678-9'
+            'placeholder': 'Ej: 12.345.678-9 / ALIAS'
         }),
         required=True
     )
@@ -250,7 +250,7 @@ class FormUsuarioProfileUpdate(forms.ModelForm):
             self.fields['roles'].initial = initial_role
 
     username = forms.CharField(
-        label='R.U.T',
+        label='RUT o Alias',
         widget=forms.TextInput(attrs={
             'id': 'id_rut',
             'class': 'form-control',

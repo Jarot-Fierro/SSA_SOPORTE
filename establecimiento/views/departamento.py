@@ -16,9 +16,9 @@ MODULE_NAME = 'Departamentos'
 class DepartamentoListView(DataTableMixin, TemplateView):
     template_name = 'departamento/list.html'
     model = Departamento
-    datatable_columns = ['ID', 'Nombre', 'Dirección', 'Establecimiento']
-    datatable_order_fields = ['id', None, 'nombre', 'establecimiento__nombre']
-    datatable_search_fields = ['nombre__icontains', 'establecimiento__nombre__icontains']
+    datatable_columns = ['ID', 'Nombre', 'Alias', 'Dirección', 'Establecimiento']
+    datatable_order_fields = ['id', None, 'nombre', 'alias', 'establecimiento__nombre']
+    datatable_search_fields = ['nombre__icontains', 'alias__icontains', 'establecimiento__nombre__icontains']
 
     url_detail = 'detail_departamentos'
     url_update = 'update_departamentos'
@@ -27,6 +27,7 @@ class DepartamentoListView(DataTableMixin, TemplateView):
         return {
             'ID': obj.id,
             'Nombre': obj.nombre.upper(),
+            'Alias': obj.alias.upper(),
             'Dirección': (obj.direccion or '').upper(),
             'Establecimiento': (obj.establecimiento.nombre or '').upper(),
         }

@@ -61,6 +61,15 @@ class UserResource(resources.ModelResource):
 # =========================
 # ADMIN
 # =========================
+
+class RoleResource(resources.ModelResource):
+    class Meta:
+        model = Role
+        import_id_fields = ['id']
+        skip_unchanged = True
+        report_skipped = True
+
+
 @admin.register(User)
 class CustomUserAdmin(
     ImportExportModelAdmin,
@@ -129,7 +138,8 @@ class CustomUserAdmin(
 
 
 @admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
+class RoleAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
+    resource_class = RoleResource
     list_display = (
         'role_name',
 

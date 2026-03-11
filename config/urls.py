@@ -35,5 +35,6 @@ urlpatterns = [
     path('', include('establecimiento.urls')),
     path('', include('catalogo.urls')),
     path('', include('equipo.urls')),
+    path('', include('tickets.urls')),
     path('pdf/', generar_pdf, name='generar_pdf'),
 ]

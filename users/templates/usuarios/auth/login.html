@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>RUT:</label>
+                    <label>RUT o Alias:</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -99,35 +99,38 @@
 
 <script>
     $(document).ready(function () {
-        const $rut = $('#id_rut');
 
-        // Permitir escribir cualquier formato
-        $rut.on('input', function () {
-            this.value = this.value.replace(/[^0-9kK]/g, '');
-        });
+        const $input = $('#id_rut');
 
-        // Función para formatear
-        function formatRut(input) {
-            let rut = input.value.replace(/\./g, '').replace(/-/g, '').toUpperCase();
-            if (rut.length <= 1) return;
+        function formatRut(value) {
+
+            let rut = value.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+
+            if (!/^[0-9kK]+$/.test(rut)) {
+                return value; // si no es rut devolver texto normal
+            }
+
+            if (rut.length <= 1) return rut;
 
             let body = rut.slice(0, -1);
             let dv = rut.slice(-1);
+
             body = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            input.value = body + '-' + dv;
+
+            return body + '-' + dv;
         }
 
-        // Formatear al perder foco
-        $rut.on('blur', function () {
-            formatRut(this);
+        $input.on('blur', function () {
+
+            let valor = $(this).val();
+
+            // solo formatear si parece rut
+            if (/^[0-9kK]+$/.test(valor.replace(/[.-]/g, ''))) {
+                $(this).val(formatRut(valor));
+            }
+
         });
 
-        // 🔥 Formatear al cargar la página si el input ya trae un valor
-        $rut.each(function () {
-            if (this.value.trim() !== "") {
-                formatRut(this);
-            }
-        });
     });
 </script>
 

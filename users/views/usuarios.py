@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -24,7 +23,10 @@ MODULE_NAME = 'Usuarios'
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        if request.user.usuario_soporte:
+            return redirect('ticket_list')
+        else:
+            return redirect('dashboard')
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
@@ -33,7 +35,11 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')
+
+                if user.usuario_soporte:
+                    return redirect('ticket_list')
+                else:
+                    return redirect('dashboard')
     else:
         form = LoginForm()
 

@@ -34,5 +34,4 @@ urlpatterns = [
     #      name='usuarios_dpto_reset_password'),
     path('usuarios_dpto/cambiar-password/', UserDptoChangePasswordView.as_view(), name='usuarios_dpto_change_password'),
 
-    path('tickets/', user_depto, name='user_depto'),
 ]
