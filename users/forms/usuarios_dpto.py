@@ -67,12 +67,7 @@ class FormUsuarioDpto(forms.ModelForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'}),
         required=True
     )
-    establecimiento = forms.ModelChoiceField(
-        label='Establecimiento',
-        empty_label='Selecciona un establecimiento',
-        queryset=Establecimiento.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-control'}),
-    )
+
     usuario_soporte = forms.BooleanField(
         label='Usuario de Soporte',
         initial=True,
@@ -80,25 +75,42 @@ class FormUsuarioDpto(forms.ModelForm):
     )
 
     def clean_username(self):
-        username = self.cleaned_data['username']
+        # En FormUsuarioDpto, username es un objeto Departamento (ModelChoiceField)
+        departamento_obj = self.cleaned_data.get('username')
+        if not departamento_obj:
+            return None
+
+        username_str = departamento_obj.nombre.upper()
 
         if self.establecimiento:
-            existe = User.objects.filter(username__iexact=username, establecimiento=self.establecimiento)
+            existe = User.objects.filter(username__iexact=username_str, establecimiento=self.establecimiento)
             if self.instance.pk:
                 existe = existe.exclude(pk=self.instance.pk)
 
-        return username
+            if existe.exists():
+                raise ValidationError(f"Ya existe un usuario con el nombre '{username_str}' en este establecimiento.")
+
+        return departamento_obj
 
     def clean_password2(self):
-        password1 = self.cleaned_data['password1']
-        password2 = self.cleaned_data['password2']
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
 
         # Verifica contraseñas
         if password1 and password2 and password1 != password2:
             raise ValidationError("Las contraseñas no coinciden.")
+        return password2
 
     def save(self, commit=True):
+        # El username en cleaned_data es un objeto Departamento (ModelChoiceField)
+        departamento_obj = self.cleaned_data.get('username')
+
         user = super().save(commit=False)
+
+        # Asignamos el nombre del departamento como username (en string)
+        if departamento_obj:
+            user.username = departamento_obj.alias
+            user.departamento = departamento_obj
 
         user.usuario_soporte = True
         # hasheo aquí
@@ -153,11 +165,13 @@ class FormUsuarioDptoUpdate(forms.ModelForm):
             if self.instance.pk:
                 existe = existe.exclude(pk=self.instance.pk)
 
+            if existe.exists():
+                raise ValidationError(f"Ya existe un usuario con el nombre '{username}' en este establecimiento.")
+
         return username
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
         user.usuario_soporte = True
 
         if commit:

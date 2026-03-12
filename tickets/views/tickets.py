@@ -19,6 +19,7 @@ class TicketListView(DataTableMixin, TemplateView):
         'Ticket',
         'Solicitante',
         'Departamento',
+        'Establecimiento',
         'Título',
         'Estado',
         'Fecha'
@@ -28,7 +29,8 @@ class TicketListView(DataTableMixin, TemplateView):
         'id',
         'numero_ticket',
         'funcionario__nombres',
-        'departamento',
+        'departamento__nombre',
+        'establecimiento__nombre',
         'titulo',
         'estado',
         'created_at'
@@ -39,7 +41,9 @@ class TicketListView(DataTableMixin, TemplateView):
         'titulo__icontains',
         'descripcion__icontains',
         'funcionario__nombres__icontains',
-        'departamento__icontains',
+        'departamento__nombre__icontains',
+        'establecimiento__nombre__icontains',
+        'departamento__alias__icontains',
     ]
 
     url_update = 'ticket_update'
@@ -50,7 +54,9 @@ class TicketListView(DataTableMixin, TemplateView):
 
         queryset = Ticket.objects.select_related(
             'funcionario',
-            'asignado_a'
+            'asignado_a',
+            'departamento',
+            'establecimiento'
         )
 
         # si el usuario pertenece a un establecimiento
@@ -67,7 +73,8 @@ class TicketListView(DataTableMixin, TemplateView):
             'ID': obj.id,
             'Ticket': obj.numero_ticket,
             'Solicitante': solicitante,
-            'Departamento': obj.departamento,
+            'Departamento': str(obj.departamento) if obj.departamento else '—',
+            'Establecimiento': str(obj.establecimiento) if obj.establecimiento else '—',
             'Título': obj.titulo,
             'Estado': obj.get_estado_display(),
             'Fecha': obj.created_at.strftime('%d-%m-%Y %H:%M') if obj.created_at else '—',
@@ -83,13 +90,16 @@ class TicketListView(DataTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        tickets_abiertos = Ticket.objects.filter(estado='ABIERTO', created_by=self.request.user.departamento).count()
-        tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO', created_by=self.request.user.departamento).count()
-        tickets_resueltos = Ticket.objects.filter(estado='RESUELTOS', created_by=self.request.user.departamento).count()
-        total_tickets = Ticket.objects.filter(created_by=self.request.user.departamento).count()
+        user_dept = self.request.user.departamento
+        tickets_abiertos = Ticket.objects.filter(estado='ABIERTO', departamento=user_dept).count()
+        tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO',
+                                                departamento=user_dept).count()
+        tickets_resueltos = Ticket.objects.filter(estado='RESUELTOS',
+                                                  departamento=user_dept).count()
+        total_tickets = Ticket.objects.filter(departamento=user_dept).count()
 
         context.update({
-            'title': f'Lista de Tickets - Departamento {self.request.user.departamento}',
+            'title': f'Lista de Tickets - Departamento {user_dept}',
             'list_url': reverse_lazy('ticket_list'),
             'create_url': reverse_lazy('ticket_create'),
             'datatable_enabled': True,
@@ -113,7 +123,8 @@ class TicketCreateView(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, 'Ticket Generado correctamente')
-        form.instance.departamento = self.request.user.username
+        form.instance.departamento = self.request.user.departamento
+        form.instance.establecimiento = self.request.user.establecimiento
         form.instance.created_by = self.request.user
 
         return super().form_valid(form)

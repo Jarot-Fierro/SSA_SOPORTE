@@ -7,6 +7,7 @@ from establecimiento.models.comuna import Comuna
 
 class Establecimiento(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Establecimiento')
+    alias = models.CharField(max_length=100, null=True, blank=True, verbose_name='Alias del Establecimiento')
     direccion = models.CharField(max_length=200, null=True, blank=True, verbose_name='Dirección')
     telefono = models.CharField(max_length=15, null=True, blank=True, verbose_name='Teléfono')
     comuna = models.ForeignKey(Comuna, on_delete=models.CASCADE, verbose_name='Comuna')
@@ -17,7 +18,7 @@ class Establecimiento(StandardModel):
         verbose_name_plural = 'Establecimientos'
 
     def __str__(self):
-        return self.nombre
+        return self.alias or self.nombre
 
     def save(self, *args, **kwargs):
         if self.nombre:

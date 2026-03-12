@@ -25,7 +25,10 @@ class TicketResource(resources.ModelResource):
 @admin.register(Ticket)
 class TicketAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_class = TicketResource
-    list_display = ("id", "numero_ticket", "titulo", "estado", "asignado_a", "funcionario")
-    search_fields = ("numero_ticket", "titulo", "descripcion", "asignado_a__username", "funcionario__nombres")
-    list_filter = ("estado", "asignado_a", "created_at")
+    list_display = ("id", "numero_ticket", "titulo", "departamento", "establecimiento", "estado", "asignado_a",
+                    "funcionario")
+    search_fields = ("numero_ticket", "titulo", "departamento__nombre", "departamento__alias", "descripcion",
+                     "asignado_a__username",
+                     "funcionario__nombres")
+    list_filter = ("estado", "departamento", "asignado_a", "created_at")
     ordering = ("-id",)

@@ -13,6 +13,9 @@ class FormPanelTicket(forms.ModelForm):
 
         self.fields['asignado_a'].label_from_instance = lambda obj: obj.nombre_completo
 
+        if self.instance and self.instance.departamento:
+            self.initial['departamento'] = str(self.instance.departamento)
+
     numero_ticket = forms.CharField(
         label='Número de ticket',
         widget=forms.TextInput(attrs={
@@ -29,7 +32,7 @@ class FormPanelTicket(forms.ModelForm):
             'placeholder': 'Departamento del solicitante',
             'readonly': True
         }),
-        required=True
+        required=False
     )
 
     funcionario = forms.ModelChoiceField(
@@ -45,7 +48,7 @@ class FormPanelTicket(forms.ModelForm):
     asignado_a = forms.ModelChoiceField(
         label='Asignado a',
         empty_label='Asignar Soporte a',
-        queryset=User.objects.filter(usuario_soporte=False),
+        queryset=User.objects.filter(usuario_soporte=True),
         widget=forms.Select(attrs={
             'class': 'form-control select2'
         }),

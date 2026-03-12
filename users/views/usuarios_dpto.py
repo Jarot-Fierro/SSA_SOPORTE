@@ -45,16 +45,16 @@ class UserDptoListView(DataTableMixin, TemplateView):
     template_name = 'usuarios_dpto/list.html'
     model = User
 
-    datatable_columns = ['ID', 'Usuario', 'Establecimiento', 'Último inicio']
+    datatable_columns = ['ID', 'Usuario', 'Establecimiento', 'Departamento', 'Último inicio']
 
     datatable_order_fields = [
         'id', 'username',
-        'establecimiento__nombre', 'last_login'
+        'establecimiento__nombre', 'departamento__nombre', 'last_login'
     ]
 
     datatable_search_fields = [
         'username__icontains',
-        'email__icontains', 'establecimiento__nombre__icontains'
+        'email__icontains', 'establecimiento__nombre__icontains', 'departamento__nombre__icontains',
     ]
 
     url_update = 'usuarios_dpto_update'
@@ -82,7 +82,7 @@ class UserDptoListView(DataTableMixin, TemplateView):
         return {
             'ID': obj.id,  # << tu PK real
             'Usuario': obj.username,
-
+            'Departamento': obj.departamento.nombre if obj.departamento else '—',
             'Establecimiento': obj.establecimiento.nombre if obj.establecimiento else '—',
             'Último inicio': obj.last_login.strftime('%d-%m-%Y %H:%M') if obj.last_login else 'Nunca',
         }
@@ -139,9 +139,8 @@ class UserDptoCreateView(CreateView):
 
         # Asignar el establecimiento al usuario que se creará
         form.instance.establecimiento = self.request.user.establecimiento
-        form.instance.departamento = self.request.user.departamento
 
-        # Crear usuario
+        # El formulario ya asigna el username (como string) y el departamento (como objeto) en el save()
         user = form.save()
 
         messages.success(self.request, "Usuario registrado correctamente.")

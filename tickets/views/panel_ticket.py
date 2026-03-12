@@ -19,6 +19,7 @@ class PanelTicketListView(DataTableMixin, TemplateView):
         'Ticket',
         'Solicitante',
         'Departamento',
+        'Establecimiento',
         'Título',
         'Estado',
         'Asignado a',
@@ -29,7 +30,8 @@ class PanelTicketListView(DataTableMixin, TemplateView):
         'id',
         'numero_ticket',
         'funcionario__nombres',
-        'departamento',
+        'departamento__nombre',
+        'establecimiento__nombre',
         'titulo',
         'estado',
         'asignado_a',
@@ -41,7 +43,9 @@ class PanelTicketListView(DataTableMixin, TemplateView):
         'titulo__icontains',
         'descripcion__icontains',
         'funcionario__nombres__icontains',
-        'departamento__icontains',
+        'departamento__nombre__icontains',
+        'establecimiento__nombre__icontains',
+        'departamento__alias__icontains',
     ]
 
     url_update = 'ticket_panel_update'
@@ -52,7 +56,9 @@ class PanelTicketListView(DataTableMixin, TemplateView):
 
         queryset = Ticket.objects.select_related(
             'funcionario',
-            'asignado_a'
+            'asignado_a',
+            'departamento',
+            'establecimiento'
         )
 
         # si el usuario pertenece a un establecimiento
@@ -70,10 +76,11 @@ class PanelTicketListView(DataTableMixin, TemplateView):
             'ID': obj.id,
             'Ticket': obj.numero_ticket,
             'Solicitante': solicitante,
-            'Departamento': obj.departamento,
+            'Departamento': str(obj.departamento) if obj.departamento else '—',
+            'Establecimiento': str(obj.establecimiento) if obj.establecimiento else '—',
             'Título': obj.titulo,
             'Estado': obj.get_estado_display(),
-            'Asignado a': obj.asignado_a.username if obj.asignado_a else (),
+            'Asignado a': asignado,
             'Fecha': obj.created_at.strftime('%d-%m-%Y %H:%M') if obj.created_at else '—',
         }
 
@@ -117,7 +124,7 @@ class PanelTicketCreateView(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, 'Ticket Generado correctamente')
-        form.instance.departamento = self.request.user.username
+        form.instance.departamento = self.request.user.departamento
         form.instance.created_by = self.request.user
 
         return super().form_valid(form)

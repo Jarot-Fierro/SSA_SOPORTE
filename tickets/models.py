@@ -3,6 +3,8 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from core.models import StandardModel
+from establecimiento.models.departamento import Departamento
+from establecimiento.models.establecimiento import Establecimiento
 from establecimiento.models.funcionario import Funcionario
 from users.models import User
 
@@ -17,7 +19,20 @@ class Ticket(StandardModel):
     )
     numero_ticket = models.CharField(max_length=20, unique=True)
 
-    departamento = models.CharField(max_length=20, default='NO INFORMADO')
+    departamento = models.ForeignKey(
+        Departamento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tickets'
+    )
+    establecimiento = models.ForeignKey(
+        Establecimiento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tickets'
+    )
 
     asignado_a = models.ForeignKey(
         User,

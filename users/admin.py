@@ -84,6 +84,7 @@ class CustomUserAdmin(
         'first_name',
         'last_name',
         'usuario_soporte',
+        'departamento',
         'establecimiento',
         'is_staff',
         'is_active',
@@ -132,9 +133,6 @@ class CustomUserAdmin(
             'fields': ('last_login', 'date_joined')
         }),
     )
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(Role)

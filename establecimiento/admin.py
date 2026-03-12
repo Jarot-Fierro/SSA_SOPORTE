@@ -27,7 +27,7 @@ class EstablecimientoResource(resources.ModelResource):
     class Meta:
         model = Establecimiento
         import_id_fields = ['id']
-        fields = ('id', 'nombre', 'direccion', 'telefono', 'comuna', 'comuna_nombre', 'status')
+        fields = ('id', 'nombre', 'alias', 'direccion', 'telefono', 'comuna', 'comuna_nombre', 'status')
         skip_unchanged = True
         report_skipped = True
 
@@ -69,7 +69,7 @@ class ComunaAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
 @admin.register(Establecimiento)
 class EstablecimientoAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_class = EstablecimientoResource
-    list_display = ("id", "nombre", "comuna", "status")
+    list_display = ("id", "nombre", "alias", "comuna", "status")
     search_fields = ("nombre", "comuna__nombre")
     list_filter = ("comuna", "status")
     ordering = ("-id",)
