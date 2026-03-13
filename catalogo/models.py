@@ -2,6 +2,8 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from core.models import StandardModel
+from establecimiento.models.departamento import Departamento
+from establecimiento.models.establecimiento import Establecimiento
 
 
 class Marca(StandardModel):
@@ -295,3 +297,43 @@ class PuestoTrabajo(StandardModel):
         if self.nombre:
             self.nombre = self.nombre.upper()
         super().save(*args, **kwargs)
+
+
+class Ips(StandardModel):
+    ip = models.GenericIPAddressField(
+        unique=True,
+        protocol='IPv4',
+        verbose_name='Dirección IP'
+    )
+    asignado = models.BooleanField(default=False)
+    establecimiento = models.ForeignKey(
+        Establecimiento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ips',
+        verbose_name='Establecimiento'
+    )
+    departamento = models.ForeignKey(
+        Departamento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ips',
+        verbose_name='Departamento'
+    )
+    observacion = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='Observación'
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = 'Dirección IP'
+        verbose_name_plural = 'Direcciones IP'
+        ordering = ['ip']
+
+    def __str__(self):
+        return f'{self.ip} ({self.asignado})'

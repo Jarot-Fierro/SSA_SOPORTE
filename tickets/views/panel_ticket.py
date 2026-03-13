@@ -54,7 +54,7 @@ class PanelTicketListView(DataTableMixin, TemplateView):
 
         user = self.request.user
 
-        queryset = Ticket.objects.select_related(
+        queryset = Ticket.objects.filter(establecimiento=self.request.user.establecimiento).select_related(
             'funcionario',
             'asignado_a',
             'departamento',
@@ -94,10 +94,13 @@ class PanelTicketListView(DataTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        tickets_abiertos = Ticket.objects.filter(estado='ABIERTO').count()
-        tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO').count()
-        tickets_resueltos = Ticket.objects.filter(estado='RESUELTOS').count()
-        total_tickets = Ticket.objects.all().count()
+        tickets_abiertos = Ticket.objects.filter(estado='ABIERTO',
+                                                 establecimiento=self.request.user.establecimiento).count()
+        tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO',
+                                                establecimiento=self.request.user.establecimiento).count()
+        tickets_resueltos = Ticket.objects.filter(estado='RESUELTOS',
+                                                  establecimiento=self.request.user.establecimiento).count()
+        total_tickets = Ticket.objects.filter(establecimiento=self.request.user.establecimiento).count()
 
         context.update({
             'title': 'Lista de Tickets',

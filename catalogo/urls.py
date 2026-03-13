@@ -2,6 +2,7 @@ from django.urls import path
 
 from catalogo.views.categoria import *
 from catalogo.views.contrato import *
+from catalogo.views.ips import *
 from catalogo.views.jefetic import *
 from catalogo.views.licencia_os import *
 from catalogo.views.marca import *
@@ -142,5 +143,13 @@ urlpatterns = [
     path('actualizar-puesto_trabajo/<int:pk>/detalle/', PuestoTrabajoUpdateView.as_view(),
          name='update_puesto_trabajo'),
     path('historial-puesto_trabajo/', PuestoTrabajoHistoryListView.as_view(), name='historical_puesto_trabajo'),
+
+    # IPS
+    path('lista-ips/', IpsListView.as_view(), name='list_ips'),
+    path('detalle-ips/<int:pk>/detalle/', IpsDetailView.as_view(), name='detail_ips'),
+    path('crear-ips/', IpsCreateView.as_view(), name='create_ips'),
+    path('actualizar-ips/<int:pk>/detalle/', IpsUpdateView.as_view(),
+         name='update_ips'),
+    path('historial-ips/', IpsHistoryListView.as_view(), name='historical_ips'),
 
 ]

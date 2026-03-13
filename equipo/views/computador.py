@@ -67,9 +67,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
         'jefe_tic__nombre__icontains',
     ]
 
-    url_detail = 'detail_computador'
     url_update = 'update_computador'
-    computadores = Computador.objects.all()
 
     def render_row(self, obj):
         return {
@@ -115,6 +113,24 @@ class ComputadorListView(DataTableMixin, TemplateView):
             'columns': self.datatable_columns,
         })
         return context
+
+    def get_actions(self, obj):
+        """
+        Agrega botones personalizados a la columna de acciones.
+        """
+        actions = super().get_actions(obj)
+        # Botón para generar acta PDF del Computador
+        if obj.responsable:
+
+            pdf_button = f"""
+                <a href="{reverse_lazy('acta_computador')}?search[value]={obj.id}"
+                   target="_blank"
+                   class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
+                   <i class="fas fa-file-pdf"></i></a>
+            """
+            return actions + pdf_button
+        else:
+            return actions
 
 
 class ComputadorDetailView(DetailView):

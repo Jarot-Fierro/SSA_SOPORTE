@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-%sx-xgfzaq2qacibrc(v65(7h*!*izx!vhd2i%8h(cy=(=)b1c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['10.8.85.141']
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
@@ -38,6 +38,8 @@ SIMPLE_HISTORY_REVERT_DISABLED = False
 
 INSTALLED_APPS = [
     'jazzmin',
+    'import_export',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simple_history',
-    'import_export',
+
     'users',
     'core',
     'catalogo',

@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
+from catalogo.models import TipoSoporte
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.establecimiento import Establecimiento
@@ -46,6 +47,13 @@ class Ticket(StandardModel):
 
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
+    tipo_soporte = models.ForeignKey(
+        TipoSoporte,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tipo_soporte'
+    )
     solucion = models.TextField(null=True, blank=True)
 
     fecha_cierre = models.DateTimeField(null=True, blank=True)

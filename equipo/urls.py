@@ -3,6 +3,7 @@ from django.urls import path
 from equipo.views.celular import *
 from equipo.views.computador import *
 from equipo.views.impresora import *
+from equipo.views.pdfs import *
 
 urlpatterns = [
 
@@ -26,5 +27,10 @@ urlpatterns = [
     path('crear-impresora/', ImpresoraCreateView.as_view(), name='create_impresora'),
     path('actualizar-impresora/<int:pk>/detalle/', ImpresoraUpdateView.as_view(), name='update_impresora'),
     path('historial-impresora/', ImpresoraHistoryListView.as_view(), name='historical_impresora'),
+
+    # PDFS
+    path('acta-computador/', generar_pdf_computador, name='acta_computador'),
+    path('acta-celular/', generar_pdf_celular, name='acta_celular'),
+    path('acta-impresora/', generar_pdf_impresora, name='acta_impresora'),
 
 ]

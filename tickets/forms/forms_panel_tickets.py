@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from catalogo.models import TipoSoporte
+
 User = get_user_model()
 
 from establecimiento.models.funcionario import Funcionario
@@ -93,6 +95,15 @@ class FormPanelTicket(forms.ModelForm):
         }),
         required=True
     )
+    tipo_soporte = forms.ModelChoiceField(
+        label='Tipo Soporte',
+        empty_label='Selecciona el Tipo Soporte',
+        queryset=TipoSoporte.objects.filter(status=True),
+        widget=forms.Select(attrs={
+            'class': 'form-control select2'
+        }),
+        required=False
+    )
 
     fecha_cierre = forms.DateTimeField(
         label='Fecha de cierre',
@@ -114,5 +125,6 @@ class FormPanelTicket(forms.ModelForm):
             'titulo',
             'descripcion',
             'solucion',
-            'fecha_cierre'
+            'fecha_cierre',
+            'tipo_soporte',
         ]

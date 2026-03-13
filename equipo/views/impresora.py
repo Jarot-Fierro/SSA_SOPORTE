@@ -59,7 +59,6 @@ class ImpresoraListView(DataTableMixin, TemplateView):
         'descripcion__icontains',
     ]
 
-    url_detail = 'detail_impresora'
     url_update = 'update_impresora'
 
     def render_row(self, obj):
@@ -103,6 +102,24 @@ class ImpresoraListView(DataTableMixin, TemplateView):
             'columns': self.datatable_columns,
         })
         return context
+
+    def get_actions(self, obj):
+        """
+        Agrega botones personalizados a la columna de acciones.
+        """
+        actions = super().get_actions(obj)
+        # Botón para generar acta PDF del impresora
+        if obj.responsable:
+
+            pdf_button = f"""
+                <a href="{reverse_lazy('acta_impresora')}?search[value]={obj.id}"
+                   target="_blank"
+                   class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
+                   <i class="fas fa-file-pdf"></i></a>
+            """
+            return actions + pdf_button
+        else:
+            return actions
 
 
 class ImpresoraDetailView(DetailView):

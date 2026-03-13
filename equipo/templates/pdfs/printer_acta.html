@@ -13,72 +13,82 @@
         @page {
             size: A4;
             margin: 30px;
-         }
+        }
+
         body {
-          margin: 0;
-          font-family: Arial, sans-serif;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
+
         h1 {
-          text-align: center;
-          margin-top: 10px;
-          margin-bottom: 20px;
-          text-transform: uppercase;
-          font-size: 20px;
-          font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 20px;
+            font-weight: bold;
         }
+
         .section-title {
-          font-weight: bold;
-          margin: 15px 0;
-          font-size: 16px;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 16px;
         }
+
         table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 15px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
+
         th, td {
-          padding: 6px 10px;
-          font-size: 14px;
+            padding: 6px 10px;
+            font-size: 14px;
         }
+
         .note {
-          padding: 10px;
-          margin-top: 20px;
-          background-color: #f8f9fa;
-          font-size: 14px;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            font-size: 14px;
         }
+
         .signature-block {
-          margin-top: 40px;
+            margin-top: 40px;
         }
+
         .signature-line {
-          border-top: 1px solid #000;
-          width: 220px;
-          text-align: center;
-          margin: 30px auto 0 auto;
-          padding-top: 5px;
-          font-size: 14px;
+            border-top: 1px solid #000;
+            width: 220px;
+            text-align: center;
+            margin: 30px auto 0 auto;
+            padding-top: 5px;
+            font-size: 14px;
         }
+
         footer {
-          text-align: center;
-          font-size: 12px;
-          margin-top: 40px;
-          color: #555;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 40px;
+            color: #555;
         }
+
         .text-normal {
-          font-size: 14px;
-          margin-bottom: 5px;
+            font-size: 14px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <img src="{% static 'logo/logo_ssa.png' %}" alt="Logo Gobierno" style="height: 80px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_del_Ministerio_de_Educaci%C3%B3n_%28Chile%29.jpg"
+         alt="Logo Gobierno" style="height: 80px;">
     <div class="d-flex flex-column text-end">
         <div class="text-normal"><strong>FECHA:</strong> {{ fecha }}</div>
         <div class="text-normal"><strong>HORA:</strong> {{ hora }}</div>
     </div>
 </div>
-
 
 <h1>ACTA DE ENTREGA</h1>
 <hr>
@@ -89,31 +99,31 @@
     <tbody>
     <tr>
         <th>TIPO DE EQUIPO</th>
-        <td>{{ device.get_device_type_display }}</td>
+        <td>{{ equipo.tipo }}</td>
     </tr>
     <tr>
         <th>MARCA - MODELO</th>
-        <td>{{ device.brand.name }} {{ device.model.name }}</td>
+        <td>{{ equipo.marca }} {{ equipo.modelo }}</td>
     </tr>
     <tr>
         <th>N° DE SERIE</th>
-        <td>{{ device.number_serie }}</td>
+        <td>{{ equipo.serie }}</td>
     </tr>
     <tr>
         <th>HH</th>
-        <td>{{ device.hh|default:"-" }}</td>
+        <td>{{ equipo.hh }}</td>
     </tr>
     <tr>
         <th>IP</th>
-        <td>{{ device.ip|default:"-" }}</td>
+        <td>{{ equipo.ip }}</td>
     </tr>
     <tr>
-        <th>TINTAS</th>
-        <td>{{ device.inks.name|default:"-" }}</td>
+        <th>TINTA/TONER</th>
+        <td>{{ equipo.toner }}</td>
     </tr>
     <tr>
         <th>DESCRIPCIÓN</th>
-        <td>{{ device.description|default:"-" }}</td>
+        <td>{{ equipo.observaciones }}</td>
     </tr>
 
     </tbody>
@@ -125,25 +135,25 @@
     ESTE, O EN SU DEFECTO ENTREGAR EN BUENAS CONDICIONES Y TODOS SUS ACCESORIOS
 </div>
 
-<div class="signature-block text-center">
+<div class="signature-block text-center ">
     <p>ENTREGUE CONFORME A:</p>
 
-    <div class="row">
+    <div class="row" style="margin-top: 120px">
         <div class="col-6 text-center">
             <div class="signature-line">
-                {{ transaction.official|upper }}.
+                {{ equipo.responsable.puesto_trabajo }}<br>{{ equipo.responsable }}.
             </div>
         </div>
         <div class="col-6 text-center">
             <div class="signature-line">
-                {{ jefetic|upper }}.<br>{{ jefetic.boss_position|upper }}.
+                {{ equipo.jefe_entrega.posicion }}.<br>{{ equipo.jefe_entrega }}.
             </div>
         </div>
     </div>
 
     <div class="mt-3">
-        <div>HOSPITAL DE CONTULMO</div>
-        <div>SERVICIO DE SALUD ARAUCO</div>
+        <div>{{ request.user.establecimiento.nombre }}</div>
+        {#        <div>SERVICIO DE SALUD ARAUCO</div>#}
     </div>
 </div>
 

@@ -65,8 +65,6 @@ class CelularListView(DataTableMixin, TemplateView):
         'responsable__nombres__icontains',
         'jefe_entrega__nombre__icontains',
     ]
-
-    url_detail = 'detail_celular'
     url_update = 'update_celular'
 
     def render_row(self, obj):
@@ -108,6 +106,24 @@ class CelularListView(DataTableMixin, TemplateView):
             'columns': self.datatable_columns,
         })
         return context
+
+    def get_actions(self, obj):
+        """
+        Agrega botones personalizados a la columna de acciones.
+        """
+        actions = super().get_actions(obj)
+        # Botón para generar acta PDF del celular
+        if obj.responsable:
+
+            pdf_button = f"""
+                <a href="{reverse_lazy('acta_celular')}?search[value]={obj.id}"
+                   target="_blank"
+                   class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
+                   <i class="fas fa-file-pdf"></i></a>
+            """
+            return actions + pdf_button
+        else:
+            return actions
 
 
 class CelularDetailView(DetailView):
