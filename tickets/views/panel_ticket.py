@@ -156,7 +156,7 @@ class PanelTicketsUpdateView(IncludeUserFormUpdate, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Tickets creado correctamente')
+        messages.success(self.request, 'Tickets actualizado correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):

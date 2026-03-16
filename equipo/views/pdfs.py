@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -7,12 +9,13 @@ from equipo.models.computador import Computador
 from equipo.models.impresora import Impresora
 
 
-def generar_pdf_computador(request):
+def generar_pdf_computador(request, pk=None):
     # Datos a pasar a la plantilla
-    equipo = Computador.objects.filter(status=True).get(id=1)
+    equipo = Computador.objects.filter(status=True).get(id=pk)
     contexto = {
         'nombre': 'Usuario',
-        'fecha': '10/10/2023',
+        'fecha': datetime.now().strftime('%d/%m/%Y'),
+        'hora': datetime.now().strftime('%H:%M:%S'),
         'equipo': equipo
     }
     html_string = render_to_string('pdfs/computer_acta.html', contexto, request=request)
@@ -26,12 +29,13 @@ def generar_pdf_computador(request):
     return response
 
 
-def generar_pdf_celular(request):
+def generar_pdf_celular(request, pk=None):
     # Datos a pasar a la plantilla
-    equipo = Celular.objects.filter(status=True).get(id=1)
+    equipo = Celular.objects.filter(status=True).get(id=pk)
     contexto = {
         'nombre': 'Usuario',
-        'fecha': '10/10/2023',
+        'fecha': datetime.now().strftime('%d/%m/%Y'),
+        'hora': datetime.now().strftime('%H:%M:%S'),
         'equipo': equipo
     }
     html_string = render_to_string('pdfs/phone_acta.html', contexto, request=request)
@@ -45,12 +49,13 @@ def generar_pdf_celular(request):
     return response
 
 
-def generar_pdf_impresora(request):
+def generar_pdf_impresora(request, pk=None):
     # Datos a pasar a la plantilla
-    equipo = Impresora.objects.filter(status=True).get(id=1)
+    equipo = Impresora.objects.filter(status=True).get(id=pk)
     contexto = {
         'nombre': 'Usuario',
-        'fecha': '10/10/2023',
+        'fecha': datetime.now().strftime('%d/%m/%Y'),
+        'hora': datetime.now().strftime('%H:%M:%S'),
         'equipo': equipo
     }
     html_string = render_to_string('pdfs/printer_acta.html', contexto, request=request)

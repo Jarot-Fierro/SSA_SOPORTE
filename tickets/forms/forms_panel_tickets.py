@@ -50,7 +50,7 @@ class FormPanelTicket(forms.ModelForm):
     asignado_a = forms.ModelChoiceField(
         label='Asignado a',
         empty_label='Asignar Soporte a',
-        queryset=User.objects.filter(usuario_soporte=True),
+        queryset=User.objects.filter(usuario_soporte=False),
         widget=forms.Select(attrs={
             'class': 'form-control select2'
         }),
@@ -118,7 +118,6 @@ class FormPanelTicket(forms.ModelForm):
         model = Ticket
         fields = [
             'numero_ticket',
-            'departamento',
             'funcionario',
             'asignado_a',
             'estado',

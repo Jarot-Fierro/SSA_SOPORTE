@@ -123,7 +123,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
         if obj.responsable:
 
             pdf_button = f"""
-                <a href="{reverse_lazy('acta_computador')}?search[value]={obj.id}"
+                <a href="{reverse_lazy('acta_computador', kwargs={'pk': obj.id})}"
                    target="_blank"
                    class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
                    <i class="fas fa-file-pdf"></i></a>

@@ -28,7 +28,9 @@
                             <div class="form-group">
                                 <label>{{ form.numero_ticket.label }}</label>
                                 {{ form.numero_ticket }}
-                                {{ form.numero_ticket.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.numero_ticket.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -36,7 +38,9 @@
                             <div class="form-group">
                                 <label>{{ form.departamento.label }}</label>
                                 {{ form.departamento }}
-                                {{ form.departamento.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.departamento.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -44,7 +48,9 @@
                             <div class="form-group">
                                 <label>{{ form.funcionario.label }}</label>
                                 {{ form.funcionario }}
-                                {{ form.funcionario.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.funcionario.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -56,7 +62,9 @@
                             <div class="form-group">
                                 <label>{{ form.titulo.label }}</label>
                                 {{ form.titulo }}
-                                {{ form.titulo.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.titulo.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -70,14 +78,18 @@
                             <div class="form-group">
                                 <label>{{ form.asignado_a.label }}</label>
                                 {{ form.asignado_a }}
-                                {{ form.asignado_a.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.asignado_a.errors }}
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>{{ form.tipo_soporte.label }}</label>
                                 {{ form.tipo_soporte }}
-                                {{ form.tipo_soporte.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.tipo_soporte.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -85,7 +97,9 @@
                             <div class="form-group">
                                 <label>{{ form.estado.label }}</label>
                                 {{ form.estado }}
-                                {{ form.estado.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.estado.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -93,7 +107,9 @@
                             <div class="form-group">
                                 <label>{{ form.fecha_cierre.label }}</label>
                                 {{ form.fecha_cierre }}
-                                {{ form.fecha_cierre.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.fecha_cierre.errors }}
+                                </div>
                             </div>
                         </div>
 
@@ -106,14 +122,18 @@
                             <div class="form-group">
                                 <label>{{ form.descripcion.label }}</label>
                                 {{ form.descripcion }}
-                                {{ form.descripcion.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.descripcion.errors }}
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>{{ form.solucion.label }}</label>
                                 {{ form.solucion }}
-                                {{ form.solucion.errors }}
+                                <div class="invalid-feedback d-block text-danger">
+                                    {{ form.solucion.errors }}
+                                </div>
                             </div>
                         </div>
 

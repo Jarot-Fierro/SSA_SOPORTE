@@ -29,8 +29,8 @@ urlpatterns = [
     path('historial-impresora/', ImpresoraHistoryListView.as_view(), name='historical_impresora'),
 
     # PDFS
-    path('acta-computador/', generar_pdf_computador, name='acta_computador'),
-    path('acta-celular/', generar_pdf_celular, name='acta_celular'),
-    path('acta-impresora/', generar_pdf_impresora, name='acta_impresora'),
+    path('acta-computador/<int:pk>/', generar_pdf_computador, name='acta_computador'),
+    path('acta-celular/<int:pk>/', generar_pdf_celular, name='acta_celular'),
+    path('acta-impresora/<int:pk>/', generar_pdf_impresora, name='acta_impresora'),
 
 ]
