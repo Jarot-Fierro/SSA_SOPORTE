@@ -37,9 +37,6 @@ SIMPLE_HISTORY_REVERT_DISABLED = False
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
-    'import_export',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simple_history',
+    'import_export',
 
     'users',
     'core',
@@ -55,33 +53,6 @@ INSTALLED_APPS = [
     'equipo',
     'tickets',
 ]
-JAZZMIN_SETTINGS = {
-
-    "site_title": "Admin",
-    "site_header": "Administración",
-    "site_brand": "Sistema",
-
-    "site_logo": "adminlte3/img/AdminLTELogo.png",
-
-    "welcome_sign": "Bienvenido al panel de administración",
-
-    "copyright": "Servicio Salud Arauco",
-
-    # Sidebar
-    "show_sidebar": True,
-    "navigation_expanded": True,
-
-    # Iconos
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.group": "fas fa-users",
-    },
-
-    # UI
-    "show_ui_builder": False,
-
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

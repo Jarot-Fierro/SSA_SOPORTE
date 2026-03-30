@@ -336,4 +336,4 @@ class Ips(StandardModel):
         ordering = ['ip']
 
     def __str__(self):
-        return f'{self.ip} ({self.asignado})'
+        return f'{self.ip}'

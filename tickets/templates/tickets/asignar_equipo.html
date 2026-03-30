@@ -1,0 +1,141 @@
+{% extends 'base_soporte.html' %}
+{% load static %}
+
+{% block title %}Tickets - {{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Asignar Nuevo Equipo</h3>
+            </div>
+            <form method="post" id="form-asignar">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Ticket</label>
+                        <input type="text" class="form-control" value="{{ ticket.numero_ticket }} - {{ ticket.titulo }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Funcionario</label>
+                        <input type="text" class="form-control" value="{{ ticket.funcionario }}" readonly>
+                    </div>
+                    
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-right">
+                    <a href="{% url 'ticket_panel_update' ticket.pk %}" class="btn btn-secondary">Volver al Ticket</a>
+                    <button type="submit" class="btn btn-success">Guardar y Asignar Otro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Equipos Asignados a este Ticket</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Equipo / Detalle</th>
+                            <th>Observación</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activo in activos_asignados %}
+                            <tr>
+                                <td>
+                                    {% if activo.content_type.model == 'computador' %}
+                                        Computador
+                                    {% elif activo.content_type.model == 'celular' %}
+                                        Celular
+                                    {% elif activo.content_type.model == 'impresora' %}
+                                        Impresora
+                                    {% else %}
+                                        {{ activo.content_type }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ activo.activo }}</strong>
+                                    {% if activo.content_type.model == 'computador' %}
+                                        <br><small>{{ activo.activo.marca }} {{ activo.activo.modelo|default:'' }}</small>
+                                    {% elif activo.content_type.model == 'celular' %}
+                                        <br><small>{{ activo.activo.marca }} - IMEI: {{ activo.activo.imei }}</small>
+                                    {% elif activo.content_type.model == 'impresora' %}
+                                        <br><small>{{ activo.activo.marca }} - IP: {{ activo.activo.ip }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ activo.observacion|default:'-' }}</td>
+                                <td class="text-center">
+                                    <form action="{% url 'ticket_eliminar_equipo' activo.pk %}" method="post" onsubmit="return confirm('¿Está seguro de eliminar esta asignación? El equipo volverá a estar disponible.');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No hay equipos asignados aún.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%'
+        });
+
+        $('#id_tipo_equipo').on('change', function() {
+            var tipo = $(this).val();
+            var ticket_id = "{{ ticket.id }}";
+            var url = "{% url 'get_equipos_ajax' %}";
+
+            if (tipo) {
+                $.ajax({
+                    url: url,
+                    data: {
+                        'tipo': tipo,
+                        'ticket_id': ticket_id
+                    },
+                    success: function(data) {
+                        var $equipo_id = $('#id_equipo_id');
+                        $equipo_id.empty();
+                        $equipo_id.append('<option value="">---------</option>');
+                        $.each(data, function(index, item) {
+                            $equipo_id.append('<option value="' + item.id + '">' + item.text + '</option>');
+                        });
+                        $equipo_id.trigger('change');
+                    }
+                });
+            } else {
+                $('#id_equipo_id').empty().append('<option value="">---------</option>').trigger('change');
+            }
+        });
+    });
+</script>
+{% endblock %}

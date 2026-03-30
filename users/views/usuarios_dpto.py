@@ -132,19 +132,80 @@ class UserDptoCreateView(CreateView):
 
     @transaction.atomic
     def form_valid(self, form):
-        # Validación de establecimiento
-        if not self.request.user.establecimiento:
+        # =========================
+        # 1. Validar establecimiento del usuario logueado
+        # =========================
+        establecimiento = self.request.user.establecimiento
+
+        if not establecimiento:
             messages.error(self.request, "No tienes establecimiento asignado.")
             return redirect('no_establecimiento')
 
-        # Asignar el establecimiento al usuario que se creará
-        form.instance.establecimiento = self.request.user.establecimiento
+        if not getattr(establecimiento, 'alias', None):
+            messages.error(self.request, "Tu establecimiento no tiene alias configurado.")
+            return self.form_invalid(form)
 
-        # El formulario ya asigna el username (como string) y el departamento (como objeto) en el save()
-        user = form.save()
+        # =========================
+        # 2. Obtener departamento seleccionado
+        # OJO: el campo 'username' del form es un Departamento
+        # =========================
+        departamento_obj = form.cleaned_data.get('username')
 
-        messages.success(self.request, "Usuario registrado correctamente.")
-        return super().form_valid(form)
+        if not departamento_obj:
+            form.add_error('username', 'Debe seleccionar un departamento.')
+            return self.form_invalid(form)
+
+        if not getattr(departamento_obj, 'alias', None):
+            form.add_error('username', 'El departamento seleccionado no tiene alias configurado.')
+            return self.form_invalid(form)
+
+        # =========================
+        # 3. Construir username real
+        # Ejemplo: TIC_HLEBU
+        # =========================
+        username_final = f"{departamento_obj.alias}_{establecimiento.alias}".strip().upper()
+
+        # =========================
+        # 4. Validar que no exista
+        # =========================
+        if User.objects.filter(username__iexact=username_final).exists():
+            form.add_error(
+                'username',
+                f"Ya existe un usuario de soporte para el departamento "
+                f"'{departamento_obj.alias.upper()}' en el establecimiento "
+                f"'{establecimiento.alias.upper()}'."
+            )
+            return self.form_invalid(form)
+
+        # =========================
+        # 5. Crear el usuario SIN guardar aún
+        # =========================
+        user = form.save(commit=False)
+
+        # =========================
+        # 6. Asignar datos finales
+        # =========================
+        user.establecimiento = establecimiento
+        user.departamento = departamento_obj
+        user.username = username_final
+        user.usuario_soporte = True
+
+        # La contraseña ya viene hasheada desde el form.save(commit=False)
+        # porque en el form hicimos user.set_password(...)
+
+        # =========================
+        # 7. Guardar usuario
+        # =========================
+        user.save()
+
+        self.object = user
+
+        messages.success(
+            self.request,
+            f"Usuario registrado correctamente como '{username_final}'."
+        )
+
+        return redirect(self.success_url)
 
     def form_invalid(self, form):
         messages.error(self.request, 'Hay errores en el formulario')

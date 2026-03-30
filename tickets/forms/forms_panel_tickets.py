@@ -93,7 +93,7 @@ class FormPanelTicket(forms.ModelForm):
             'rows': 4,
             'placeholder': 'Describa la solución empleada'
         }),
-        required=True
+        required=False
     )
     tipo_soporte = forms.ModelChoiceField(
         label='Tipo Soporte',

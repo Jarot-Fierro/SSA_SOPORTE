@@ -41,6 +41,11 @@
                     {% endfor %}
 
                     <div class="text-right mt-4">
+                        {% if action == 'edit' %}
+                            <a href="{% url 'ticket_asignar_equipo' object.pk %}" class="btn btn-info float-left">
+                                <i class="fas fa-laptop"></i> Asignar Equipamiento
+                            </a>
+                        {% endif %}
                         <a href="{% url 'ticket_list' %}" class="btn btn-secondary">
                             Cancelar
                         </a>

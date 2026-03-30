@@ -1,6 +1,7 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
-from catalogo.models import TipoImpresora, Marca, Modelo, Contrato, JefeTic, Propietario
+from catalogo.models import TipoImpresora, Marca, Modelo, Contrato, JefeTic, Propietario, Ips
 from core.validations import validate_exists
 from equipo.models.impresora import Impresora, Toner
 from establecimiento.models.departamento import Departamento
@@ -31,15 +32,16 @@ class FormImpresora(forms.ModelForm):
         required=False
     )
 
-    ip = forms.CharField(
+    ip = forms.ModelChoiceField(
         label='Dirección IP',
-        widget=forms.TextInput(
+        queryset=Ips.objects.filter(asignado=False).order_by('ip'),
+        required=False,
+        widget=forms.Select(
             attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: 192.168.1.50',
+                'class': 'form-control select2',
+                'placeholder': 'Ej: 192.168.1.10',
             }
-        ),
-        required=False
+        )
     )
 
     tipo = forms.ModelChoiceField(
@@ -167,6 +169,14 @@ class FormImpresora(forms.ModelForm):
 
         validate_exists(serie, exists)
         return serie
+
+    def clean_ip(self):
+        ip = self.cleaned_data.get('ip')
+
+        if ip and ip.asignado:
+            raise ValidationError('La dirección IP ya está asignada a otro equipo.')
+
+        return ip
 
     class Meta:
         model = Impresora

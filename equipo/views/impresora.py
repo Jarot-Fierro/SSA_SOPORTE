@@ -40,7 +40,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
         'modelo__nombre',
         'departamento__nombre',
         'hh',
-        'ip',
+        'ip__ip',
         'serie',
         'toner__nombre',
         'descripcion',
@@ -53,7 +53,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
         'modelo__nombre__icontains',
         'departamento__nombre__icontains',
         'hh__icontains',
-        'ip__icontains',
+        'ip__ip__icontains',
         'serie__icontains',
         'toner__nombre__icontains',
         'descripcion__icontains',
@@ -70,7 +70,11 @@ class ImpresoraListView(DataTableMixin, TemplateView):
             'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
             'Departamento': obj.departamento.nombre.upper() if obj.departamento else '-',
             'HH': obj.hh if obj.hh else '-',
-            'IP': obj.ip if obj.ip else '-',
+            'IP': (
+                f'<span class="badge bg-success p-2">{obj.ip.ip}</span>'
+                if obj.ip
+                else '-'
+            ),
             'Serial': obj.serie if obj.serie else '-',
             'Toner': obj.toner.nombre.upper() if obj.toner else '-',
             'Descripcion': obj.observaciones if obj.observaciones else '-',
@@ -82,7 +86,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        # 🔥 Optimización para evitar N+1 queries
+        # Optimización para evitar N+1 queries
         return Impresora.objects.select_related(
             'tipo',
             'marca',
@@ -148,6 +152,11 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
         impresora.establecimiento = self.request.user.establecimiento
 
         impresora.save()
+
+        # Marcar la IP como asignada si se proporcionó una
+        if impresora.ip:
+            impresora.ip.asignado = True
+            impresora.ip.save()
 
         messages.success(self.request, 'Impresora creado correctamente')
         return super().form_valid(form)

@@ -16,9 +16,9 @@ MODULE_NAME = 'Ips'
 class IpsListView(DataTableMixin, TemplateView):
     template_name = 'ips/list.html'
     model = Ips
-    datatable_columns = ['ID', 'Ip']
-    datatable_order_fields = ['id', None, 'ip']
-    datatable_search_fields = ['ip__icontains']
+    datatable_columns = ['ID', 'Ip', 'Asignado']
+    datatable_order_fields = ['id', None, 'ip', 'asignado']
+    datatable_search_fields = ['ip__icontains', 'asignado__icontains']
 
     url_detail = 'detail_ips'
     url_update = 'update_ips'
@@ -27,6 +27,11 @@ class IpsListView(DataTableMixin, TemplateView):
         return {
             'ID': obj.id,
             'Ip': obj.ip.upper(),
+            'Asignado': (
+                '<span class="badge bg-danger p-2">Asignada</span>'
+                if obj.asignado
+                else '<span class="badge bg-success p-2">Libre</span>'
+            ),
         }
 
     def get(self, request, *args, **kwargs):

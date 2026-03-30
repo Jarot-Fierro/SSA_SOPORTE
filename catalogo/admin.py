@@ -8,7 +8,7 @@ from .models import (
     Marca, Categoria, SubCategoria, Modelo, Propietario,
     LicenciaOs, MicrosoftOffice, SistemaOperativo, TipoCelular,
     TipoComputador, TipoImpresora, Toner, JefeTic, Contrato,
-    TipoSoporte, PuestoTrabajo
+    TipoSoporte, PuestoTrabajo, Ips
 )
 
 
@@ -176,6 +176,16 @@ class PuestoTrabajoResource(resources.ModelResource):
         report_skipped = True
 
 
+class IpsResource(resources.ModelResource):
+    class Meta:
+        model = Ips
+        import_id_fields = ['id']
+        fields = ('id', 'ip', 'asignado', 'establecimiento', 'departamento')
+        export_order = ('id', 'ip', 'status')
+        skip_unchanged = True
+        report_skipped = True
+
+
 # --- Admins ---
 
 @admin.register(Marca)
@@ -303,4 +313,12 @@ class PuestoTrabajoAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_class = PuestoTrabajoResource
     list_display = ("id", "nombre", "status")
     search_fields = ("nombre",)
+    ordering = ("-id",)
+
+
+@admin.register(Ips)
+class IpsAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
+    resource_class = IpsResource
+    list_display = ("id", "ip", "asignado", "establecimiento", "departamento")
+    search_fields = ("ip",)
     ordering = ("-id",)

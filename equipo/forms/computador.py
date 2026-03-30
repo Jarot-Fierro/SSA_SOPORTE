@@ -1,11 +1,12 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from catalogo.models import (
     Marca,
     Modelo,
     TipoComputador,
     SistemaOperativo,
-    MicrosoftOffice, Propietario, JefeTic, Contrato
+    MicrosoftOffice, Propietario, JefeTic, Contrato, Ips
 )
 from equipo.models.computador import Computador
 from establecimiento.models.departamento import Departamento
@@ -36,15 +37,16 @@ class FormComputador(forms.ModelForm):
         required=False
     )
 
-    ip = forms.CharField(
+    ip = forms.ModelChoiceField(
         label='Dirección IP',
-        widget=forms.TextInput(
+        queryset=Ips.objects.filter(asignado=False).order_by('ip'),
+        required=False,
+        widget=forms.Select(
             attrs={
-                'class': 'form-control',
+                'class': 'form-control select2',
                 'placeholder': 'Ej: 192.168.1.10',
             }
-        ),
-        required=False
+        )
     )
 
     marca = forms.ModelChoiceField(
@@ -172,6 +174,14 @@ class FormComputador(forms.ModelForm):
         }),
         required=False
     )
+
+    def clean_ip(self):
+        ip = self.cleaned_data.get('ip')
+
+        if ip and ip.asignado:
+            raise ValidationError('La dirección IP ya está asignada a otro equipo.')
+
+        return ip
 
     class Meta:
         model = Computador

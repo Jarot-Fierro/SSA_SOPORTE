@@ -43,7 +43,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
         'modelo__nombre',
         'sistema_operativo__nombre',
         'mac',
-        'ip',
+        'ip__ip',
         'serie',
         'responsable__first_name',
         'contrato__numero',
@@ -58,7 +58,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
         'modelo__nombre__icontains',
         'sistema_operativo__nombre__icontains',
         'mac__icontains',
-        'ip__icontains',
+        'ip__ip__icontains',
         'serie__icontains',
         'responsable__first_name__icontains',
         'responsable__last_name__icontains',
@@ -78,9 +78,18 @@ class ComputadorListView(DataTableMixin, TemplateView):
             'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
             'Sistema Operativo': obj.sistema_operativo.nombre.upper() if obj.sistema_operativo else '-',
             'MAC': obj.mac if obj.mac else '-',
-            'IP': obj.ip if obj.ip else '-',
+            # 'IP': obj.ip.ip if obj.ip else '-',
+            'IP': (
+                f'<span class="badge bg-success p-2">{obj.ip.ip}</span>'
+                if obj.ip
+                else '-'
+            ),
             'Serial': obj.serie if obj.serie else '-',
-            'Responsable': obj.responsable.nombres.upper() if obj.responsable else '-',
+            'Responsable': (
+                f'<span class="badge rounded-pill bg-primary p-2">{obj.responsable.nombres.upper()}</span>'
+                if obj.responsable
+                else '<span class="badge rounded-pill bg-secondary">SIN RESPONSABLE</span>'
+            ),
             'Contrato': obj.contrato.nombre if obj.contrato else '-',
             'Descripción': obj.observaciones if obj.observaciones else '-',
             'Jefe Entrega': obj.jefe_entrega.nombre.upper() if obj.jefe_entrega else '-',
@@ -160,6 +169,11 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
 
         computador.save()
 
+        # Marcar la IP como asignada si se proporcionó una
+        if computador.ip:
+            computador.ip.asignado = True
+            computador.ip.save()
+
         messages.success(self.request, 'Computador creado correctamente')
         return super().form_valid(form)
 
@@ -187,7 +201,25 @@ class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Computador creada correctamente')
+        # Obtenemos el objeto anterior para saber si cambió la IP
+        old_computador = self.get_object()
+        old_ip = old_computador.ip
+
+        computador = form.save()
+
+        new_ip = computador.ip
+
+        # Si la IP cambió o fue removida
+        if old_ip and old_ip != new_ip:
+            old_ip.asignado = False
+            old_ip.save()
+
+        # Si se asignó una nueva IP
+        if new_ip and new_ip != old_ip:
+            new_ip.asignado = True
+            new_ip.save()
+
+        messages.success(self.request, 'Computador actualizada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):

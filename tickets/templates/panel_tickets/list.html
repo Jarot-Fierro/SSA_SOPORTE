@@ -4,68 +4,68 @@
 {% block title %}Usuarios - Listado{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <!-- Titulo -->
-    <div class="row mb-3">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Soporte</h1>
+        <!-- Titulo -->
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Soporte</h1>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="row">
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3 id="count-abiertos">{{ tickets_abiertos }}</h3>
+                        <p>Tickets abiertos</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3 id="count-proceso">{{ tickets_proceso }}</h3>
+                        <p>En proceso</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3 id="count-resueltos">{{ tickets_resueltos }}</h3>
+                        <p>Resueltos</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3 id="count-total">{{ total_tickets }}</h3>
+                        <p>Total tickets</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-    <!-- Resumen -->
-    <div class="row">
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ tickets_abiertos|default:0 }}</h3>
-                    <p>Tickets abiertos</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ tickets_proceso|default:0 }}</h3>
-                    <p>En proceso</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ tickets_resueltos|default:0 }}</h3>
-                    <p>Resueltos</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-primary">
-                <div class="inner">
-                    <h3>{{ total_tickets|default:0 }}</h3>
-                    <p>Total tickets</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-list"></i>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
     <div class="card">
         <div class="card-header">
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table id="Table" class="table table-bordered table-striped table-sm">
+            <table id="Table-Auto" class="table table-bordered table-striped table-sm">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -103,4 +103,69 @@
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        {% if datatable_enabled %}
+            const tableEl = $("#Table-Auto");
+
+            if (tableEl.length) {
+                const table = tableEl.DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    lengthChange: true,
+                    autoWidth: false,
+                    pageLength: {{ datatable_page_length|default:10 }},
+                    order: {{ datatable_order|default:"[[0, 'asc']]"|safe }},
+                    ajax: {
+                        url: window.location.pathname,
+                        data: function (d) {
+                            d.datatable = 1;
+                        }
+                    },
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    language: {
+                        url: "{% static 'adminlte3/plugins/datatables/es-ES.json' %}"
+                    },
+                    columns: [
+                        { data: 'ID' },
+                        { data: 'actions', orderable: false, searchable: false },
+                        {% for col in columns %}
+                            {% if col != 'ID' %}
+                                { data: '{{ col }}' },
+                            {% endif %}
+                        {% endfor %}
+                    ],
+                    drawCallback: function (settings) {
+                        const json = settings.json;
+                        if (json) {
+                            if ($('#count-abiertos').length) {
+                                $('#count-abiertos').text(json.tickets_abiertos ?? 0);
+                            }
+                            if ($('#count-proceso').length) {
+                                $('#count-proceso').text(json.tickets_proceso ?? 0);
+                            }
+                            if ($('#count-resueltos').length) {
+                                $('#count-resueltos').text(json.tickets_resueltos ?? 0);
+                            }
+                            if ($('#count-total').length) {
+                                $('#count-total').text(json.total_tickets ?? 0);
+                            }
+                        }
+                    }
+                });
+
+                table.buttons().container().appendTo('#Table_wrapper .col-md-6:eq(0)');
+
+                // 🔄 Auto-recarga cada 10 segundos sin reinicializar
+                setInterval(function () {
+                    table.ajax.reload(null, false);
+                }, 10000);
+            }
+        {% endif %}
+    });
+</script>
 {% endblock %}

@@ -60,7 +60,7 @@ class CelularResource(resources.ModelResource):
 @admin.register(Computador)
 class ComputadorAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_class = ComputadorResource
-    list_display = ("id", "serie", "marca", "modelo", "tipo", "establecimiento", "status")
+    list_display = ("id", "asignado", "serie", "marca", "modelo", "tipo", "establecimiento", "status")
     search_fields = ("serie", "marca__nombre", "modelo__nombre", "ip", "mac")
     list_filter = ("marca", "tipo", "establecimiento", "status", "de_baja")
     ordering = ("-id",)

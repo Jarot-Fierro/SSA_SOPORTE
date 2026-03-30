@@ -1,7 +1,7 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 
-from catalogo.models import TipoImpresora, Marca, Modelo, Toner, Contrato, JefeTic, Propietario
+from catalogo.models import TipoImpresora, Marca, Modelo, Toner, Contrato, JefeTic, Propietario, Ips
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.establecimiento import Establecimiento
@@ -11,7 +11,8 @@ from establecimiento.models.funcionario import Funcionario
 class Impresora(StandardModel):
     serie = models.CharField(max_length=100)
     hh = models.CharField(max_length=30)
-    ip = models.CharField(max_length=30)
+    ip = models.ForeignKey(Ips, on_delete=models.CASCADE, null=True, blank=True)
+    asignado = models.BooleanField(default=False)
 
     tipo = models.ForeignKey(
         TipoImpresora,

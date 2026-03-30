@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView
 
-from core.mixin import DataTableMixin
+from core.mixin import DataTableMixinAuto
 from core.utils import IncludeUserFormUpdate
 from tickets.forms.forms_panel_tickets import FormPanelTicket
 from tickets.models import Ticket
@@ -10,7 +10,7 @@ from tickets.models import Ticket
 MODULE_NAME = 'Tickets'
 
 
-class PanelTicketListView(DataTableMixin, TemplateView):
+class PanelTicketListView(DataTableMixinAuto, TemplateView):
     template_name = 'panel_tickets/list.html'
     model = Ticket
 
@@ -70,7 +70,19 @@ class PanelTicketListView(DataTableMixin, TemplateView):
     def render_row(self, obj):
 
         solicitante = str(obj.funcionario) if obj.funcionario else '—'
-        asignado = obj.asignado_a.username if obj.asignado_a else 'Sin asignar'
+        # asignado = obj.asignado_a.username if obj.asignado_a else 'Sin asignar'
+        asignado = f'{obj.asignado_a.first_name} {obj.asignado_a.last_name}'.strip() if obj.asignado_a else 'Sin asignar'
+
+        badge_colors = {
+            'ABIERTO': 'primary',
+            'EN_PROCESO': 'info',
+            'ESPERA': 'warning',
+            'CERRADO': 'success',
+            'RECHAZADO': 'danger',
+        }
+
+        color = badge_colors.get(obj.estado, 'secondary')
+        estado_badge = f'<span class="badge bg-{color}">{obj.get_estado_display()}</span>'
 
         return {
             'ID': obj.id,
@@ -79,7 +91,7 @@ class PanelTicketListView(DataTableMixin, TemplateView):
             'Departamento': str(obj.departamento) if obj.departamento else '—',
             'Establecimiento': str(obj.establecimiento) if obj.establecimiento else '—',
             'Título': obj.titulo,
-            'Estado': obj.get_estado_display(),
+            'Estado': estado_badge,
             'Asignado a': asignado,
             'Fecha': obj.created_at.strftime('%d-%m-%Y %H:%M') if obj.created_at else '—',
         }
@@ -91,6 +103,22 @@ class PanelTicketListView(DataTableMixin, TemplateView):
 
         return super().get(request, *args, **kwargs)
 
+    def get_extra_datatable_data(self, request):
+        tickets_abiertos = Ticket.objects.filter(estado='ABIERTO',
+                                                 establecimiento=self.request.user.establecimiento).count()
+        tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO',
+                                                establecimiento=self.request.user.establecimiento).count()
+        tickets_resueltos = Ticket.objects.filter(estado='CERRADO',
+                                                  establecimiento=self.request.user.establecimiento).count()
+        total_tickets = Ticket.objects.filter(establecimiento=self.request.user.establecimiento).count()
+
+        return {
+            'tickets_abiertos': tickets_abiertos,
+            'tickets_proceso': tickets_proceso,
+            'tickets_resueltos': tickets_resueltos,
+            'total_tickets': total_tickets,
+        }
+
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
@@ -98,7 +126,7 @@ class PanelTicketListView(DataTableMixin, TemplateView):
                                                  establecimiento=self.request.user.establecimiento).count()
         tickets_proceso = Ticket.objects.filter(estado='EN_PROCESO',
                                                 establecimiento=self.request.user.establecimiento).count()
-        tickets_resueltos = Ticket.objects.filter(estado='RESUELTOS',
+        tickets_resueltos = Ticket.objects.filter(estado='CERRADO',
                                                   establecimiento=self.request.user.establecimiento).count()
         total_tickets = Ticket.objects.filter(establecimiento=self.request.user.establecimiento).count()
 
@@ -112,7 +140,7 @@ class PanelTicketListView(DataTableMixin, TemplateView):
             'columns': self.datatable_columns,
             'tickets_abiertos': tickets_abiertos,
             'tickets_proceso': tickets_proceso,
-            'tickets_resuletos': tickets_resueltos,
+            'tickets_resueltos': tickets_resueltos,
             'total_tickets': total_tickets,
         })
 

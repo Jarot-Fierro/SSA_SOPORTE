@@ -2,10 +2,14 @@ from django.urls import path
 
 from equipo.views.celular import *
 from equipo.views.computador import *
+from equipo.views.equipos import *
 from equipo.views.impresora import *
 from equipo.views.pdfs import *
 
 urlpatterns = [
+
+    # EQUIPOS GENERAL (IP)
+    path('lista-equipos-ip/', EquiposIpListView.as_view(), name='list_equipos_ip'),
 
     # CELULAR
     path('lista-celular/', CelularListView.as_view(), name='list_celular'),

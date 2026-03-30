@@ -21,7 +21,7 @@ class FormTicket(forms.ModelForm):
             'rows': 4,
             'placeholder': 'Describa el problema que está presentando'
         }),
-        required=True
+        required=False
     )
 
     funcionario = forms.ModelChoiceField(

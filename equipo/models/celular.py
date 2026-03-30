@@ -20,6 +20,7 @@ class Celular(StandardModel):
     marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     modelo = models.ForeignKey(Modelo, on_delete=models.CASCADE, null=True, blank=True)
     tipo = models.ForeignKey(TipoCelular, on_delete=models.CASCADE, null=True, blank=True)
+    asignado = models.BooleanField(default=False)
     propietario = models.ForeignKey(
         Propietario,
         on_delete=models.SET_NULL,

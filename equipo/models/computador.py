@@ -2,7 +2,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from catalogo.models import Marca, Modelo, TipoComputador, SistemaOperativo, MicrosoftOffice, Propietario, JefeTic, \
-    Contrato
+    Contrato, Ips
 from core.models import StandardModel
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.establecimiento import Establecimiento
@@ -12,7 +12,8 @@ from establecimiento.models.funcionario import Funcionario
 class Computador(StandardModel):
     serie = models.CharField(max_length=100)
     mac = models.CharField(max_length=30, null=True, blank=True)
-    ip = models.CharField(max_length=30, null=True, blank=True)
+    ip = models.ForeignKey(Ips, on_delete=models.CASCADE, null=True, blank=True)
+    asignado = models.BooleanField(default=False)
 
     marca = models.ForeignKey(
         Marca,
