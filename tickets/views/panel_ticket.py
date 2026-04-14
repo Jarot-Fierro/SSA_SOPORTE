@@ -23,6 +23,7 @@ class PanelTicketListView(DataTableMixinAuto, TemplateView):
         'Título',
         'Estado',
         'Asignado a',
+        'Area',
         'Fecha'
     ]
 
@@ -35,6 +36,7 @@ class PanelTicketListView(DataTableMixinAuto, TemplateView):
         'titulo',
         'estado',
         'asignado_a',
+        'area_soporte',
         'created_at'
     ]
 
@@ -93,6 +95,7 @@ class PanelTicketListView(DataTableMixinAuto, TemplateView):
             'Título': obj.titulo,
             'Estado': estado_badge,
             'Asignado a': asignado,
+            'Area': obj.area_soporte,
             'Fecha': obj.created_at.strftime('%d-%m-%Y %H:%M') if obj.created_at else '—',
         }
 

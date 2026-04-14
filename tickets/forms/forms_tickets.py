@@ -24,9 +24,18 @@ class FormTicket(forms.ModelForm):
         required=False
     )
 
+    area_soporte = forms.ChoiceField(
+        label='Área de soporte',
+        choices=[('Mantencion', 'Mantencion'), ('Informatica', 'Informatica')],
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        }),
+        required=True
+    )
+
     funcionario = forms.ModelChoiceField(
         label='Funcionario solicitante',
-        queryset=Funcionario.objects.all(),
+        queryset=Funcionario.objects.filter(),
         widget=forms.Select(attrs={
             'class': 'form-control select2'
         }),
@@ -38,5 +47,6 @@ class FormTicket(forms.ModelForm):
         fields = [
             'titulo',
             'funcionario',
+            'area_soporte',
             'descripcion',
         ]

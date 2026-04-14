@@ -19,7 +19,12 @@ class FormJefeTic(forms.ModelForm):
     )
     posicion = forms.ChoiceField(
         label='Posicion',
-        choices=[('JEFE DPTO TIC', 'JEFE DPTO TIC'), ('JEFE(S) DPTO TIC', 'JEFE(S) DPTO TIC')],
+        choices=[
+            ('JEFE DPTO TIC', 'JEFE DPTO TIC'),
+            ('JEFE(S) DPTO TIC', 'JEFE(S) DPTO TIC'),
+            ('JEFE DPTO MNT', 'JEFE DPTO MNT'),
+            ('JEFE(S) DPTO MNT', 'JEFE(S) DPTO MNT')
+        ],
         widget=forms.Select(
             attrs={
                 'id': 'nombre_categoria',
