@@ -52,7 +52,7 @@ class Ticket(StandardModel):
     descripcion = models.TextField()
 
     area_soporte = models.CharField(
-        choices=[('Mantencion', 'Mantencion'), ('Informatica', 'Informatica')],
+        choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')],
         null=True,
         blank=True,
     )
@@ -77,6 +77,9 @@ class Ticket(StandardModel):
     )
 
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['numero_ticket', ]
+    LOWERCASE_FIELDS = ['solucion', ]
 
     class Meta:
         ordering = ['-id']

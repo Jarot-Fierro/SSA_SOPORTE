@@ -90,6 +90,7 @@ class TicketAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         "asignado_a",
         "funcionario",
         "cantidad_activos",
+        "status_icon",
     )
 
     search_fields = (
@@ -124,7 +125,13 @@ class TicketAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     def cantidad_activos(self, obj):
         return obj.activos_relacionados.count()
 
-    cantidad_activos.short_description = "Activos"
+    cantidad_activos.short_description = "Activos/Equipos"
+
+    def status_icon(self, obj):
+        return obj.status
+
+    status_icon.boolean = True
+    status_icon.short_description = "Estado"
 
 
 # =========================================================

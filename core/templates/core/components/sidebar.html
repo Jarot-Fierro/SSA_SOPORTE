@@ -44,7 +44,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column"
                 data-widget="treeview"
                 role="menu"
-                data-accordion="false">
+                data-accordion="true">
 
                 <!-- ================= MANTENEDORES ================= -->
                 <li class="nav-item">
@@ -160,31 +160,6 @@
                             </a>
                         </li>
 
-                        <li class="nav-header">CLASIFICACIÓN</li>
-
-                        <li class="nav-item">
-                            <a href="{% url 'list_categorias' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Categorías</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{% url 'list_subcategorias' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Subcategorías</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-header">SOPORTE</li>
-
-                        <li class="nav-item">
-                            <a href="{% url 'list_tipo_soporte' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tipo Soporte</p>
-                            </a>
-                        </li>
-
                     </ul>
                 </li>
 
@@ -262,7 +237,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'usuarios_list' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon text-primary"></i>
                                 <p>Usuarios</p>
                             </a>
                         </li>
@@ -273,6 +248,60 @@
                             </a>
                         </li>
 
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-boxes"></i>
+
+                        <p>
+                            Bodega
+                        </p>
+                        <i class="right fas fa-angle-left"></i>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-header">CLASIFICACIÓN</li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_categorias' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorías</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_subcategorias' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Subcategorías</p>
+                            </a>
+                        </li>
+
+                        {#                        <li class="nav-item">#}
+                        {#                            <a href="{% url 'list_categorias_inventario' %}" class="nav-link">#}
+                        {#                                <i class="far fa-circle nav-icon"></i>#}
+                        {#                                <p>Categorias</p>#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+
+
+                        <li class="nav-header">INVENTARIOS</li>
+                        <li class="nav-item">
+                            <a href="{% url 'list_inventarios_mantencion' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon text-primary"></i>
+                                <p>Mantención</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'list_inventarios_tic' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon text-danger"></i>
+                                <p>Informatica</p>
+                            </a>
+                        </li>
 
                     </ul>
                 </li>
@@ -291,16 +320,26 @@
 
                         <li class="nav-item">
                             <a href="{% url 'ticket_panel_list' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon text-warning"></i>
                                 <p>Panel</p>
                             </a>
                         </li>
+
+                        <li class="nav-header">CATEGORIA</li>
+                        <li class="nav-item">
+                            <a href="{% url 'list_tipo_soporte' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tipo Soporte</p>
+                            </a>
+                        </li>
+
 
                     </ul>
                 </li>
 
             </ul>
         </nav>
+
 
         <!-- /.sidebar-menu -->
     </div>

@@ -18,20 +18,12 @@ class Funcionario(StandardModel):
                                        verbose_name='Puesto de Trabajo')
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombres', 'rut']
+    LOWERCASE_FIELDS = ['correo']
+
     class Meta:
         verbose_name = 'Funcionario'
         verbose_name_plural = 'Funcionarios'
 
     def __str__(self):
         return self.nombres
-
-    def save(self, *args, **kwargs):
-        if self.nombres:
-            self.nombres = self.nombres.upper()
-
-        if self.rut:
-            self.rut = self.rut.upper()
-
-        if self.correo:
-            self.correo = self.correo.lower()
-        super().save(*args, **kwargs)

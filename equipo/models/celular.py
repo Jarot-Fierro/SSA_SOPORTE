@@ -70,6 +70,8 @@ class Celular(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['motivo_baja', 'observaciones']
+
     class Meta:
         verbose_name = 'Celular'
         verbose_name_plural = 'Celulares'

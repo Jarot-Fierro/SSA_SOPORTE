@@ -64,7 +64,7 @@
                     <h5 class="mb-0">Listado de Soportes Enviados</h5>
                 </div>
                 <div class="col-auto text-end">
-                    <a href="" class="btn btn-success">
+                    <a href="{% url 'export_ticket' %}" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Reporte
                     </a>
                 </div>
@@ -92,5 +92,7 @@
                 </tbody>
             </table>
         </div>
+
+
     </div>
 {% endblock %}

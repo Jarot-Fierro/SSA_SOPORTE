@@ -307,5 +307,33 @@
 {% block javascript %}
 {% endblock %}
 
+<script>
+    $(document).ready(function () {
+        /**
+         * Script para persistencia del estado del Sidebar (AdminLTE 3)
+         * Este script busca el enlace activo basado en la URL actual y expande los menús padres.
+         */
+        const currentUrl = window.location.pathname;
+
+        $('.nav-sidebar a.nav-link').each(function () {
+            const linkHref = $(this).attr('href');
+
+            // Verificar si el href coincide con la URL actual
+            // linkHref !== '#' evita que se activen los desplegables vacíos
+            if (linkHref && linkHref !== '#' && (currentUrl === linkHref || currentUrl.startsWith(linkHref))) {
+                // Agregar clase 'active' al enlace actual
+                $(this).addClass('active');
+
+                // Expandir todos los padres que sean menús desplegables
+                $(this).parents('.nav-item').each(function() {
+                    $(this).addClass('menu-open');
+                    // El nav-link hijo directo del nav-item padre debe estar active
+                    $(this).children('.nav-link').addClass('active');
+                });
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

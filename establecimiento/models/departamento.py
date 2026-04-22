@@ -14,6 +14,8 @@ class Departamento(StandardModel):
                                         verbose_name='Establecimiento')
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre', 'alias', 'direccion', ]
+
     class Meta:
         verbose_name = 'Departamento'
         verbose_name_plural = 'Departamentos'

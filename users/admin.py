@@ -156,14 +156,12 @@ class RoleAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         ("Información del Rol", {
             "fields": (
                 "role_name",
-                "establecimiento",
             )
         }),
 
         ("Mantenedores", {
             "fields": (
                 "mantenedores",
-                "establecimientos",
                 "organizacion",
             ),
         }),
@@ -177,6 +175,12 @@ class RoleAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         ("Gestión del Sistema", {
             "fields": (
                 "usuarios",
+            ),
+        }),
+
+        ("Soporte", {
+            "fields": (
+                "soporte",
             ),
         }),
     )

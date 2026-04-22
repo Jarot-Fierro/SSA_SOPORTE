@@ -85,6 +85,8 @@ class Impresora(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['serie', 'hh', 'motivo_baja', 'observaciones']
+
     class Meta:
         verbose_name = 'Impresora'
         verbose_name_plural = 'Impresoras'

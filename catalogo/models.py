@@ -10,6 +10,8 @@ class Marca(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Marca')
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre']
+
     class Meta:
         verbose_name = 'Marca'
         verbose_name_plural = 'Marcas'
@@ -17,15 +19,12 @@ class Marca(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class Categoria(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Categoría')
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Categoría'
@@ -33,11 +32,6 @@ class Categoria(StandardModel):
 
     def __str__(self):
         return self.nombre
-
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
 
 
 class SubCategoria(StandardModel):
@@ -49,22 +43,21 @@ class SubCategoria(StandardModel):
     )
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre']
+
     class Meta:
         verbose_name = 'Subcategoría'
         verbose_name_plural = 'Subcategorías'
 
     def __str__(self):
-        return self.nombre
-
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
+        return f"{self.categoria} - {self.nombre}"
 
 
 class Modelo(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Modelo')
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Modelo'
@@ -73,15 +66,12 @@ class Modelo(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class Propietario(StandardModel):
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Propietario')
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Propietario de Dispositivo'
@@ -90,17 +80,14 @@ class Propietario(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class LicenciaOs(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre de la Licencia de SO"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Licencia de Sistema Operativo"
@@ -109,17 +96,14 @@ class LicenciaOs(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class MicrosoftOffice(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre de la Licencia de Microsoft Office"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Licencia de Microsoft Office"
@@ -128,17 +112,14 @@ class MicrosoftOffice(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class SistemaOperativo(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre del Sistema Operativo"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Sistema Operativo"
@@ -147,17 +128,14 @@ class SistemaOperativo(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class TipoCelular(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre del tipo plan"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Tipo Celular"
@@ -166,17 +144,14 @@ class TipoCelular(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class TipoComputador(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre del tipo computador"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Tipo Computador"
@@ -185,17 +160,14 @@ class TipoComputador(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class TipoImpresora(StandardModel):
     nombre = models.CharField(
         max_length=100, verbose_name="Nombre del tipo impresora"
     )
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = "Tipo Impresora"
@@ -204,15 +176,12 @@ class TipoImpresora(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class Toner(StandardModel):
     nombre = models.CharField(max_length=100)
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Tinta'
@@ -221,16 +190,13 @@ class Toner(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class JefeTic(StandardModel):
     nombre = models.CharField(max_length=100)
     posicion = models.CharField(max_length=100, null=True, blank=True)
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre', 'posicion']
 
     class Meta:
         verbose_name = 'JefeTic'
@@ -239,18 +205,12 @@ class JefeTic(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-
-        if self.posicion:
-            self.posicion = self.posicion.upper()
-        super().save(*args, **kwargs)
-
 
 class Contrato(StandardModel):
     nombre = models.CharField(max_length=100)
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Contrato'
@@ -259,15 +219,12 @@ class Contrato(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class TipoSoporte(StandardModel):
     nombre = models.CharField(max_length=100)
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Tipo de Soporte'
@@ -276,15 +233,12 @@ class TipoSoporte(StandardModel):
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
-
 
 class PuestoTrabajo(StandardModel):
     nombre = models.CharField(max_length=100)
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['nombre']
 
     class Meta:
         verbose_name = 'Puesto de Trabajo'
@@ -292,11 +246,6 @@ class PuestoTrabajo(StandardModel):
 
     def __str__(self):
         return self.nombre
-
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)
 
 
 class Ips(StandardModel):
@@ -329,6 +278,8 @@ class Ips(StandardModel):
     )
 
     history = HistoricalRecords()
+
+    UPPERCASE_FIELDS = ['observacion']
 
     class Meta:
         verbose_name = 'Dirección IP'

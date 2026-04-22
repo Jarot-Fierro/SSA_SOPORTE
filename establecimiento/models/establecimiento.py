@@ -13,14 +13,11 @@ class Establecimiento(StandardModel):
     comuna = models.ForeignKey(Comuna, on_delete=models.CASCADE, verbose_name='Comuna')
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre', 'alias', 'direccion', ]
+
     class Meta:
         verbose_name = 'Establecimiento'
         verbose_name_plural = 'Establecimientos'
 
     def __str__(self):
         return self.alias or self.nombre
-
-    def save(self, *args, **kwargs):
-        if self.nombre:
-            self.nombre = self.nombre.upper()
-        super().save(*args, **kwargs)

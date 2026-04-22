@@ -1,6 +1,7 @@
 from django.urls import path
 
 from catalogo.views.categoria import *
+from catalogo.views.categoria_inventario import *
 from catalogo.views.contrato import *
 from catalogo.views.ips import *
 from catalogo.views.jefetic import *
@@ -151,5 +152,15 @@ urlpatterns = [
     path('actualizar-ips/<int:pk>/detalle/', IpsUpdateView.as_view(),
          name='update_ips'),
     path('historial-ips/', IpsHistoryListView.as_view(), name='historical_ips'),
+
+    # CATEGORÍAS INVENTARIO
+    path('lista-categorias_inventario/', CategoriaInventarioListView.as_view(), name='list_categorias_inventario'),
+    path('detalle-categorias_inventario/<int:pk>/detalle/', CategoriaInventarioDetailView.as_view(),
+         name='detail_categorias_inventario'),
+    path('crear-categorias_inventario/', CategoriaInventarioCreateView.as_view(), name='create_categorias_inventario'),
+    path('actualizar-categorias_inventario/<int:pk>/detalle/', CategoriaInventarioUpdateView.as_view(),
+         name='update_categorias_inventario'),
+    path('historial-categorias_inventario/', CategoriaInventarioHistoryListView.as_view(),
+         name='historical_categorias_inventario'),
 
 ]

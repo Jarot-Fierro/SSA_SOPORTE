@@ -94,6 +94,8 @@ class Computador(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['serie', 'mac', 'motivo_baja', 'observaciones']
+
     class Meta:
         verbose_name = 'Computador'
         verbose_name_plural = 'Computadores'

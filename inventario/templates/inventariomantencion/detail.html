@@ -1,0 +1,52 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="mb-3">Detalle de Producto (Mantención)</h5>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">ID</dt>
+                <dd class="col-sm-8">{{ object.id }}</dd>
+
+                <dt class="col-sm-4">Producto</dt>
+                <dd class="col-sm-8">{{ object.producto }}</dd>
+
+                <dt class="col-sm-4">Código</dt>
+                <dd class="col-sm-8">{{ object.codigo }}</dd>
+
+                <dt class="col-sm-4">Descripción</dt>
+                <dd class="col-sm-8">{{ object.descripcion }}</dd>
+
+                <dt class="col-sm-4">Categoría</dt>
+                <dd class="col-sm-8">{{ object.categoria.nombre }}</dd>
+
+                <dt class="col-sm-4">Stock Actual</dt>
+                <dd class="col-sm-8">{{ object.stock_actual }}</dd>
+
+                <dt class="col-sm-4">Stock Mínimo</dt>
+                <dd class="col-sm-8">{{ object.stock_minimo }}</dd>
+
+                <dt class="col-sm-4">Stock Máximo</dt>
+                <dd class="col-sm-8">{{ object.stock_maximo }}</dd>
+
+                <dt class="col-sm-4">Unidad</dt>
+                <dd class="col-sm-8">{{ object.unidad }}</dd>
+
+                <dt class="col-sm-4">Tipo Material</dt>
+                <dd class="col-sm-8">{{ object.tipo_material }}</dd>
+
+                <dt class="col-sm-4">Tipo Compra</dt>
+                <dd class="col-sm-8">{{ object.tipo_compra }}</dd>
+
+                <dt class="col-sm-4">Ubicación</dt>
+                <dd class="col-sm-8">{{ object.ubicacion }}</dd>
+
+                <dt class="col-sm-4">Lote</dt>
+                <dd class="col-sm-8">{{ object.lote }}</dd>
+
+                <dt class="col-sm-4">Fecha Vencimiento</dt>
+                <dd class="col-sm-8">{{ object.fecha_vencimiento }}</dd>
+
+            </dl>
+        </div>
+    </div>
+</div>

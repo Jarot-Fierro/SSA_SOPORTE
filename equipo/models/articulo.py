@@ -34,6 +34,8 @@ class Articulo(StandardModel):
     con_series = models.BooleanField(default=False, verbose_name='¿Tiene serial?')
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre', 'descripcion', ]
+
     class Meta:
         verbose_name = 'Artículo'
         verbose_name_plural = 'Artículos'
@@ -43,7 +45,7 @@ class Articulo(StandardModel):
 
 
 class ArticleSerial(StandardModel):
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='seriales', verbose_name='Artículo')
+    article = models.ForeignKey('Articulo', on_delete=models.CASCADE, related_name='seriales', verbose_name='Artículo')
     serial_number = models.CharField(max_length=255, unique=True, verbose_name='Código de Serie')
     status = models.CharField(max_length=150, choices=STATUS_SERIAL, default='En stock',
                               verbose_name='Estado del Serial')
@@ -54,7 +56,7 @@ class ArticleSerial(StandardModel):
     class Meta:
         verbose_name = 'Serial de Artículo'
         verbose_name_plural = 'Seriales de Artículos'
-        ordering = ['article__name', 'serial_number']
+        ordering = ['article__nombre', 'serial_number']
         indexes = [
             models.Index(fields=['serial_number']),
             models.Index(fields=['article']),
@@ -62,4 +64,4 @@ class ArticleSerial(StandardModel):
         ]
 
     def __str__(self):
-        return f'{self.article.name} - {self.serial_number}'
+        return f'{self.article.nombre} - {self.serial_number}'

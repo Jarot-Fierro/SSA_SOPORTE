@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-%sx-xgfzaq2qacibrc(v65(7h*!*izx!vhd2i%8h(cy=(=)b1c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['10.8.85.141']
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
@@ -52,7 +52,16 @@ INSTALLED_APPS = [
     'establecimiento',
     'equipo',
     'tickets',
+    'inventario',
+    'reports',
 ]
+
+# X_FRAME_OPTIONS = 'SAMEORIGIN'
+# Para permitir que el sitio sea embebido o embeba otros sitios
+# En Django, X_FRAME_OPTIONS controla si TU sitio puede ser embebido.
+# Si quieres embeber OTRO sitio, debes asegurarte de que ese sitio lo permita.
+# Sin embargo, a veces configuraciones de seguridad de Django pueden interferir.
+X_FRAME_OPTIONS = 'ALLOWALL'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
