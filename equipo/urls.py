@@ -4,6 +4,7 @@ from equipo.views.celular import *
 from equipo.views.computador import *
 from equipo.views.equipos import *
 from equipo.views.impresora import *
+from equipo.views.pdfs import *
 
 urlpatterns = [
 
@@ -32,7 +33,7 @@ urlpatterns = [
     path('historial-impresora/', ImpresoraHistoryListView.as_view(), name='historical_impresora'),
 
     # PDFS
-    # path('acta-computador/<int:pk>/', generar_pdf_computador, name='acta_computador'),
+    path('acta-computador/<int:pk>/', generar_pdf_computador, name='acta_computador'),
     # path('acta-celular/<int:pk>/', generar_pdf_celular, name='acta_celular'),
     # path('acta-impresora/<int:pk>/', generar_pdf_impresora, name='acta_impresora'),
 
