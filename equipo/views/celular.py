@@ -113,17 +113,19 @@ class CelularListView(DataTableMixin, TemplateView):
         """
         actions = super().get_actions(obj)
         # Botón para generar acta PDF del celular
-        if obj.responsable:
+        # if obj.responsable:
+        #
+        #     pdf_button = f"""
+        #         <a href="{reverse_lazy('acta_celular', kwargs={'pk': obj.id})}"
+        #            target="_blank"
+        #            class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
+        #            <i class="fas fa-file-pdf"></i></a>
+        #     """
+        #     return actions + pdf_button
+        # else:
+        #     return actions
 
-            pdf_button = f"""
-                <a href="{reverse_lazy('acta_celular', kwargs={'pk': obj.id})}"
-                   target="_blank"
-                   class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
-                   <i class="fas fa-file-pdf"></i></a>
-            """
-            return actions + pdf_button
-        else:
-            return actions
+        return actions
 
 
 class CelularDetailView(DetailView):
