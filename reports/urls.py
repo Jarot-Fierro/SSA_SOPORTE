@@ -21,8 +21,7 @@ urlpatterns = [
     # EQUIPOS
     # =========================
     path('export/celular/', views.export_celular, name='export_celular'),
-    path('export/computador/', views.export_computador, name='export_computador'),
-    path('export/impresora/', views.export_impresora, name='export_impresora'),
+    path('export/computador/', views.export_equipo, name='export_equipo'),
 
     # =========================
     # TICKETS

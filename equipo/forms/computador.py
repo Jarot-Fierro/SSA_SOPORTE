@@ -8,7 +8,7 @@ from catalogo.models import (
     SistemaOperativo,
     MicrosoftOffice, Propietario, JefeTic, Contrato, Ips
 )
-from equipo.models.computador import Computador
+from equipo.models.equipos import Equipo
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.funcionario import Funcionario
 
@@ -39,7 +39,7 @@ class FormComputador(forms.ModelForm):
 
     ip = forms.ModelChoiceField(
         label='Dirección IP',
-        queryset=Ips.objects.filter(asignado=False).order_by('ip'),
+        queryset=Ips.objects.all().order_by('ip'),
         required=False,
         widget=forms.Select(
             attrs={
@@ -71,7 +71,7 @@ class FormComputador(forms.ModelForm):
         )
     )
 
-    tipo = forms.ModelChoiceField(
+    tipo_pc = forms.ModelChoiceField(
         label='Tipo de Computador',
         queryset=TipoComputador.objects.all(),
         required=True,
@@ -178,20 +178,37 @@ class FormComputador(forms.ModelForm):
     def clean_ip(self):
         ip = self.cleaned_data.get('ip')
 
+        # Si hay una IP seleccionada, verificar si ya está asignada a OTRO equipo
         if ip and ip.asignado:
+            # Si estamos editando, permitimos la IP si ya pertenecía a este equipo
+            if self.instance and self.instance.ip == ip:
+                return ip
             raise ValidationError('La dirección IP ya está asignada a otro equipo.')
 
         return ip
 
+    ram_gb = forms.CharField(label='RAM (GB)', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    procesador = forms.CharField(label='Procesador', required=False,
+                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
+    tarjeta_video = forms.CharField(label='Tarjeta de Video', required=False,
+                                    widget=forms.TextInput(attrs={'class': 'form-control'}))
+    wifi = forms.CharField(label='WiFi', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    red_lan = forms.CharField(label='Red LAN', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    tipo_disco = forms.ChoiceField(label='Tipo de Disco',
+                                   choices=[('', '---------'), ('SSD', 'SSD'), ('HDD', 'Mecánico'), ('NVME', 'NVMe')],
+                                   required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    capacidad_disco_gb = forms.IntegerField(label='Capacidad Disco (GB)', required=False,
+                                            widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
     class Meta:
-        model = Computador
+        model = Equipo
         fields = [
             'serie',
             'mac',
             'ip',
             'marca',
             'modelo',
-            'tipo',
+            'tipo_pc',
             'sistema_operativo',
             'microsoft_office',
             'propietario',
@@ -202,4 +219,12 @@ class FormComputador(forms.ModelForm):
             'de_baja',
             'motivo_baja',
             'observaciones',
+            'es_armado',
+            'ram_gb',
+            'procesador',
+            'tarjeta_video',
+            'wifi',
+            'red_lan',
+            'tipo_disco',
+            'capacidad_disco_gb',
         ]

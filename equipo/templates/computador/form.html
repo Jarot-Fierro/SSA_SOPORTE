@@ -14,6 +14,10 @@
                 {{ form.non_field_errors }}
                 <input type="hidden" name="action" value="{{ action }}">
 
+                <div class="row" style="display: none;">
+                    {{ form.es_armado }}
+                </div>
+
                 <!-- SECCIÓN: INFORMACIÓN DEL EQUIPO -->
                 <div class="card bg-light mb-4">
                     <div class="card-header py-2">
@@ -54,9 +58,9 @@
                                     <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                             </div>
                             <div class="col-md-2 mb-3">
-                                <label for="id_tipo">{{ form.tipo.label }}</label>
-                                {{ form.tipo }}
-                                {% for error in form.tipo.errors %}
+                                <label for="id_tipo_pc">{{ form.tipo_pc.label }}</label>
+                                {{ form.tipo_pc }}
+                                {% for error in form.tipo_pc.errors %}
                                     <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                             </div>
                             <div class="col-md-2 mb-3">
@@ -147,6 +151,48 @@
                                 {{ form.observaciones }}
                                 {% for error in form.observaciones.errors %}
                                     <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: ESPECIFICACIONES TÉCNICAS (SOLO SI ES ARMADO) -->
+                <div id="section_armado" class="card bg-light mb-4"
+                     style="{% if not is_armado and not form.instance.es_armado %}display: none;{% endif %}">
+                    <div class="card-header py-2 bg-dark">
+                        <h5 class="mb-0 text-white font-weight-bold">
+                            <i class="fas fa-microchip mr-1"></i> Especificaciones Técnicas (PC Armado)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <label>{{ form.ram_gb.label }}</label>
+                                {{ form.ram_gb }}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>{{ form.procesador.label }}</label>
+                                {{ form.procesador }}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>{{ form.tarjeta_video.label }}</label>
+                                {{ form.tarjeta_video }}
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label>{{ form.wifi.label }}</label>
+                                {{ form.wifi }}
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label>{{ form.red_lan.label }}</label>
+                                {{ form.red_lan }}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>{{ form.tipo_disco.label }}</label>
+                                {{ form.tipo_disco }}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>{{ form.capacidad_disco_gb.label }}</label>
+                                {{ form.capacidad_disco_gb }}
                             </div>
                         </div>
                     </div>

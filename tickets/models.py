@@ -1,11 +1,10 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from catalogo.models import TipoSoporte
 from core.models import StandardModel
+from equipo.models.equipos import Equipo
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.establecimiento import Establecimiento
 from establecimiento.models.funcionario import Funcionario
@@ -22,59 +21,23 @@ class Ticket(StandardModel):
     )
 
     numero_ticket = models.CharField(max_length=20, unique=True, blank=True)
-
-    departamento = models.ForeignKey(
-        Departamento,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets'
-    )
-    establecimiento = models.ForeignKey(
-        Establecimiento,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets'
-    )
-
-    asignado_a = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tickets_asignados'
-    )
-
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='tickets')
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.SET_NULL, null=True, blank=True,
+                                        related_name='tickets')
+    asignado_a = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='tickets_asignados')
     estado = models.CharField(max_length=20, choices=ESTADOS, default='ABIERTO')
-
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
-
-    area_soporte = models.CharField(
-        choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')],
-        null=True,
-        blank=True,
-    )
-
-    tipo_soporte = models.ForeignKey(
-        TipoSoporte,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tipo_soporte'
-    )
-
+    area_soporte = models.CharField(choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')], null=True,
+                                    blank=True)
+    tipo_soporte = models.ForeignKey(TipoSoporte, on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='tipo_soporte')
     solucion = models.TextField(null=True, blank=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
-
-    funcionario = models.ForeignKey(
-        Funcionario,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='funcionario'
-    )
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='funcionario')
 
     history = HistoricalRecords()
 
@@ -115,46 +78,9 @@ class Ticket(StandardModel):
 
 
 class TicketActivo(StandardModel):
-    ticket = models.ForeignKey(
-        'tickets.Ticket',
-        on_delete=models.CASCADE,
-        related_name='activos_relacionados'
-    )
-
-    # Relación genérica al activo (Computador / Impresora / Celular)
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE
-    )
-    object_id = models.PositiveIntegerField()
-    activo = GenericForeignKey('content_type', 'object_id')
-
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='equipos', null=True, blank=True)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='tickets', null=True, blank=True)
     observacion = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Activo relacionado'
-        verbose_name_plural = 'Activos relacionados'
-        unique_together = ('ticket', 'content_type', 'object_id')
-
-    def __str__(self):
-        return f"{self.ticket.numero_ticket} - {self.activo}"
-
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None
-        super().save(*args, **kwargs)
-        if is_new:
-            # Al asignar equipo al ticket, marcamos como asignado y ponemos el funcionario del ticket como responsable
-            activo = self.activo
-            if activo:
-                activo.asignado = True
-                activo.responsable = self.ticket.funcionario
-                activo.save()
-
-    def delete(self, *args, **kwargs):
-        # Al quitar el equipo del ticket, marcamos como no asignado y quitamos el responsable
-        activo = self.activo
-        if activo:
-            activo.asignado = False
-            activo.responsable = None
-            activo.save()
-        super().delete(*args, **kwargs)
+        unique_together = ('ticket', 'equipo')

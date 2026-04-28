@@ -20,17 +20,6 @@ class FormIps(forms.ModelForm):
         required=True
     )
 
-    asignado = forms.BooleanField(
-        label='¿Se encuentra Asignado?',
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'id': 'ip_asignado',
-                'class': 'form-check-input'
-            }
-        )
-    )
-
     establecimiento = forms.ModelChoiceField(
         label='Establecimiento',
         queryset=None,

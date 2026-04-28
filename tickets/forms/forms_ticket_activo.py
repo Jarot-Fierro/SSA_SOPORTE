@@ -2,8 +2,7 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 
 from equipo.models.celular import Celular
-from equipo.models.computador import Computador
-from equipo.models.impresora import Impresora
+from equipo.models.equipos import Equipo
 from tickets.models import TicketActivo
 
 
@@ -44,11 +43,11 @@ class FormTicketActivo(forms.ModelForm):
     def get_equipo_choices(self, tipo, funcionario):
         choices = [('', '---------')]
         if tipo == 'computador':
-            qs = Computador.objects.filter(asignado=False)
+            qs = Equipo.objects.filter(asignado=False)
             for item in qs:
                 choices.append((item.id, f"PC: {item.serie} - {item.marca} {item.modelo or ''}"))
         elif tipo == 'impresora':
-            qs = Impresora.objects.filter(asignado=False)
+            qs = Equipo.objects.filter(asignado=False)
             for item in qs:
                 choices.append((item.id, f"IMP: {item.serie} - {item.marca} {item.modelo or ''}"))
         elif tipo == 'celular':
@@ -64,8 +63,7 @@ class FormTicketActivo(forms.ModelForm):
 
         if tipo_equipo and equipo_id:
             model_map = {
-                'computador': Computador,
-                'impresora': Impresora,
+                'equipo': Equipo,
                 'celular': Celular,
             }
             model = model_map.get(tipo_equipo)

@@ -90,7 +90,7 @@ class CelularListView(DataTableMixin, TemplateView):
             return self.get_datatable_response(request)
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
+    def get_base_queryset(self):
         # 🔥 Optimización importante para evitar N+1 queries
         return Celular.objects.filter(status=True)
 

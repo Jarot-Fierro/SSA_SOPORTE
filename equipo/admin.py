@@ -4,81 +4,101 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models.celular import Celular
-from .models.computador import Computador
-from .models.impresora import Impresora
+from equipo.models.equipos import Equipo, AsignacionIP
 
 
-# --- Resources ---
+# =====================================================
+# RESOURCES
+# =====================================================
 
-class ComputadorResource(resources.ModelResource):
+class EquipoResource(resources.ModelResource):
     marca_nombre = Field(attribute='marca__nombre', column_name='Marca')
     modelo_nombre = Field(attribute='modelo__nombre', column_name='Modelo')
-    tipo_nombre = Field(attribute='tipo__nombre', column_name='Tipo')
-    so_nombre = Field(attribute='sistema_operativo__nombre', column_name='SO')
     establecimiento_nombre = Field(attribute='establecimiento__nombre', column_name='Establecimiento')
-    funcionario_nombre = Field(attribute='responsable__nombres', column_name='Responsable')
+    responsable_nombre = Field(attribute='responsable__nombres', column_name='Responsable')
+    ip_direccion = Field(attribute='ip__ip', column_name='IP')
 
     class Meta:
-        model = Computador
+        model = Equipo
         import_id_fields = ['id']
         skip_unchanged = True
         report_skipped = True
 
 
-class ImpresoraResource(resources.ModelResource):
-    marca_nombre = Field(attribute='marca__nombre', column_name='Marca')
-    modelo_nombre = Field(attribute='modelo__nombre', column_name='Modelo')
-    tipo_nombre = Field(attribute='tipo__nombre', column_name='Tipo')
-    toner_nombre = Field(attribute='toner__nombre', column_name='Tóner/Tinta')
-    establecimiento_nombre = Field(attribute='establecimiento__nombre', column_name='Establecimiento')
-    funcionario_nombre = Field(attribute='responsable__nombres', column_name='Responsable')
+class AsignacionIPResource(resources.ModelResource):
+    ip_direccion = Field(attribute='ip__ip', column_name='IP')
+    equipo_serie = Field(attribute='equipo__serie', column_name='Serie Equipo')
 
     class Meta:
-        model = Impresora
+        model = AsignacionIP
         import_id_fields = ['id']
         skip_unchanged = True
         report_skipped = True
 
 
-class CelularResource(resources.ModelResource):
-    marca_nombre = Field(attribute='marca__nombre', column_name='Marca')
-    modelo_nombre = Field(attribute='modelo__nombre', column_name='Modelo')
-    tipo_nombre = Field(attribute='tipo__nombre', column_name='Tipo')
-    establecimiento_nombre = Field(attribute='establecimiento__nombre', column_name='Establecimiento')
-    funcionario_nombre = Field(attribute='responsable__nombres', column_name='Responsable')
+# =====================================================
+# ADMINS
+# =====================================================
 
-    class Meta:
-        model = Celular
-        import_id_fields = ['id']
-        skip_unchanged = True
-        report_skipped = True
+@admin.register(Equipo)
+class EquipoAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
+    resource_class = EquipoResource
 
+    list_display = (
+        "id",
+        "tipo_equipo",
+        "serie",
+        "marca",
+        "modelo",
+        "ip",
+        "establecimiento",
+        "responsable",
+        "de_baja",
+        "status",
+    )
 
-# --- Admins ---
+    search_fields = (
+        "serie",
+        "mac",
+        "hh",
+        "marca__nombre",
+        "modelo__nombre",
+        "ip__ip",
+        "responsable__nombres",
+    )
 
-@admin.register(Computador)
-class ComputadorAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
-    resource_class = ComputadorResource
-    list_display = ("id", "asignado", "serie", "marca", "modelo", "tipo", "establecimiento", "status")
-    search_fields = ("serie", "marca__nombre", "modelo__nombre", "ip", "mac")
-    list_filter = ("marca", "tipo", "establecimiento", "status", "de_baja")
+    list_filter = (
+        "tipo_equipo",
+        "marca",
+        "establecimiento",
+        "de_baja",
+        "status",
+    )
+
     ordering = ("-id",)
 
 
-@admin.register(Impresora)
-class ImpresoraAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
-    resource_class = ImpresoraResource
-    list_display = ("id", "serie", "marca", "modelo", "tipo", "establecimiento", "status")
-    search_fields = ("serie", "marca__nombre", "modelo__nombre", "ip")
-    list_filter = ("marca", "tipo", "establecimiento", "status", "de_baja")
-    ordering = ("-id",)
+@admin.register(AsignacionIP)
+class AsignacionIPAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
+    resource_class = AsignacionIPResource
 
+    list_display = (
+        "id",
+        "ip",
+        "equipo",
+        "activa",
+        "status",
+        "updated_at",
+    )
 
-@admin.register(Celular)
-class CelularAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
-    resource_class = CelularResource
-    list_display = ("id", "numero_telefono", "imei", "marca", "modelo", "establecimiento", "status")
-    search_fields = ("numero_telefono", "imei", "marca__nombre", "modelo__nombre")
-    list_filter = ("marca", "tipo", "establecimiento", "status", "de_baja")
+    search_fields = (
+        "ip__ip",
+        "equipo__serie",
+    )
+
+    list_filter = (
+        "activa",
+        "status",
+    )
+
     ordering = ("-id",)

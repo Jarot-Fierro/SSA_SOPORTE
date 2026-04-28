@@ -1,7 +1,7 @@
 from django import forms
 
+from catalogo.models import Toner
 from core.validations import validate_exists
-from equipo.models.impresora import Toner
 
 
 class FormToner(forms.ModelForm):

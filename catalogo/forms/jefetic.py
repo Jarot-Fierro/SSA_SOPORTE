@@ -1,7 +1,7 @@
 from django import forms
 
+from catalogo.models import JefeTic
 from core.validations import validate_exists
-from equipo.models.impresora import JefeTic
 
 
 class FormJefeTic(forms.ModelForm):

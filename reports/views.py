@@ -2,8 +2,7 @@ from catalogo.models import Marca, Categoria, SubCategoria, Modelo, Propietario,
     SistemaOperativo, TipoCelular, TipoComputador, TipoImpresora, Toner, JefeTic, Contrato, TipoSoporte, PuestoTrabajo, \
     Ips
 from equipo.models.celular import Celular
-from equipo.models.computador import Computador
-from equipo.models.impresora import Impresora
+from equipo.models.equipos import Equipo
 from establecimiento.models.departamento import *
 from establecimiento.models.establecimiento import *
 from establecimiento.models.funcionario import Funcionario
@@ -55,14 +54,9 @@ def export_celular(request):
     return export_queryset_to_excel(queryset, filename='celulares')
 
 
-def export_computador(request):
-    queryset = Computador.objects.all().order_by('-updated_at')
-    return export_queryset_to_excel(queryset, filename='computadores')
-
-
-def export_impresora(request):
-    queryset = Impresora.objects.all().order_by('-updated_at')
-    return export_queryset_to_excel(queryset, filename='impresoras')
+def export_equipo(request):
+    queryset = Equipo.objects.all().order_by('-updated_at')
+    return export_queryset_to_excel(queryset, filename='equipos')
 
 
 def export_ticket(request):

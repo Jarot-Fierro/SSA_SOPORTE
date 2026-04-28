@@ -6,7 +6,7 @@ from core.history import GenericHistoryListView
 from core.mixin import DataTableMixin
 from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 from equipo.forms.impresora import FormImpresora
-from equipo.models.impresora import Impresora
+from equipo.models.equipos import Equipo
 
 MODULE_NAME = 'Impresoras'
 
@@ -16,7 +16,7 @@ from django.views.generic import TemplateView
 
 class ImpresoraListView(DataTableMixin, TemplateView):
     template_name = 'impresora/list.html'
-    model = Impresora
+    model = Equipo
 
     datatable_columns = [
         'ID',
@@ -64,7 +64,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
     def render_row(self, obj):
         return {
             'ID': obj.id,
-            'Tipo': obj.tipo.nombre.upper() if obj.tipo else '-',
+            'Tipo': obj.tipo_impresora.nombre.upper() if obj.tipo_impresora else '-',
             'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
             'Marca': obj.marca.nombre.upper() if obj.marca else '-',
             'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
@@ -85,13 +85,16 @@ class ImpresoraListView(DataTableMixin, TemplateView):
             return self.get_datatable_response(request)
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        # Optimización para evitar N+1 queries
-        return Impresora.objects.select_related(
-            'tipo',
+    def get_base_queryset(self):
+        # Optimización para evitar N+1 queries y filtro por tipo IMP
+        return Equipo.objects.filter(tipo_equipo='IMP').select_related(
+            'tipo_impresora',
             'marca',
             'modelo',
-            'toner'
+            'toner',
+            'propietario',
+            'departamento',
+            'ip'
         )
 
     def get_context_data(self, **kwargs):
@@ -129,7 +132,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
 
 
 class ImpresoraDetailView(DetailView):
-    model = Impresora
+    model = Equipo
     template_name = 'impresora/detail.html'
 
     def render_to_response(self, context, **response_kwargs):
@@ -143,12 +146,15 @@ class ImpresoraDetailView(DetailView):
 
 class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
     template_name = 'impresora/form.html'
-    model = Impresora
+    model = Equipo
     form_class = FormImpresora
     success_url = reverse_lazy('list_impresora')
 
     def form_valid(self, form):
         impresora = form.save(commit=False)
+
+        # Asignación automática del tipo de equipo
+        impresora.tipo_equipo = 'IMP'
 
         # asignar establecimiento del usuario
         impresora.establecimiento = self.request.user.establecimiento
@@ -159,6 +165,14 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
         if impresora.ip:
             impresora.ip.asignado = True
             impresora.ip.save()
+
+            # Crear registro en AsignacionIP
+            from equipo.models.equipos import AsignacionIP
+            AsignacionIP.objects.create(
+                ip=impresora.ip,
+                equipo=impresora,
+                activa=True
+            )
 
         messages.success(self.request, 'Impresora creado correctamente')
         return super().form_valid(form)
@@ -178,7 +192,7 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
 
 class ImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
     template_name = 'impresora/form.html'
-    model = Impresora
+    model = Equipo
     form_class = FormImpresora
     success_url = reverse_lazy('list_impresora')
 
@@ -187,7 +201,44 @@ class ImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Impresora creada correctamente')
+        # Obtenemos el objeto anterior para saber si cambió la IP
+        old_equipo = self.get_object()
+        old_ip = old_equipo.ip
+
+        impresora = form.save()
+        new_ip = impresora.ip
+
+        from equipo.models.equipos import AsignacionIP
+
+        # Si la IP cambió o fue removida
+        if old_ip and old_ip != new_ip:
+            old_ip.asignado = False
+            old_ip.save()
+            # Desactivar asignación previa
+            AsignacionIP.objects.filter(equipo=impresora, ip=old_ip, activa=True).update(activa=False)
+
+        # Si se asignó una nueva IP o se mantiene la misma
+        if new_ip:
+            new_ip.asignado = True
+            new_ip.save()
+
+            # Buscar si ya existe una asignación activa para este equipo
+            asignacion = AsignacionIP.objects.filter(equipo=impresora, activa=True).first()
+
+            if asignacion:
+                # Si la IP es diferente, actualizamos el registro existente
+                if asignacion.ip != new_ip:
+                    asignacion.ip = new_ip
+                    asignacion.save()
+            else:
+                # Si no existe asignación previa activa, creamos una nueva
+                AsignacionIP.objects.create(
+                    ip=new_ip,
+                    equipo=impresora,
+                    activa=True
+                )
+
+        messages.success(self.request, 'Impresora actualizada correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -204,5 +255,5 @@ class ImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
 
 
 class ImpresoraHistoryListView(GenericHistoryListView):
-    base_model = Impresora
+    base_model = Equipo
     template_name = 'history/list.html'

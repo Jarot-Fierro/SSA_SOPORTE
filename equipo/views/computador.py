@@ -6,18 +6,17 @@ from core.history import GenericHistoryListView
 from core.mixin import DataTableMixin
 from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 from equipo.forms.computador import FormComputador
+from equipo.models.equipos import Equipo
 
 MODULE_NAME = 'Computadores'
 
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
-from equipo.models.computador import Computador
-
 
 class ComputadorListView(DataTableMixin, TemplateView):
     template_name = 'computador/list.html'
-    model = Computador
+    model = Equipo
 
     datatable_columns = [
         'ID',
@@ -72,7 +71,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
     def render_row(self, obj):
         return {
             'ID': obj.id,
-            'Tipo Equipo': obj.tipo.nombre.upper() if obj.tipo else '-',
+            'Tipo Equipo': obj.tipo_pc.nombre.upper() if obj.tipo_pc else '-',
             'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
             'Marca': obj.marca.nombre.upper() if obj.marca else '-',
             'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
@@ -100,14 +99,19 @@ class ComputadorListView(DataTableMixin, TemplateView):
             return self.get_datatable_response(request)
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        # 🔥 Optimización importante
-        return Computador.objects.select_related(
+    def get_base_queryset(self):
+        # 🔥 Optimización importante y filtro por tipo PC
+        return Equipo.objects.filter(tipo_equipo='PC').select_related(
             'marca',
             'modelo',
-            'tipo',
+            'tipo_pc',
             'sistema_operativo',
-            'microsoft_office'
+            'microsoft_office',
+            'responsable',
+            'propietario',
+            'jefe_entrega',
+            'contrato',
+            'ip'
         )
 
     def get_context_data(self, **kwargs):
@@ -144,7 +148,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
 
 
 class ComputadorDetailView(DetailView):
-    model = Computador
+    model = Equipo
     template_name = 'computador/detail.html'
 
     def render_to_response(self, context, **response_kwargs):
@@ -158,12 +162,15 @@ class ComputadorDetailView(DetailView):
 
 class ComputadorCreateView(IncludeUserFormCreate, CreateView):
     template_name = 'computador/form.html'
-    model = Computador
+    model = Equipo
     form_class = FormComputador
     success_url = reverse_lazy('list_computador')
 
     def form_valid(self, form):
         computador = form.save(commit=False)
+
+        # Asignación automática del tipo de equipo
+        computador.tipo_equipo = 'PC'
 
         # asignar establecimiento del usuario
         computador.establecimiento = self.request.user.establecimiento
@@ -174,6 +181,14 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
         if computador.ip:
             computador.ip.asignado = True
             computador.ip.save()
+
+            # Crear registro en AsignacionIP
+            from equipo.models.equipos import AsignacionIP
+            AsignacionIP.objects.create(
+                ip=computador.ip,
+                equipo=computador,
+                activa=True
+            )
 
         messages.success(self.request, 'Computador creado correctamente')
         return super().form_valid(form)
@@ -193,7 +208,7 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
 
 class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
     template_name = 'computador/form.html'
-    model = Computador
+    model = Equipo
     form_class = FormComputador
     success_url = reverse_lazy('list_computador')
 
@@ -203,22 +218,41 @@ class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
 
     def form_valid(self, form):
         # Obtenemos el objeto anterior para saber si cambió la IP
-        old_computador = self.get_object()
-        old_ip = old_computador.ip
+        old_equipo = self.get_object()
+        old_ip = old_equipo.ip
 
         computador = form.save()
-
         new_ip = computador.ip
+
+        from equipo.models.equipos import AsignacionIP
 
         # Si la IP cambió o fue removida
         if old_ip and old_ip != new_ip:
             old_ip.asignado = False
             old_ip.save()
+            # Desactivar asignación previa
+            AsignacionIP.objects.filter(equipo=computador, ip=old_ip, activa=True).update(activa=False)
 
-        # Si se asignó una nueva IP
-        if new_ip and new_ip != old_ip:
+        # Si se asignó una nueva IP o se mantiene la misma
+        if new_ip:
             new_ip.asignado = True
             new_ip.save()
+
+            # Buscar si ya existe una asignación activa para este equipo
+            asignacion = AsignacionIP.objects.filter(equipo=computador, activa=True).first()
+
+            if asignacion:
+                # Si la IP es diferente, actualizamos el registro existente
+                if asignacion.ip != new_ip:
+                    asignacion.ip = new_ip
+                    asignacion.save()
+            else:
+                # Si no existe asignación previa activa, creamos una nueva
+                AsignacionIP.objects.create(
+                    ip=new_ip,
+                    equipo=computador,
+                    activa=True
+                )
 
         messages.success(self.request, 'Computador actualizada correctamente')
         return super().form_valid(form)
@@ -236,6 +270,19 @@ class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
+class ComputadorArmadoCreateView(ComputadorCreateView):
+    def form_valid(self, form):
+        computador = form.save(commit=False)
+        computador.es_armado = True
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Nuevo Computador Armado'
+        context['is_armado'] = True
+        return context
+
+
 class ComputadorHistoryListView(GenericHistoryListView):
-    base_model = Computador
+    base_model = Equipo
     template_name = 'history/list.html'

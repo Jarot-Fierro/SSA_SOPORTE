@@ -1,106 +1,97 @@
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
-from catalogo.models import Ips
 from core.mixin import DataTableMixin
+from equipo.models.equipos import AsignacionIP
 
 
 class EquiposIpListView(DataTableMixin, TemplateView):
-    template_name = 'equipo/equipos_ip_list.html'
-    model = Ips
+    template_name = 'equipo/list.html'
+    model = AsignacionIP
 
     datatable_columns = [
         'ID',
         'IP',
         'Tipo Equipo',
+        'Serie / Service Tag',
         'Marca',
         'Modelo',
-        'Serial',
         'Responsable',
         'Departamento',
-        'Establecimiento',
         'Estado',
     ]
 
     datatable_order_fields = [
         'id',
-        None,
-        'ip',
-        None,  # Tipo Equipo (calculado)
-        None,  # Marca (calculado)
-        None,  # Modelo (calculado)
-        None,  # Serial (calculado)
-        None,  # Responsable (calculado)
-        'departamento__nombre',
-        'establecimiento__nombre',
-        'asignado',
+        'ip__ip',
+        'equipo__tipo_equipo',
+        'equipo__serie',
+        'equipo__marca__nombre',
+        'equipo__modelo__nombre',
+        'equipo__responsable__nombres',
+        'equipo__departamento__nombre',
+        'activa',
     ]
 
     datatable_search_fields = [
-        'ip__icontains',
-        'departamento__nombre__icontains',
-        'establecimiento__nombre__icontains',
+        'ip__ip__icontains',
+        'equipo__serie__icontains',
+        'equipo__marca__nombre__icontains',
+        'equipo__modelo__nombre__icontains',
+        'equipo__responsable__nombres__icontains',
+        'equipo__departamento__nombre__icontains',
     ]
 
-    def get_queryset(self):
-        # Optimizamos trayendo las relaciones de Ips y los equipos asociados
-        # Aseguramos que solo mostramos IPs de computadores o impresoras
-        return Ips.objects.select_related(
-            'departamento',
-            'establecimiento'
-        ).prefetch_related(
-            'computador_set',
-            'impresora_set',
-            'computador_set__marca',
-            'computador_set__modelo',
-            'computador_set__responsable',
-            'impresora_set__marca',
-            'impresora_set__modelo',
-            'impresora_set__responsable',
+    def get_base_queryset(self):
+        return AsignacionIP.objects.all().select_related(
+            'ip',
+            'ip__departamento',
+            'equipo',
+            'equipo__marca',
+            'equipo__modelo',
+            'equipo__responsable',
+            'equipo__departamento',
         )
 
     def render_row(self, obj):
-        # Buscamos si hay un computador o impresora asociada a esta IP
-        equipo = obj.computador_set.first()
-        tipo = 'COMPUTADOR'
+        ip_obj = obj.ip
+        equipo = obj.equipo
 
-        if not equipo:
-            equipo = obj.impresora_set.first()
-            if equipo:
-                tipo = 'IMPRESORA'
-            else:
-                tipo = '-'
+        tipo = equipo.get_tipo_equipo_display() if equipo else '-'
+        serie = equipo.serie if equipo else '-'
+        marca = equipo.marca.nombre.upper() if equipo and equipo.marca else '-'
+        modelo = equipo.modelo.nombre.upper() if equipo and equipo.modelo else '-'
 
-        if equipo:
-            marca = equipo.marca.nombre.upper() if equipo.marca else '-'
-            modelo = equipo.modelo.nombre.upper() if equipo.modelo else '-'
-            serial = equipo.serie if equipo.serie else '-'
-            responsable = (
-                f'<span class="badge rounded-pill bg-primary p-2">{equipo.responsable.nombres.upper()}</span>'
-                if equipo.responsable
-                else '<span class="badge rounded-pill bg-secondary">SIN RESPONSABLE</span>'
-            )
+        responsable = (
+            f'<span class="badge rounded-pill bg-primary p-2">{equipo.responsable.nombres.upper()}</span>'
+            if equipo and equipo.responsable
+            else '<span class="badge rounded-pill bg-secondary">SIN RESPONSABLE</span>'
+        )
+
+        departamento = '-'
+        if equipo and equipo.departamento:
+            departamento = equipo.departamento.nombre.upper()
+        elif ip_obj and ip_obj.departamento:
+            departamento = ip_obj.departamento.nombre.upper()
+
+        # Determinamos el estado según el check 'activa' y si tiene equipo asociado
+        if obj.activa and equipo:
+            estado_html = '<span class="badge bg-danger">ASIGNADA</span>'
+            ip_html = f'<span class="badge bg-danger p-2">{ip_obj.ip}</span>'
         else:
-            marca = '-'
-            modelo = '-'
-            serial = '-'
-            responsable = '-'
+            estado_html = '<span class="badge bg-success">LIBRE</span>'
+            ip_html = f'<span class="badge bg-success p-2">{ip_obj.ip}</span>'
 
         return {
             'ID': obj.id,
-            'IP': (
-                f'<span class="badge bg-danger p-2">{obj.ip}</span>'
-                if obj.asignado
-                else f'<span class="badge bg-success p-2">{obj.ip}</span>'
-            ),
+            'IP': ip_html,
             'Tipo Equipo': tipo,
+            'Serie / Service Tag': serie,
             'Marca': marca,
             'Modelo': modelo,
-            'Serial': serial,
             'Responsable': responsable,
-            'Departamento': obj.departamento.nombre.upper() if obj.departamento else '-',
-            'Establecimiento': obj.establecimiento.nombre.upper() if obj.establecimiento else '-',
-            'Estado': '<span class="badge bg-danger">ASIGNADA</span>' if obj.asignado else '<span class="badge bg-success">LIBRE</span>',
+            'Departamento': departamento,
+            'Estado': estado_html,
         }
 
     def get(self, request, *args, **kwargs):
@@ -111,15 +102,35 @@ class EquiposIpListView(DataTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'title': 'Listado de IPs y Equipos',
+            'title': 'Listado de IPs y Equipos (Asignaciones)',
             'list_url': reverse_lazy('list_equipos_ip'),
             'datatable_enabled': True,
-            'datatable_order': [[0, 'asc']],
+            'datatable_order': [[0, 'desc']],
             'datatable_page_length': 100,
             'columns': self.datatable_columns,
         })
         return context
 
     def get_actions(self, obj):
-        # Por ahora sin acciones específicas
-        return ''
+        equipo = obj.equipo
+
+        if not equipo:
+            return ''
+
+        # Determinar la URL de detalle según el tipo de equipo
+        if equipo.tipo_equipo == 'PC' or equipo.tipo_equipo == 'NB':
+            detail_url = reverse_lazy('detail_computador', kwargs={'pk': equipo.id})
+        elif equipo.tipo_equipo == 'IMP':
+            detail_url = reverse_lazy('detail_impresora', kwargs={'pk': equipo.id})
+        elif equipo.tipo_equipo == 'CEL':
+            detail_url = reverse_lazy('detail_celular', kwargs={'pk': equipo.id})
+        else:
+            return ''
+
+        return f"""
+            <div class='text-center'>
+                <a href='{detail_url}' class='btn btn-info btn-sm' title='Ver Detalle'>
+                    <i class='fas fa-eye'></i>
+                </a>
+            </div>
+        """

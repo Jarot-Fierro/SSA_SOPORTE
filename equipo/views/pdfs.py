@@ -5,13 +5,12 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from equipo.models.celular import Celular
-from equipo.models.computador import Computador
-from equipo.models.impresora import Impresora
+from equipo.models.equipos import Equipo
 
 
 def generar_pdf_computador(request, pk=None):
     # Datos a pasar a la plantilla
-    equipo = Computador.objects.filter(status=True).get(id=pk)
+    equipo = Equipo.objects.filter(status=True).get(id=pk)
     contexto = {
         'nombre': 'Usuario',
         'fecha': datetime.now().strftime('%d/%m/%Y'),
@@ -51,7 +50,7 @@ def generar_pdf_celular(request, pk=None):
 
 def generar_pdf_impresora(request, pk=None):
     # Datos a pasar a la plantilla
-    equipo = Impresora.objects.filter(status=True).get(id=pk)
+    equipo = Equipo.objects.filter(status=True).get(id=pk)
     contexto = {
         'nombre': 'Usuario',
         'fecha': datetime.now().strftime('%d/%m/%Y'),

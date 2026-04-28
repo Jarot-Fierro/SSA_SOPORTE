@@ -1,9 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from catalogo.models import TipoImpresora, Marca, Modelo, Contrato, JefeTic, Propietario, Ips
+from catalogo.models import TipoImpresora, Marca, Modelo, Contrato, JefeTic, Propietario, Ips, Toner
 from core.validations import validate_exists
-from equipo.models.impresora import Impresora, Toner
+from equipo.models.equipos import Equipo
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.funcionario import Funcionario
 
@@ -34,7 +34,7 @@ class FormImpresora(forms.ModelForm):
 
     ip = forms.ModelChoiceField(
         label='Dirección IP',
-        queryset=Ips.objects.filter(asignado=False).order_by('ip'),
+        queryset=Ips.objects.all().order_by('ip'),
         required=False,
         widget=forms.Select(
             attrs={
@@ -44,7 +44,7 @@ class FormImpresora(forms.ModelForm):
         )
     )
 
-    tipo = forms.ModelChoiceField(
+    tipo_impresora = forms.ModelChoiceField(
         label='Tipo de Impresora',
         queryset=TipoImpresora.objects.all(),
         required=True,
@@ -163,7 +163,7 @@ class FormImpresora(forms.ModelForm):
         serie = self.cleaned_data['serie'].strip()
         current_instance = self.instance if self.instance.pk else None
 
-        exists = Impresora.objects.filter(serie__iexact=serie).exclude(
+        exists = Equipo.objects.filter(serie__iexact=serie).exclude(
             pk=current_instance.pk if current_instance else None
         ).exists()
 
@@ -173,18 +173,22 @@ class FormImpresora(forms.ModelForm):
     def clean_ip(self):
         ip = self.cleaned_data.get('ip')
 
+        # Si hay una IP seleccionada, verificar si ya está asignada a OTRO equipo
         if ip and ip.asignado:
+            # Si estamos editando, permitimos la IP si ya pertenecía a este equipo
+            if self.instance and self.instance.ip == ip:
+                return ip
             raise ValidationError('La dirección IP ya está asignada a otro equipo.')
 
         return ip
 
     class Meta:
-        model = Impresora
+        model = Equipo
         fields = [
             'serie',
             'hh',
             'ip',
-            'tipo',
+            'tipo_impresora',
             'marca',
             'modelo',
             'toner',

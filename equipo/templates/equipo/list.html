@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
     <div class="card">
         <div class="card-header">
             <div class="row align-items-center w-100">
                 <div class="col">
-                    <h5 class="mb-0">Listado de IPs y Equipos (Computadores e Impresoras)</h5>
+                    <h5 class="mb-0">Listado de IPs y Equipos</h5>
                 </div>
                 <div class="col-auto text-end">
-                    <!-- Aquí podrías agregar botones de reporte si se requieren -->
                 </div>
             </div>
         </div>
@@ -19,7 +17,7 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>#</th>
+                    <th>Acciones</th>
                     {% for col in columns %}
                         {% if col != 'ID' %}
                             <th>{{ col }}</th>
