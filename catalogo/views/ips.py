@@ -17,19 +17,29 @@ class IpsListView(DataTableMixin, TemplateView):
     template_name = 'ips/list.html'
     model = Ips
     datatable_columns = ['ID', 'Ip', 'Asignado']
-    datatable_order_fields = ['id', None, 'ip', 'asignado']
-    datatable_search_fields = ['ip__icontains', 'asignado__icontains']
+    datatable_order_fields = ['id', None, 'ip', 'asignacion_ip__activa']
+    datatable_search_fields = ['ip__icontains']
 
     url_detail = 'detail_ips'
     url_update = 'update_ips'
 
+    def get_base_queryset(self):
+        return super().get_base_queryset().select_related('asignacion_ip')
+
     def render_row(self, obj):
+        asignada = False
+        try:
+            if obj.asignacion_ip and obj.asignacion_ip.activa:
+                asignada = True
+        except Exception:
+            pass
+
         return {
             'ID': obj.id,
             'Ip': obj.ip.upper(),
             'Asignado': (
                 '<span class="badge bg-danger p-2">Asignada</span>'
-                if obj.asignado
+                if asignada
                 else '<span class="badge bg-success p-2">Libre</span>'
             ),
         }

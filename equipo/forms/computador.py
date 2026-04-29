@@ -8,9 +8,18 @@ from catalogo.models import (
     SistemaOperativo,
     MicrosoftOffice, Propietario, JefeTic, Contrato, Ips
 )
-from equipo.models.equipos import Equipo
+from equipo.models.equipos import Equipo, AsignacionIP
 from establecimiento.models.departamento import Departamento
 from establecimiento.models.funcionario import Funcionario
+
+
+class IPModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Verificar si tiene una asignación activa
+        asignada = hasattr(obj, 'asignacion_ip') and obj.asignacion_ip.activa
+        if asignada:
+            return f"{obj.ip} - [ASIGNADA]"
+        return f"{obj.ip} - [LIBRE]"
 
 
 class FormComputador(forms.ModelForm):
@@ -37,9 +46,9 @@ class FormComputador(forms.ModelForm):
         required=False
     )
 
-    ip = forms.ModelChoiceField(
+    ip = IPModelChoiceField(
         label='Dirección IP',
-        queryset=Ips.objects.all().order_by('ip'),
+        queryset=Ips.objects.all().select_related('asignacion_ip').order_by('ip'),
         required=False,
         widget=forms.Select(
             attrs={
@@ -178,12 +187,14 @@ class FormComputador(forms.ModelForm):
     def clean_ip(self):
         ip = self.cleaned_data.get('ip')
 
-        # Si hay una IP seleccionada, verificar si ya está asignada a OTRO equipo
-        if ip and ip.asignado:
-            # Si estamos editando, permitimos la IP si ya pertenecía a este equipo
-            if self.instance and self.instance.ip == ip:
-                return ip
-            raise ValidationError('La dirección IP ya está asignada a otro equipo.')
+        # Si hay una IP seleccionada, verificar si ya está asignada a OTRO equipo en AsignacionIP
+        if ip:
+            asignacion = AsignacionIP.objects.filter(ip=ip, activa=True).exclude(
+                equipo=self.instance if self.instance.pk else None
+            ).exists()
+
+            if asignacion:
+                raise ValidationError('La dirección IP ya está asignada a otro equipo.')
 
         return ip
 

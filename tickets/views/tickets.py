@@ -6,6 +6,7 @@ from django.views.generic import TemplateView, CreateView, UpdateView, DeleteVie
 
 from core.mixin import DataTableMixin
 from core.utils import IncludeUserFormUpdate
+from equipo.models.equipos import Equipo
 from tickets.forms.forms_ticket_activo import FormTicketActivo
 from tickets.forms.forms_tickets import FormTicket
 from tickets.models import Ticket, TicketActivo
@@ -223,13 +224,12 @@ def get_equipos_ajax(request):
     tipo = request.GET.get('tipo')
     ticket_id = request.GET.get('ticket_id')
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    funcionario = ticket.funcionario
 
-    form = FormTicketActivo(ticket=ticket)
-    choices = form.get_equipo_choices(tipo, funcionario)
+    qs = Equipo.objects.filter(establecimiento=ticket.establecimiento, de_baja=False)
+    if tipo:
+        qs = qs.filter(tipo_equipo=tipo)
 
-    # Excluir el '---------'
-    data = [{'id': c[0], 'text': c[1]} for c in choices if c[0]]
+    data = [{'id': e.id, 'text': f"{e.serie} - {e.marca} {e.modelo or ''}"} for e in qs]
     return JsonResponse(data, safe=False)
 
 

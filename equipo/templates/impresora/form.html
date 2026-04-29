@@ -162,9 +162,41 @@
 {% block javascript %}
     <script>
         $(document).ready(function () {
+            // Estilo para que el texto sea blanco cuando se pasa el mouse (active)
+            $('<style>')
+                .prop('type', 'text/css')
+                .html('.select2-results__option--highlighted .text-danger, .select2-results__option--highlighted .text-success { color: white !important; }')
+                .appendTo('head');
+
             $('.select2').select2({
                 theme: 'bootstrap4',
-                width: '100%'
+                width: '100%',
+                templateResult: function (data) {
+                    if (!data.id) {
+                        return data.text;
+                    }
+                    var $result = $('<span></span>');
+                    $result.text(data.text);
+                    if (data.text.indexOf('[ASIGNADA]') > -1) {
+                        $result.addClass('text-danger font-weight-bold');
+                    } else if (data.text.indexOf('[LIBRE]') > -1) {
+                        $result.addClass('text-success font-weight-bold');
+                    }
+                    return $result;
+                },
+                templateSelection: function (data) {
+                    if (!data.id) {
+                        return data.text;
+                    }
+                    var $result = $('<span></span>');
+                    $result.text(data.text);
+                    if (data.text.indexOf('[ASIGNADA]') > -1) {
+                        $result.addClass('text-danger font-weight-bold');
+                    } else if (data.text.indexOf('[LIBRE]') > -1) {
+                        $result.addClass('text-success font-weight-bold');
+                    }
+                    return $result;
+                }
             });
 
             // Toggle motivo_baja visibility based on de_baja status

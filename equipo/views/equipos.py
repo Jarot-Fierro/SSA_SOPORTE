@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
@@ -5,7 +6,7 @@ from core.mixin import DataTableMixin
 from equipo.models.equipos import AsignacionIP
 
 
-class EquiposIpListView(DataTableMixin, TemplateView):
+class EquiposIpListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'equipo/list.html'
     model = AsignacionIP
 
@@ -110,27 +111,3 @@ class EquiposIpListView(DataTableMixin, TemplateView):
             'columns': self.datatable_columns,
         })
         return context
-
-    def get_actions(self, obj):
-        equipo = obj.equipo
-
-        if not equipo:
-            return ''
-
-        # Determinar la URL de detalle según el tipo de equipo
-        if equipo.tipo_equipo == 'PC' or equipo.tipo_equipo == 'NB':
-            detail_url = reverse_lazy('detail_computador', kwargs={'pk': equipo.id})
-        elif equipo.tipo_equipo == 'IMP':
-            detail_url = reverse_lazy('detail_impresora', kwargs={'pk': equipo.id})
-        elif equipo.tipo_equipo == 'CEL':
-            detail_url = reverse_lazy('detail_celular', kwargs={'pk': equipo.id})
-        else:
-            return ''
-
-        return f"""
-            <div class='text-center'>
-                <a href='{detail_url}' class='btn btn-info btn-sm' title='Ver Detalle'>
-                    <i class='fas fa-eye'></i>
-                </a>
-            </div>
-        """

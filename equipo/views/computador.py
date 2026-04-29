@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.views.generic import CreateView, UpdateView, DetailView
 
@@ -14,55 +15,52 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 
-class ComputadorListView(DataTableMixin, TemplateView):
+class ComputadorListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'computador/list.html'
     model = Equipo
 
     datatable_columns = [
         'ID',
+        'Serial',
         'Tipo Equipo',
-        'Propietario',
         'Marca',
         'Modelo',
-        'Sistema Operativo',
         'MAC',
         'IP',
-        'Serial',
         'Responsable',
+        'Sistema Operativo',
+        'Propietario',
         'Contrato',
-        'Descripción',
         'Jefe Entrega',
     ]
 
     datatable_order_fields = [
         'id',
+        'serie',
         'tipo__nombre',
-        'propietario__nombre',
         'marca__nombre',
         'modelo__nombre',
-        'sistema_operativo__nombre',
         'mac',
         'ip__ip',
-        'serie',
         'responsable__first_name',
+        'sistema_operativo__nombre',
+        'propietario__nombre',
         'contrato__numero',
-        'descripcion',
         'jefe_tic__nombre',
     ]
 
     datatable_search_fields = [
+        'serie__icontains',
         'tipo__nombre__icontains',
-        'propietario__nombre__icontains',
         'marca__nombre__icontains',
         'modelo__nombre__icontains',
-        'sistema_operativo__nombre__icontains',
         'mac__icontains',
         'ip__ip__icontains',
-        'serie__icontains',
         'responsable__first_name__icontains',
         'responsable__last_name__icontains',
+        'sistema_operativo__nombre__icontains',
+        'propietario__nombre__icontains',
         'contrato__numero__icontains',
-        'descripcion__icontains',
         'jefe_tic__nombre__icontains',
     ]
 
@@ -71,11 +69,10 @@ class ComputadorListView(DataTableMixin, TemplateView):
     def render_row(self, obj):
         return {
             'ID': obj.id,
+            'Serial': obj.serie if obj.serie else '-',
             'Tipo Equipo': obj.tipo_pc.nombre.upper() if obj.tipo_pc else '-',
-            'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
             'Marca': obj.marca.nombre.upper() if obj.marca else '-',
             'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
-            'Sistema Operativo': obj.sistema_operativo.nombre.upper() if obj.sistema_operativo else '-',
             'MAC': obj.mac if obj.mac else '-',
             # 'IP': obj.ip.ip if obj.ip else '-',
             'IP': (
@@ -83,14 +80,14 @@ class ComputadorListView(DataTableMixin, TemplateView):
                 if obj.ip
                 else '-'
             ),
-            'Serial': obj.serie if obj.serie else '-',
             'Responsable': (
                 f'<span class="badge rounded-pill bg-primary p-2">{obj.responsable.nombres.upper()}</span>'
                 if obj.responsable
                 else '<span class="badge rounded-pill bg-secondary">SIN RESPONSABLE</span>'
             ),
+            'Sistema Operativo': obj.sistema_operativo.nombre.upper() if obj.sistema_operativo else '-',
+            'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
             'Contrato': obj.contrato.nombre if obj.contrato else '-',
-            'Descripción': obj.observaciones if obj.observaciones else '-',
             'Jefe Entrega': obj.jefe_entrega.nombre.upper() if obj.jefe_entrega else '-',
         }
 
@@ -147,7 +144,7 @@ class ComputadorListView(DataTableMixin, TemplateView):
         # return actions
 
 
-class ComputadorDetailView(DetailView):
+class ComputadorDetailView(LoginRequiredMixin, DetailView):
     model = Equipo
     template_name = 'computador/detail.html'
 
@@ -160,7 +157,7 @@ class ComputadorDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ComputadorCreateView(IncludeUserFormCreate, CreateView):
+class ComputadorCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'computador/form.html'
     model = Equipo
     form_class = FormComputador
@@ -179,15 +176,14 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
 
         # Marcar la IP como asignada si se proporcionó una
         if computador.ip:
-            computador.ip.asignado = True
-            computador.ip.save()
-
-            # Crear registro en AsignacionIP
+            # Crear o actualizar registro en AsignacionIP
             from equipo.models.equipos import AsignacionIP
-            AsignacionIP.objects.create(
-                ip=computador.ip,
+            AsignacionIP.objects.update_or_create(
                 equipo=computador,
-                activa=True
+                defaults={
+                    'ip': computador.ip,
+                    'activa': True
+                }
             )
 
         messages.success(self.request, 'Computador creado correctamente')
@@ -206,7 +202,7 @@ class ComputadorCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
+class ComputadorUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'computador/form.html'
     model = Equipo
     form_class = FormComputador
@@ -228,26 +224,21 @@ class ComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
 
         # Si la IP cambió o fue removida
         if old_ip and old_ip != new_ip:
-            old_ip.asignado = False
-            old_ip.save()
             # Desactivar asignación previa
             AsignacionIP.objects.filter(equipo=computador, ip=old_ip, activa=True).update(activa=False)
 
         # Si se asignó una nueva IP o se mantiene la misma
         if new_ip:
-            new_ip.asignado = True
-            new_ip.save()
-
             # Buscar si ya existe una asignación activa para este equipo
-            asignacion = AsignacionIP.objects.filter(equipo=computador, activa=True).first()
+            asignacion = AsignacionIP.objects.filter(equipo=computador).first()
 
             if asignacion:
-                # Si la IP es diferente, actualizamos el registro existente
-                if asignacion.ip != new_ip:
-                    asignacion.ip = new_ip
-                    asignacion.save()
+                # Actualizar la asignación existente
+                asignacion.ip = new_ip
+                asignacion.activa = True
+                asignacion.save()
             else:
-                # Si no existe asignación previa activa, creamos una nueva
+                # Si no existe asignación previa, creamos una nueva
                 AsignacionIP.objects.create(
                     ip=new_ip,
                     equipo=computador,

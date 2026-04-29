@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.views.generic import CreateView, UpdateView, DetailView
 
@@ -14,7 +15,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 
-class ImpresoraListView(DataTableMixin, TemplateView):
+class ImpresoraListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'impresora/list.html'
     model = Equipo
 
@@ -131,7 +132,7 @@ class ImpresoraListView(DataTableMixin, TemplateView):
         return actions
 
 
-class ImpresoraDetailView(DetailView):
+class ImpresoraDetailView(LoginRequiredMixin, DetailView):
     model = Equipo
     template_name = 'impresora/detail.html'
 
@@ -144,7 +145,7 @@ class ImpresoraDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
+class ImpresoraCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'impresora/form.html'
     model = Equipo
     form_class = FormImpresora
@@ -163,15 +164,14 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
 
         # Marcar la IP como asignada si se proporcionó una
         if impresora.ip:
-            impresora.ip.asignado = True
-            impresora.ip.save()
-
-            # Crear registro en AsignacionIP
+            # Crear o actualizar registro en AsignacionIP
             from equipo.models.equipos import AsignacionIP
-            AsignacionIP.objects.create(
-                ip=impresora.ip,
+            AsignacionIP.objects.update_or_create(
                 equipo=impresora,
-                activa=True
+                defaults={
+                    'ip': impresora.ip,
+                    'activa': True
+                }
             )
 
         messages.success(self.request, 'Impresora creado correctamente')
@@ -190,7 +190,7 @@ class ImpresoraCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class ImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
+class ImpresoraUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'impresora/form.html'
     model = Equipo
     form_class = FormImpresora
@@ -212,26 +212,21 @@ class ImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
 
         # Si la IP cambió o fue removida
         if old_ip and old_ip != new_ip:
-            old_ip.asignado = False
-            old_ip.save()
             # Desactivar asignación previa
             AsignacionIP.objects.filter(equipo=impresora, ip=old_ip, activa=True).update(activa=False)
 
         # Si se asignó una nueva IP o se mantiene la misma
         if new_ip:
-            new_ip.asignado = True
-            new_ip.save()
-
             # Buscar si ya existe una asignación activa para este equipo
-            asignacion = AsignacionIP.objects.filter(equipo=impresora, activa=True).first()
+            asignacion = AsignacionIP.objects.filter(equipo=impresora).first()
 
             if asignacion:
-                # Si la IP es diferente, actualizamos el registro existente
-                if asignacion.ip != new_ip:
-                    asignacion.ip = new_ip
-                    asignacion.save()
+                # Actualizar la asignación existente
+                asignacion.ip = new_ip
+                asignacion.activa = True
+                asignacion.save()
             else:
-                # Si no existe asignación previa activa, creamos una nueva
+                # Si no existe asignación previa, creamos una nueva
                 AsignacionIP.objects.create(
                     ip=new_ip,
                     equipo=impresora,

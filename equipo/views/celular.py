@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from equipo.models.celular import Celular
 MODULE_NAME = 'Celulares'
 
 
-class CelularListView(DataTableMixin, TemplateView):
+class CelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'celular/list.html'
     model = Celular
 
@@ -128,7 +129,7 @@ class CelularListView(DataTableMixin, TemplateView):
         return actions
 
 
-class CelularDetailView(DetailView):
+class CelularDetailView(LoginRequiredMixin, DetailView):
     model = Celular
     template_name = 'celular/detail.html'
 
@@ -141,7 +142,7 @@ class CelularDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class CelularCreateView(IncludeUserFormCreate, CreateView):
+class CelularCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'celular/form.html'
     model = Celular
     form_class = FormCelular
@@ -171,7 +172,7 @@ class CelularCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class CelularUpdateView(IncludeUserFormUpdate, UpdateView):
+class CelularUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'celular/form.html'
     model = Celular
     form_class = FormCelular

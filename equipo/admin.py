@@ -39,7 +39,6 @@ class AsignacionIPResource(resources.ModelResource):
 # =====================================================
 # ADMINS
 # =====================================================
-
 @admin.register(Equipo)
 class EquipoAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_class = EquipoResource
@@ -76,6 +75,81 @@ class EquipoAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     )
 
     ordering = ("-id",)
+
+    autocomplete_fields = (
+        "ip",
+        "marca",
+        "modelo",
+        "propietario",
+        "departamento",
+        "establecimiento",
+        "responsable",
+        "jefe_entrega",
+        "contrato",
+        "tipo_pc",
+        "sistema_operativo",
+        "microsoft_office",
+        "tipo_impresora",
+        "toner",
+    )
+
+    fieldsets = (
+
+        ("Identificación General", {
+            "fields": (
+                "tipo_equipo",
+                "serie",
+                "ip",
+                "marca",
+                "modelo",
+            )
+        }),
+
+        ("Ubicación / Responsable", {
+            "fields": (
+                "propietario",
+                "departamento",
+                "establecimiento",
+                "responsable",
+                "jefe_entrega",
+                "contrato",
+            )
+        }),
+
+        ("Datos PC / Notebook", {
+            "fields": (
+                "tipo_pc",
+                "mac",
+                "sistema_operativo",
+                "microsoft_office",
+                "es_armado",
+                "ram_gb",
+                "wifi",
+                "procesador",
+                "tarjeta_video",
+                "red_lan",
+                "tipo_disco",
+                "capacidad_disco_gb",
+            )
+        }),
+
+        ("Datos Impresora", {
+            "fields": (
+                "tipo_impresora",
+                "hh",
+                "toner",
+            )
+        }),
+
+        ("Estado General", {
+            "fields": (
+                "de_baja",
+                "status",
+                "motivo_baja",
+                "observaciones",
+            )
+        }),
+    )
 
 
 @admin.register(AsignacionIP)

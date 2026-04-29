@@ -26,7 +26,7 @@ class FormTicket(forms.ModelForm):
 
     area_soporte = forms.ChoiceField(
         label='Área de soporte',
-        choices=[('Mantencion', 'Mantencion'), ('Informatica', 'Informatica')],
+        choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')],
         widget=forms.Select(attrs={
             'class': 'form-control'
         }),
