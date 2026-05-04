@@ -57,6 +57,26 @@ class TicketListView(DataTableMixin, TemplateView):
 
     url_update = 'ticket_update'
 
+    def get_actions(self, obj):
+        """
+        Oculta el botón de editar si el ticket está CERRADO.
+        """
+        user = self.request.user
+        actions = []
+
+        # Si el ticket está cerrado, no mostrar el botón de editar
+        if obj.estado == 'CERRADO':
+            self.url_update = None
+        else:
+            self.url_update = 'ticket_update'
+
+        # Reutilizamos la lógica del mixin pero con el url_update condicional
+        res = super().get_actions(obj)
+
+        # Restauramos url_update para el siguiente objeto en el bucle
+        self.url_update = 'ticket_update'
+        return res
+
     def get_base_queryset(self):
 
         user = self.request.user

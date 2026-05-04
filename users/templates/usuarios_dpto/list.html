@@ -46,3 +46,16 @@
         </div>
     </div>
 {% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                const table = $('#Table').DataTable();
+                if (table) {
+                    table.ajax.reload(null, false); // false para mantener la paginación actual
+                }
+            }, 5000); // 5000 milisegundos = 5 segundos
+        });
+    </script>
+{% endblock %}
