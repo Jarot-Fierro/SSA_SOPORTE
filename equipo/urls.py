@@ -35,4 +35,6 @@ urlpatterns = [
 
     # PDFS
     path('acta-computador/<int:pk>/', generar_pdf_computador, name='acta_computador'),
+    path('acta-impresora/<int:pk>/', generar_pdf_impresora, name='acta_impresora'),
+    path('acta-celular/<int:pk>/', generar_pdf_celular, name='acta_celular'),
 ]

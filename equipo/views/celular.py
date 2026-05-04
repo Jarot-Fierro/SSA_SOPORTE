@@ -20,49 +20,49 @@ class CelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
 
     datatable_columns = [
         'ID',
-        'Tipo',
-        'Propietario',
-        'Marca',
-        'Modelo',
-        'Número Teléfono',
-        'Plan MINSAL',
-        'PIN',
-        'PUK',
         'IMEI',
         'N° Chip',
+        'Número Teléfono',
+        'Tipo',
+        'Marca',
+        'Modelo',
+        'PIN',
+        'PUK',
         'Minutos',
+        'Plan MINSAL',
+        'Propietario',
         'Responsable',
         'Jefe Entrega'
     ]
 
     datatable_order_fields = [
         'id',
-        'tipo__nombre',
-        'propietario__nombre',
-        'marca__nombre',
-        'modelo__nombre',
-        'numero_telefono',
-        'minsal',
-        'pin',
-        'puk',
         'imei',
         'numero_chip',
+        'numero_telefono',
+        'tipo__nombre',
+        'marca__nombre',
+        'modelo__nombre',
+        'pin',
+        'puk',
         'minutos',
+        'minsal',
+        'propietario__nombre',
         'responsable__nombres',
         'jefe_entrega__nombre',
     ]
 
     datatable_search_fields = [
-        'tipo__nombre__icontains',
-        'propietario__nombre__icontains',
-        'marca__nombre__icontains',
-        'modelo__nombre__icontains',
-        'numero_telefono__icontains',
-        'pin__icontains',
-        'puk__icontains',
         'imei__icontains',
         'numero_chip__icontains',
+        'numero_telefono__icontains',
+        'tipo__nombre__icontains',
+        'marca__nombre__icontains',
+        'modelo__nombre__icontains',
+        'pin__icontains',
+        'puk__icontains',
         'minutos__icontains',
+        'propietario__nombre__icontains',
         'responsable__nombres__icontains',
         'jefe_entrega__nombre__icontains',
     ]
@@ -71,17 +71,17 @@ class CelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     def render_row(self, obj):
         return {
             'ID': obj.id,
-            'Tipo': obj.tipo.nombre.upper() if obj.tipo else '-',
-            'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
-            'Marca': obj.marca.nombre.upper() if obj.marca else '-',
-            'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
-            'Número Teléfono': obj.numero_telefono,
-            'Plan MINSAL': 'Sí' if obj.minsal else 'No',
-            'PIN': obj.pin if obj.pin else '-',
-            'PUK': obj.puk if obj.puk else '-',
             'IMEI': obj.imei,
             'N° Chip': obj.numero_chip if obj.numero_chip else '-',
+            'Número Teléfono': obj.numero_telefono,
+            'Tipo': obj.tipo.nombre.upper() if obj.tipo else '-',
+            'Marca': obj.marca.nombre.upper() if obj.marca else '-',
+            'Modelo': obj.modelo.nombre.upper() if obj.modelo else '-',
+            'PIN': obj.pin if obj.pin else '-',
+            'PUK': obj.puk if obj.puk else '-',
             'Minutos': obj.minutos if obj.minutos else '-',
+            'Plan MINSAL': 'Sí' if obj.minsal else 'No',
+            'Propietario': obj.propietario.nombre.upper() if obj.propietario else '-',
             'Responsable': obj.responsable.nombres.upper() if obj.responsable else '-',
             'Jefe Entrega': obj.jefe_entrega.nombre.upper() if obj.jefe_entrega else '-',
         }
@@ -114,17 +114,17 @@ class CelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
         """
         actions = super().get_actions(obj)
         # Botón para generar acta PDF del celular
-        # if obj.responsable:
-        #
-        #     pdf_button = f"""
-        #         <a href="{reverse_lazy('acta_celular', kwargs={'pk': obj.id})}"
-        #            target="_blank"
-        #            class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
-        #            <i class="fas fa-file-pdf"></i></a>
-        #     """
-        #     return actions + pdf_button
-        # else:
-        #     return actions
+        if obj.responsable:
+
+            pdf_button = f"""
+                <a href="{reverse_lazy('acta_celular', kwargs={'pk': obj.id})}"
+                   target="_blank"
+                   class="btn p-1 btn-sm btn-danger" title="Ver Acta PDF">
+                   <i class="fas fa-file-pdf"></i></a>
+            """
+            return actions + pdf_button
+        else:
+            return actions
 
         return actions
 

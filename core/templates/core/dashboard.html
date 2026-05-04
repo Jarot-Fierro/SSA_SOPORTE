@@ -6,70 +6,482 @@
 {% block content %}
     <section class="content">
         <div class="container-fluid">
-            <!-- Small boxes (Stat box) -->
+            <!-- Info boxes (Summary) -->
             <div class="row">
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-info">
-                        <div class="inner">
-                            <h3>{{ cantidad_computador }}</h3>
-
-                            <p>Equipos Computacionales</p>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets Abiertos</span>
+                            <span class="info-box-number" id="tickets-abiertos"><i
+                                    class="fas fa-sync fa-spin"></i></span>
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-success">
-                        <div class="inner">
-                            <h3>{{ cantidad_celular }}</h3>
-
-                            <p>Equipos Celulares</p>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1"><i
+                                class="fas fa-exclamation-triangle"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets Pendientes</span>
+                            <span class="info-box-number" id="tickets-en-proceso"><i
+                                    class="fas fa-sync fa-spin"></i></span>
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-warning">
-                        <div class="inner">
-                            <h3>{{ cantidad_impresora }}</h3>
-
-                            <p>Equipos Impresoras</p>
+                <div class="clearfix hidden-md-up"></div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check-circle"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets Cerrados</span>
+                            <span class="info-box-number" id="tickets-cerrados"><i
+                                    class="fas fa-sync fa-spin"></i></span>
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-person-add"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-danger">
-                        <div class="inner">
-                            <h3>{{ cantidad_funcionarios }}</h3>
-
-                            <p>Funcionarios</p>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Funcionarios</span>
+                            <span class="info-box-number" id="total-funcionarios"><i
+                                    class="fas fa-sync fa-spin"></i></span>
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <!-- ./col -->
             </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
+
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <div class="col-md-9">
+                    <!-- MAP & BOX PANE -->
+                    {#                    <div class="card">#}
+                    {#                        <div class="card-header border-transparent">#}
+                    {#                            <h3 class="card-title">Tickets por Persona (Top 10 Abiertos)</h3>#}
+                    {#                            <div class="card-tools">#}
+                    {#                                <button type="button" class="btn btn-tool" data-card-widget="collapse">#}
+                    {#                                    <i class="fas fa-minus"></i>#}
+                    {#                                </button>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                        <div class="card-body p-0">#}
+                    {#                            <div class="table-responsive">#}
+                    {#                                <table class="table m-0">#}
+                    {#                                    <thead>#}
+                    {#                                    <tr>#}
+                    {#                                        <th>Persona</th>#}
+                    {#                                        <th>Abiertos</th>#}
+                    {#                                        <th>Cerrados</th>#}
+                    {#                                        <th>Progreso</th>#}
+                    {#                                    </tr>#}
+                    {#                                    </thead>#}
+                    {#                                    <tbody id="table-tickets-persona">#}
+                    {#                                    <tr>#}
+                    {#                                        <td colspan="4" class="text-center">Cargando datos...</td>#}
+                    {#                                    </tr>#}
+                    {#                                    </tbody>#}
+                    {#                                </table>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                        #}
+                    {#                    </div>#}
+
+                    <div class="card">
+                        <div class="card-header border-transparent pb-0">
+                            <h3 class="card-title">Listado de Tickets Recientes</h3>
+                            <div class="card-tools">
+                                <a href="{% url 'ticket_panel_list' %}" class="btn btn-sm btn-info float-left">Ver
+                                    todos los
+                                    tickets</a>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="Table-Dashboard" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Acciones</th>
+                                    {% for col in columns %}
+                                        {% if col != 'ID' %}
+                                            <th>{{ col }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- DIRECT CHAT -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Equipos por Tipo</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="chart-equipos-tipo"
+                                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Tickets por Área</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="chart-tickets-area"
+                                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right col -->
+                <div class="col-md-3">
+                    <!-- Info Boxes Style 2 -->
+                    <div class="info-box mb-3 bg-secondary">
+                        <span class="info-box-icon"><i class="fas fa-desktop"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Equipos Asignados</span>
+                            <span class="info-box-number" id="equipos-asignados">-</span>
+                        </div>
+                    </div>
+                    <div class="info-box mb-3 bg-olive">
+                        <span class="info-box-icon"><i class="fas fa-boxes"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Equipos Disponibles</span>
+                            <span class="info-box-number" id="equipos-disponibles">-</span>
+                        </div>
+                    </div>
+                    <div class="info-box mb-3 bg-teal">
+                        <span class="info-box-icon"><i class="fas fa-network-wired"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">IPs Usadas</span>
+                            <span class="info-box-number" id="ips-usadas">-</span>
+                        </div>
+                    </div>
+                    <div class="info-box mb-3 bg-info">
+                        <span class="info-box-icon"><i class="fas fa-plug"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">IPs Disponibles</span>
+                            <span class="info-box-number" id="ips-disponibles">-</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Resumen de Inventario</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        Departamentos
+                                        <span class="float-right text-primary" id="total-departamentos">0</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        Celulares
+                                        <span class="float-right text-info" id="total-celulares">0</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        Total Equipos
+                                        <span class="float-right text-success" id="total-equipos">0</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Section -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4 class="mb-3">Inventarios de Insumos</h4>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-box bg-gradient-info">
+                        <span class="info-box-icon"><i class="fas fa-microchip"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Insumos Informática</span>
+                            <span class="info-box-number" id="inv-tic-total">0</span>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-description">
+                                Total de productos registrados
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-box bg-gradient-danger">
+                        <span class="info-box-icon"><i class="fas fa-tools"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Insumos Mantención</span>
+                            <span class="info-box-number" id="inv-mant-total">0</span>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-description">
+                                Total de productos registrados
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header border-transparent">
+                            <h3 class="card-title">Últimas Actualizaciones de Inventario</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table m-0 table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Producto</th>
+                                        <th>Stock</th>
+                                        <th>Área</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="table-recent-inventory">
+                                    <tr>
+                                        <td colspan="4" class="text-center">Cargando...</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Comparativa Stock</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-inventory-stock"
+                                    style="min-height: 200px; height: 200px; max-height: 200px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTable
+            const tableEl = $("#Table-Dashboard");
+            if (tableEl.length) {
+                const table = tableEl.DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    pageLength: 10,
+                    order: [[0, 'desc']],
+                    ajax: {
+                        url: window.location.pathname,
+                        data: function (d) {
+                            d.datatable = 1;
+                        }
+                    },
+                    language: {
+                        url: "{% static 'adminlte3/plugins/datatables/es-ES.json' %}"
+                    },
+                    columns: [
+                        {data: 'ID'},
+                        {data: 'actions', orderable: false, searchable: false},
+                        {% for col in columns %}
+                            {% if col != 'ID' %}
+                                {data: '{{ col }}'},
+                            {% endif %}
+                        {% endfor %}
+                    ]
+                });
+
+                // Auto-recarga cada 10 segundos
+                setInterval(function () {
+                    table.ajax.reload(null, false);
+                }, 10000);
+            }
+
+            // Cargar datos asíncronamente
+            $.ajax({
+                url: "{% url 'dashboard_data' %}",
+                method: "GET",
+                success: function (data) {
+                    // Actualizar contadores superiores
+                    $('#tickets-abiertos').text(data.tickets.abiertos);
+                    $('#tickets-en-proceso').text(data.tickets.en_proceso);
+                    $('#tickets-cerrados').text(data.tickets.cerrados);
+                    $('#total-funcionarios').text(data.otros.funcionarios);
+
+                    // Actualizar info boxes laterales
+                    $('#equipos-asignados').text(data.equipos.asignados);
+                    $('#equipos-disponibles').text(data.equipos.disponibles);
+                    $('#ips-usadas').text(data.ips.usadas);
+                    $('#ips-disponibles').text(data.ips.disponibles);
+
+                    // Actualizar lista de inventario
+                    $('#total-departamentos').text(data.otros.departamentos);
+                    $('#total-celulares').text(data.otros.celulares);
+                    $('#total-equipos').text(data.equipos.total);
+
+                    // Actualizar Inventario Insumos
+                    $('#inv-tic-total').text(data.inventario.tic.total_productos);
+                    $('#inv-mant-total').text(data.inventario.mantencion.total_productos);
+
+                    let invTableBody = $('#table-recent-inventory');
+                    invTableBody.empty();
+
+                    data.inventario.recent_tic.forEach(function (item) {
+                        invTableBody.append(`<tr>
+                            <td>${item.codigo}</td>
+                            <td>${item.producto}</td>
+                            <td><span class="badge badge-info">${item.stock_actual}</span></td>
+                            <td>TIC</td>
+                        </tr>`);
+                    });
+                    data.inventario.recent_mant.forEach(function (item) {
+                        invTableBody.append(`<tr>
+                            <td>${item.codigo}</td>
+                            <td>${item.producto}</td>
+                            <td><span class="badge badge-danger">${item.stock_actual}</span></td>
+                            <td>Mantención</td>
+                        </tr>`);
+                    });
+
+                    // Llenar tabla de tickets por persona
+                    let tableBody = $('#table-tickets-persona');
+                    tableBody.empty();
+                    if (data.tickets_por_persona.length === 0) {
+                        tableBody.append('<tr><td colspan="4" class="text-center">No hay tickets asignados</td></tr>');
+                    } else {
+                        data.tickets_por_persona.forEach(function (item) {
+                            let total = item.abiertos + item.cerrados;
+                            let porcentaje = total > 0 ? Math.round((item.cerrados / total) * 100) : 0;
+                            let progressClass = 'bg-danger';
+                            if (porcentaje > 40) progressClass = 'bg-warning';
+                            if (porcentaje > 70) progressClass = 'bg-success';
+
+                            let row = `<tr>
+                            <td>${item.asignado_a__first_name} ${item.asignado_a__last_name}</td>
+                            <td><span class="badge badge-warning">${item.abiertos}</span></td>
+                            <td><span class="badge badge-success">${item.cerrados}</span></td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar ${progressClass}" style="width: ${porcentaje}%"></div>
+                                </div>
+                                <small>${porcentaje}% completado</small>
+                            </td>
+                        </tr>`;
+                            tableBody.append(row);
+                        });
+                    }
+
+                    // Gráfico de Equipos por Tipo
+                    const ctxEquipos = document.getElementById('chart-equipos-tipo').getContext('2d');
+                    new Chart(ctxEquipos, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['PCs/Notebooks', 'Impresoras', 'Otros'],
+                            datasets: [{
+                                data: [data.equipos.pcs, data.equipos.imps, data.equipos.otros],
+                                backgroundColor: ['#007bff', '#ffc107', '#6c757d'],
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                        }
+                    });
+
+                    // Gráfico de Tickets por Área
+                    const ctxTickets = document.getElementById('chart-tickets-area').getContext('2d');
+                    new Chart(ctxTickets, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Informática', 'Mantención'],
+                            datasets: [{
+                                data: [data.tickets.informatica, data.tickets.mantencion],
+                                backgroundColor: ['#17a2b8', '#dc3545'],
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                        }
+                    });
+
+                    // Gráfico de Inventario
+                    const ctxInv = document.getElementById('chart-inventory-stock').getContext('2d');
+                    new Chart(ctxInv, {
+                        type: 'bar',
+                        data: {
+                            labels: ['TIC', 'Mantención'],
+                            datasets: [{
+                                label: 'Stock Total',
+                                data: [data.inventario.tic.stock_total || 0, data.inventario.mantencion.stock_total || 0],
+                                backgroundColor: ['#17a2b8', '#dc3545'],
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error("Error cargando datos del dashboard", err);
+                    $('.info-box-number').text('Error');
+                }
+            });
+        });
+    </script>
 {% endblock %}

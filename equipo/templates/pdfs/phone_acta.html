@@ -99,37 +99,37 @@
     <tbody>
     <tr>
         <th>TIPO DE EQUIPO</th>
-        <td>{{ equipo.tipo }}</td>
+        <td>{% if equipo.tipo %}{{ equipo.tipo }}{% endif %}</td>
     </tr>
     <tr>
         <th>MARCA - MODELO</th>
-        <td>{{ equipo.marca }} {{ equipo.modelo }}</td>
+        <td>{% if equipo.marca %}{{ equipo.marca }}{% endif %} {% if equipo.modelo %}{{ equipo.modelo }}{% endif %}</td>
     </tr>
     <tr>
         <th>NUMERO DE CELULAR</th>
-        <td>9 {{ equipo.numero_telefono }}</td>
+        <td>9 {% if equipo.numero_telefono %}{{ equipo.numero_telefono }}{% endif %}</td>
     </tr>
     <tr>
         <th>IMEI</th>
-        <td>{{ equipo.imei }}</td>
+        <td>{% if equipo.imei %}{{ equipo.imei }}{% endif %}</td>
     </tr>
     <tr>
         <th>CÓDIGO PIN</th>
-        <td>{{ equipo.pin }}
+        <td>{% if equipo.pin %}{{ equipo.pin }}{% endif %}
         </td>
     </tr>
     <tr>
         <th>CÓDIGO PUK</th>
-        <td>{{ equipo.puk }}
+        <td>{% if equipo.puk %}{{ equipo.puk }}{% endif %}
         </td>
     </tr>
     <tr>
         <th>TARJETA SIM</th>
-        <td>{{ equipo.numero_chip }}</td>
+        <td>{% if equipo.numero_chip %}{{ equipo.numero_chip }}{% endif %}</td>
     </tr>
     <tr>
         <th>MINUTOS ASOCIADOS</th>
-        <td>{{ equipo.minutos }}</td>
+        <td>{% if equipo.minutos %}{{ equipo.minutos }}{% endif %}</td>
     </tr>
 
     </tbody>
@@ -147,12 +147,16 @@
     <div class="row" style="margin-top: 120px">
         <div class="col-6 text-center">
             <div class="signature-line">
-                {{ equipo.responsable.puesto_trabajo }}<br>{{ equipo.responsable }}.
+                {% if equipo.responsable.puesto_trabajo %}
+                    {{ equipo.responsable.puesto_trabajo }}{% endif %}<br>{% if equipo.responsable %}
+                {{ equipo.responsable }}{% endif %}.
             </div>
         </div>
         <div class="col-6 text-center">
             <div class="signature-line">
-                {{ equipo.jefe_entrega.posicion }}.<br>{{ equipo.jefe_entrega }}.
+                {% if equipo.jefe_entrega.posicion %}
+                    {{ equipo.jefe_entrega.posicion }}{% endif %}.<br>{% if equipo.jefe_entrega %}
+                {{ equipo.jefe_entrega }}{% endif %}.
             </div>
         </div>
     </div>

@@ -225,7 +225,11 @@ def get_equipos_ajax(request):
     ticket_id = request.GET.get('ticket_id')
     ticket = get_object_or_404(Ticket, id=ticket_id)
 
-    qs = Equipo.objects.filter(establecimiento=ticket.establecimiento, de_baja=False)
+    # Obtener IDs de equipos ya asignados a este ticket
+    equipos_asignados_ids = TicketActivo.objects.filter(ticket=ticket).values_list('equipo_id', flat=True)
+
+    qs = Equipo.objects.filter(establecimiento=ticket.establecimiento, de_baja=False).exclude(
+        id__in=equipos_asignados_ids)
     if tipo:
         qs = qs.filter(tipo_equipo=tipo)
 

@@ -178,6 +178,9 @@ class ComputadorCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView
         if computador.ip:
             # Crear o actualizar registro en AsignacionIP
             from equipo.models.equipos import AsignacionIP
+            # Eliminar si la IP ya estaba asignada a otro equipo
+            AsignacionIP.objects.filter(ip=computador.ip).exclude(equipo=computador).delete()
+
             AsignacionIP.objects.update_or_create(
                 equipo=computador,
                 defaults={
@@ -185,6 +188,10 @@ class ComputadorCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView
                     'activa': True
                 }
             )
+        else:
+            # Si se crea sin IP, aseguramos que no haya registro (aunque es poco probable en creación)
+            from equipo.models.equipos import AsignacionIP
+            AsignacionIP.objects.filter(equipo=computador).delete()
 
         messages.success(self.request, 'Computador creado correctamente')
         return super().form_valid(form)
@@ -224,26 +231,25 @@ class ComputadorUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView
 
         # Si la IP cambió o fue removida
         if old_ip and old_ip != new_ip:
-            # Desactivar asignación previa
-            AsignacionIP.objects.filter(equipo=computador, ip=old_ip, activa=True).update(activa=False)
+            # Eliminar asignación previa
+            AsignacionIP.objects.filter(equipo=computador, ip=old_ip).delete()
 
         # Si se asignó una nueva IP o se mantiene la misma
         if new_ip:
-            # Buscar si ya existe una asignación activa para este equipo
-            asignacion = AsignacionIP.objects.filter(equipo=computador).first()
+            # Buscar si ya existe una asignación para este equipo
+            # y si existe una para la IP en otro equipo, borrarla para evitar error de unicidad
+            AsignacionIP.objects.filter(ip=new_ip).exclude(equipo=computador).delete()
 
-            if asignacion:
-                # Actualizar la asignación existente
-                asignacion.ip = new_ip
-                asignacion.activa = True
-                asignacion.save()
-            else:
-                # Si no existe asignación previa, creamos una nueva
-                AsignacionIP.objects.create(
-                    ip=new_ip,
-                    equipo=computador,
-                    activa=True
-                )
+            AsignacionIP.objects.update_or_create(
+                equipo=computador,
+                defaults={
+                    'ip': new_ip,
+                    'activa': True
+                }
+            )
+        else:
+            # Si el equipo ya no tiene IP, eliminamos cualquier asignación que tuviera
+            AsignacionIP.objects.filter(equipo=computador).delete()
 
         messages.success(self.request, 'Computador actualizada correctamente')
         return super().form_valid(form)
