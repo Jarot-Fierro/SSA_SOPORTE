@@ -30,7 +30,8 @@ class Ticket(StandardModel):
     estado = models.CharField(max_length=20, choices=ESTADOS, default='ABIERTO')
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
-    area_soporte = models.CharField(choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')], null=True,
+    area_soporte = models.CharField(max_length=200,
+                                    choices=[('MANTENCION', 'Mantencion'), ('INFORMATICA', 'Informatica')], null=True,
                                     blank=True)
     tipo_soporte = models.ForeignKey(TipoSoporte, on_delete=models.SET_NULL, null=True, blank=True,
                                      related_name='tipo_soporte')
