@@ -24,7 +24,16 @@ SECRET_KEY = 'django-insecure-%sx-xgfzaq2qacibrc(v65(7h*!*izx!vhd2i%8h(cy=(=)b1c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['10.8.85.222', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = [
+    'http://10.8.85.27',
+    'http://10.8.85.141',
+    'http://127.0.0.1',
+    'http://localhost',
+    'http://10.8.85.222',
+]
+
+FORCE_SCRIPT_NAME = '/soporte_contulmo'
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
@@ -32,8 +41,15 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 SIMPLE_HISTORY_HISTORY_ID_USE_UUID = False
-SIMPLE_HISTORY_REVERT_DISABLED = False
 
+SESSION_COOKIE_NAME = 'soporte_contulmo_sessionid'
+CSRF_COOKIE_NAME = 'soporte_contulmo_csrftoken'
+
+SESSION_COOKIE_PATH = '/soporte_contulmo/'
+CSRF_COOKIE_PATH = '/soporte_contulmo/'
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
 # Application definition
 
 INSTALLED_APPS = [
@@ -101,7 +117,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -134,4 +149,10 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/soporte_contulmo/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
