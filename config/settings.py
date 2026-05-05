@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 from config.db import MYSQL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,9 +40,9 @@ CSRF_TRUSTED_ORIGINS = [
 # FORCE_SCRIPT_NAME = '/soporte_contulmo'
 
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = reverse_lazy('dashboard')
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
 SIMPLE_HISTORY_HISTORY_ID_USE_UUID = False
 
