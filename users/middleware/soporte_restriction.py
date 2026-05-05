@@ -19,21 +19,11 @@ class RestrictSoporteMiddleware:
                 'ticket_list',
                 'ticket_create',
                 'ticket_update',
-                'ticket_asignar_equipo',
-                'get_equipos_ajax',
-                'ticket_eliminar_equipo',
-                'ticket_panel_list',
-                'ticket_panel_create',
-                'ticket_panel_update',
-                'list_tipo_soporte',
             ]
 
             if getattr(request.user, 'usuario_soporte', False):
                 # URLs permitidas para el usuario de soporte (lista blanca)
                 allowed_for_soporte = [
-                    'ticket_list',
-                    'ticket_create',
-                    'ticket_update',
                     'ticket_asignar_equipo',
                     'get_equipos_ajax',
                     'ticket_eliminar_equipo',
