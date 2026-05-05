@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from establecimiento.models.comuna import Comuna
 MODULE_NAME = 'Comunas'
 
 
-class ComunaListView(DataTableMixin, TemplateView):
+class ComunaListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'comuna/list.html'
     model = Comuna
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class ComunaListView(DataTableMixin, TemplateView):
         return context
 
 
-class ComunaDetailView(DetailView):
+class ComunaDetailView(LoginRequiredMixin, DetailView):
     model = Comuna
     template_name = 'comuna/detail.html'
 
@@ -61,7 +62,7 @@ class ComunaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ComunaCreateView(IncludeUserFormCreate, CreateView):
+class ComunaCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'comuna/form.html'
     model = Comuna
     form_class = FormComuna
@@ -84,7 +85,7 @@ class ComunaCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class ComunaUpdateView(IncludeUserFormUpdate, UpdateView):
+class ComunaUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'comuna/form.html'
     model = Comuna
     form_class = FormComuna
@@ -111,6 +112,6 @@ class ComunaUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class ComunaHistoryListView(GenericHistoryListView):
+class ComunaHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Comuna
     template_name = 'history/list.html'

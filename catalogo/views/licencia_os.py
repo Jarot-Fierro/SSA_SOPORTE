@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'LicenciaOss'
 
 
-class LicenciaOsListView(DataTableMixin, TemplateView):
+class LicenciaOsListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'licencia_os/list.html'
     model = LicenciaOs
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class LicenciaOsListView(DataTableMixin, TemplateView):
         return context
 
 
-class LicenciaOsDetailView(DetailView):
+class LicenciaOsDetailView(LoginRequiredMixin, DetailView):
     model = LicenciaOs
     template_name = 'licencia_os/detail.html'
 
@@ -61,7 +62,7 @@ class LicenciaOsDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class LicenciaOsCreateView(IncludeUserFormCreate, CreateView):
+class LicenciaOsCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'licencia_os/form.html'
     model = LicenciaOs
     form_class = FormLicenciaOs
@@ -84,7 +85,7 @@ class LicenciaOsCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class LicenciaOsUpdateView(IncludeUserFormUpdate, UpdateView):
+class LicenciaOsUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'licencia_os/form.html'
     model = LicenciaOs
     form_class = FormLicenciaOs
@@ -111,6 +112,6 @@ class LicenciaOsUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class LicenciaOsHistoryListView(GenericHistoryListView):
+class LicenciaOsHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = LicenciaOs
     template_name = 'history/list.html'

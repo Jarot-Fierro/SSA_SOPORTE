@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -14,7 +16,7 @@ from tickets.models import Ticket, TicketActivo
 MODULE_NAME = 'Tickets'
 
 
-class TicketListView(DataTableMixin, TemplateView):
+class TicketListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'tickets/list.html'
     model = Ticket
 
@@ -170,7 +172,7 @@ class TicketListView(DataTableMixin, TemplateView):
         return context
 
 
-class TicketCreateView(CreateView):
+class TicketCreateView(LoginRequiredMixin, CreateView):
     template_name = 'tickets/form.html'
     model = Ticket
     form_class = FormTicket
@@ -197,7 +199,7 @@ class TicketCreateView(CreateView):
         return context
 
 
-class TicketsUpdateView(IncludeUserFormUpdate, UpdateView):
+class TicketsUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'tickets/form.html'
     model = Ticket
     form_class = FormTicket
@@ -216,7 +218,7 @@ class TicketsUpdateView(IncludeUserFormUpdate, UpdateView):
         return super().form_invalid(form)
 
 
-class TicketAsignarEquipoView(CreateView):
+class TicketAsignarEquipoView(LoginRequiredMixin, CreateView):
     template_name = 'tickets/asignar_equipo.html'
     model = TicketActivo
     form_class = FormTicketActivo
@@ -240,6 +242,7 @@ class TicketAsignarEquipoView(CreateView):
         return context
 
 
+@login_required
 def get_equipos_ajax(request):
     tipo = request.GET.get('tipo')
     ticket_id = request.GET.get('ticket_id')
@@ -257,7 +260,7 @@ def get_equipos_ajax(request):
     return JsonResponse(data, safe=False)
 
 
-class TicketEliminarEquipoView(DeleteView):
+class TicketEliminarEquipoView(LoginRequiredMixin, DeleteView):
     model = TicketActivo
 
     def get_success_url(self):

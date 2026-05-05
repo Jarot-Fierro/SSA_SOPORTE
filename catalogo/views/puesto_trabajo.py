@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Puesto Trabajo'
 
 
-class PuestoTrabajoListView(DataTableMixin, TemplateView):
+class PuestoTrabajoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'puesto_trabajo/list.html'
     model = PuestoTrabajo
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class PuestoTrabajoListView(DataTableMixin, TemplateView):
         return context
 
 
-class PuestoTrabajoDetailView(DetailView):
+class PuestoTrabajoDetailView(LoginRequiredMixin, DetailView):
     model = PuestoTrabajo
     template_name = 'puesto_trabajo/detail.html'
 
@@ -61,7 +62,7 @@ class PuestoTrabajoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class PuestoTrabajoCreateView(IncludeUserFormCreate, CreateView):
+class PuestoTrabajoCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'puesto_trabajo/form.html'
     model = PuestoTrabajo
     form_class = FormPuestoTrabajo
@@ -84,7 +85,7 @@ class PuestoTrabajoCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class PuestoTrabajoUpdateView(IncludeUserFormUpdate, UpdateView):
+class PuestoTrabajoUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'puesto_trabajo/form.html'
     model = PuestoTrabajo
     form_class = FormPuestoTrabajo
@@ -111,6 +112,6 @@ class PuestoTrabajoUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class PuestoTrabajoHistoryListView(GenericHistoryListView):
+class PuestoTrabajoHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = PuestoTrabajo
     template_name = 'history/list.html'

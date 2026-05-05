@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from establecimiento.models.funcionario import Funcionario
 MODULE_NAME = 'Funcionario'
 
 
-class FuncionarioListView(DataTableMixin, TemplateView):
+class FuncionarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'funcionario/list.html'
     model = Funcionario
     datatable_columns = ['ID', 'RUT', 'Nombres', 'Correo', 'Jefatura', 'Departamento']
@@ -53,7 +54,7 @@ class FuncionarioListView(DataTableMixin, TemplateView):
         return context
 
 
-class FuncionarioDetailView(DetailView):
+class FuncionarioDetailView(LoginRequiredMixin, DetailView):
     model = Funcionario
     template_name = 'funcionario/detail.html'
 
@@ -66,7 +67,7 @@ class FuncionarioDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class FuncionarioCreateView(IncludeUserFormCreate, CreateView):
+class FuncionarioCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'funcionario/form.html'
     model = Funcionario
     form_class = FormFuncionario
@@ -89,7 +90,7 @@ class FuncionarioCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class FuncionarioUpdateView(IncludeUserFormUpdate, UpdateView):
+class FuncionarioUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'funcionario/form.html'
     model = Funcionario
     form_class = FormFuncionario
@@ -116,6 +117,6 @@ class FuncionarioUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class FuncionarioHistoryListView(GenericHistoryListView):
+class FuncionarioHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Funcionario
     template_name = 'history/list.html'

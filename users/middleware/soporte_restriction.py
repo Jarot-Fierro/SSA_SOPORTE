@@ -6,17 +6,7 @@ class RestrictSoporteMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated and getattr(request.user, 'usuario_soporte', False):
-            # URLs permitidas para el usuario de soporte
-            allowed_url_names = [
-                'usuarios_dpto_list',
-                'usuarios_dpto_create',
-                'usuarios_dpto_update',
-                'usuarios_dpto_detail',
-                'logout',
-                'login',
-            ]
-
+        if request.user.is_authenticated:
             # Obtener el nombre de la URL actual
             from django.urls import resolve
             try:
@@ -24,10 +14,42 @@ class RestrictSoporteMiddleware:
             except:
                 current_url_name = None
 
-            # Si intenta acceder al admin o a una URL no permitida
-            if request.path.startswith('/admin/') or (current_url_name and current_url_name not in allowed_url_names):
-                if current_url_name != 'usuarios_dpto_list':
-                    return redirect('usuarios_dpto_list')
+            # URLs destinadas exclusivamente a SOPORTE
+            soporte_url_names = [
+                'ticket_list',
+                'ticket_create',
+                'ticket_update',
+                'ticket_asignar_equipo',
+                'get_equipos_ajax',
+                'ticket_eliminar_equipo',
+                'ticket_panel_list',
+                'ticket_panel_create',
+                'ticket_panel_update',
+                'list_tipo_soporte',
+            ]
+
+            if getattr(request.user, 'usuario_soporte', False):
+                # URLs permitidas para el usuario de soporte (lista blanca)
+                allowed_for_soporte = [
+                    'ticket_list',
+                    'ticket_create',
+                    'ticket_update',
+                    'ticket_asignar_equipo',
+                    'get_equipos_ajax',
+                    'ticket_eliminar_equipo',
+                    'login',
+                    'logout',
+                ]
+
+                # Si intenta acceder al admin o a una URL no permitida
+                if request.path.startswith('/admin/') or (
+                        current_url_name and current_url_name not in allowed_for_soporte):
+                    if current_url_name != 'ticket_list':
+                        return redirect('ticket_list')
+            else:
+                # El usuario NO es de soporte. No puede acceder a secciones de soporte.
+                if current_url_name in soporte_url_names:
+                    return redirect('dashboard')
 
         response = self.get_response(request)
         return response

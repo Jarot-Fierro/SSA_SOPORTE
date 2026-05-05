@@ -58,7 +58,7 @@ def logout_view(request):
 User = get_user_model()
 
 
-class UserListView(DataTableMixin, TemplateView):
+class UserListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'usuarios/list.html'
     model = User
 
@@ -124,7 +124,7 @@ class UserListView(DataTableMixin, TemplateView):
         return context
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'usuarios/detail.html'
 
@@ -136,7 +136,7 @@ class UserDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class UserCreateView(CreateView):
+class UserCreateView(LoginRequiredMixin, CreateView):
     template_name = 'usuarios/form.html'
     model = User
     form_class = FormUsuario
@@ -177,7 +177,7 @@ class UserCreateView(CreateView):
         return context
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'usuarios/form.html'
     model = User
     form_class = FormUsuarioUpdate
@@ -219,7 +219,7 @@ class UserUpdateView(UpdateView):
         return context
 
 
-class UserResetPasswordView(View):
+class UserResetPasswordView(LoginRequiredMixin, View):
     template_name = 'usuarios/reset_password.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -241,7 +241,7 @@ class UserResetPasswordView(View):
         return render(request, self.template_name, {'form': form, 'user_obj': user})
 
 
-class UserProfileUpdateView(UpdateView):
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'usuarios/perfil.html'
     model = User
     form_class = FormUsuarioProfileUpdate

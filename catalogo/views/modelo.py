@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Modelos'
 
 
-class ModeloListView(DataTableMixin, TemplateView):
+class ModeloListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'modelo/list.html'
     model = Modelo
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class ModeloListView(DataTableMixin, TemplateView):
         return context
 
 
-class ModeloDetailView(DetailView):
+class ModeloDetailView(LoginRequiredMixin, DetailView):
     model = Modelo
     template_name = 'modelo/detail.html'
 
@@ -61,7 +62,7 @@ class ModeloDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ModeloCreateView(IncludeUserFormCreate, CreateView):
+class ModeloCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'modelo/form.html'
     model = Modelo
     form_class = FormModelo
@@ -84,7 +85,7 @@ class ModeloCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class ModeloUpdateView(IncludeUserFormUpdate, UpdateView):
+class ModeloUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'modelo/form.html'
     model = Modelo
     form_class = FormModelo
@@ -111,6 +112,6 @@ class ModeloUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class ModeloHistoryListView(GenericHistoryListView):
+class ModeloHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Modelo
     template_name = 'history/list.html'

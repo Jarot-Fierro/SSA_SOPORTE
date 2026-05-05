@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
@@ -8,7 +9,7 @@ from users.forms.roles import RoleForm
 from users.models import Role
 
 
-class RoleListView(DataTableMixin, TemplateView):
+class RoleListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'roles/list.html'
     model = Role
     datatable_columns = ['ID', 'Nombre del Rol', ]
@@ -45,7 +46,7 @@ class RoleListView(DataTableMixin, TemplateView):
         return context
 
 
-class RoleCreateView(CreateView):
+class RoleCreateView(LoginRequiredMixin, CreateView):
     template_name = 'roles/form.html'
     model = Role
     form_class = RoleForm
@@ -67,7 +68,7 @@ class RoleCreateView(CreateView):
         return context
 
 
-class RoleUpdateView(UpdateView):
+class RoleUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'roles/form.html'
     model = Role
     form_class = RoleForm
@@ -93,7 +94,7 @@ class RoleUpdateView(UpdateView):
         return context
 
 
-class RoleDetailView(DetailView):
+class RoleDetailView(LoginRequiredMixin, DetailView):
     model = Role
     template_name = 'roles/detail.html'
 

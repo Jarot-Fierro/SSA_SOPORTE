@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Tipo Soporte'
 
 
-class TipoSoporteListView(DataTableMixin, TemplateView):
+class TipoSoporteListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'tipo_soporte/list.html'
     model = TipoSoporte
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class TipoSoporteListView(DataTableMixin, TemplateView):
         return context
 
 
-class TipoSoporteDetailView(DetailView):
+class TipoSoporteDetailView(LoginRequiredMixin, DetailView):
     model = TipoSoporte
     template_name = 'tipo_soporte/detail.html'
 
@@ -61,7 +62,7 @@ class TipoSoporteDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class TipoSoporteCreateView(IncludeUserFormCreate, CreateView):
+class TipoSoporteCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'tipo_soporte/form.html'
     model = TipoSoporte
     form_class = FormTipoSoporte
@@ -84,7 +85,7 @@ class TipoSoporteCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class TipoSoporteUpdateView(IncludeUserFormUpdate, UpdateView):
+class TipoSoporteUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'tipo_soporte/form.html'
     model = TipoSoporte
     form_class = FormTipoSoporte
@@ -111,6 +112,6 @@ class TipoSoporteUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class TipoSoporteHistoryListView(GenericHistoryListView):
+class TipoSoporteHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = TipoSoporte
     template_name = 'history/list.html'

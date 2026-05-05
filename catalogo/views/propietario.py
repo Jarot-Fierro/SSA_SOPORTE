@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Propietarios'
 
 
-class PropietarioListView(DataTableMixin, TemplateView):
+class PropietarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'propietario/list.html'
     model = Propietario
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class PropietarioListView(DataTableMixin, TemplateView):
         return context
 
 
-class PropietarioDetailView(DetailView):
+class PropietarioDetailView(LoginRequiredMixin, DetailView):
     model = Propietario
     template_name = 'propietario/detail.html'
 
@@ -61,7 +62,7 @@ class PropietarioDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class PropietarioCreateView(IncludeUserFormCreate, CreateView):
+class PropietarioCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'propietario/form.html'
     model = Propietario
     form_class = FormPropietario
@@ -84,7 +85,7 @@ class PropietarioCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class PropietarioUpdateView(IncludeUserFormUpdate, UpdateView):
+class PropietarioUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'propietario/form.html'
     model = Propietario
     form_class = FormPropietario
@@ -111,6 +112,6 @@ class PropietarioUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class PropietarioHistoryListView(GenericHistoryListView):
+class PropietarioHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Propietario
     template_name = 'history/list.html'

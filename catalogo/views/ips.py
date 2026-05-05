@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Ips'
 
 
-class IpsListView(DataTableMixin, TemplateView):
+class IpsListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'ips/list.html'
     model = Ips
     datatable_columns = ['ID', 'Ip', 'Asignado']
@@ -63,7 +64,7 @@ class IpsListView(DataTableMixin, TemplateView):
         return context
 
 
-class IpsDetailView(DetailView):
+class IpsDetailView(LoginRequiredMixin, DetailView):
     model = Ips
     template_name = 'ips/detail.html'
 
@@ -76,7 +77,7 @@ class IpsDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class IpsCreateView(IncludeUserFormCreate, CreateView):
+class IpsCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'ips/form.html'
     model = Ips
     form_class = FormIps
@@ -99,7 +100,7 @@ class IpsCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class IpsUpdateView(IncludeUserFormUpdate, UpdateView):
+class IpsUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'ips/form.html'
     model = Ips
     form_class = FormIps
@@ -126,6 +127,6 @@ class IpsUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class IpsHistoryListView(GenericHistoryListView):
+class IpsHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Ips
     template_name = 'history/list.html'

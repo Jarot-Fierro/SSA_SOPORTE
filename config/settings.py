@@ -35,7 +35,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://10.8.85.222',
 ]
 
-FORCE_SCRIPT_NAME = '/soporte_contulmo'
+# FORCE_SCRIPT_NAME = '/soporte_contulmo'
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
@@ -44,14 +44,14 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 SIMPLE_HISTORY_HISTORY_ID_USE_UUID = False
 
-SESSION_COOKIE_NAME = 'soporte_contulmo_sessionid'
-CSRF_COOKIE_NAME = 'soporte_contulmo_csrftoken'
-
-SESSION_COOKIE_PATH = '/soporte_contulmo/'
-CSRF_COOKIE_PATH = '/soporte_contulmo/'
-
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+# SESSION_COOKIE_NAME = 'soporte_contulmo_sessionid'
+# CSRF_COOKIE_NAME = 'soporte_contulmo_csrftoken'
+#
+# SESSION_COOKIE_PATH = '/soporte_contulmo/'
+# CSRF_COOKIE_PATH = '/soporte_contulmo/'
+#
+# USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.soporte_restriction.RestrictSoporteMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

@@ -267,7 +267,7 @@ class ComputadorUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView
         return context
 
 
-class ComputadorArmadoCreateView(ComputadorCreateView):
+class ComputadorArmadoCreateView(LoginRequiredMixin, ComputadorCreateView):
     def form_valid(self, form):
         computador = form.save(commit=False)
         computador.es_armado = True
@@ -280,6 +280,6 @@ class ComputadorArmadoCreateView(ComputadorCreateView):
         return context
 
 
-class ComputadorHistoryListView(GenericHistoryListView):
+class ComputadorHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Equipo
     template_name = 'history/list.html'

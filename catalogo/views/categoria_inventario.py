@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from inventario.models import CategoriaInventario
 MODULE_NAME = 'CategoriaInventarios'
 
 
-class CategoriaInventarioListView(DataTableMixin, TemplateView):
+class CategoriaInventarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'categoria_inventario/list.html'
     model = CategoriaInventario
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class CategoriaInventarioListView(DataTableMixin, TemplateView):
         return context
 
 
-class CategoriaInventarioDetailView(DetailView):
+class CategoriaInventarioDetailView(LoginRequiredMixin, DetailView):
     model = CategoriaInventario
     template_name = 'categoria_inventario/detail.html'
 
@@ -61,7 +62,7 @@ class CategoriaInventarioDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class CategoriaInventarioCreateView(IncludeUserFormCreate, CreateView):
+class CategoriaInventarioCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'categoria_inventario/form.html'
     model = CategoriaInventario
     form_class = FormCategoriaInventario
@@ -84,7 +85,7 @@ class CategoriaInventarioCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class CategoriaInventarioUpdateView(IncludeUserFormUpdate, UpdateView):
+class CategoriaInventarioUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'categoria_inventario/form.html'
     model = CategoriaInventario
     form_class = FormCategoriaInventario
@@ -111,6 +112,6 @@ class CategoriaInventarioUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class CategoriaInventarioHistoryListView(GenericHistoryListView):
+class CategoriaInventarioHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = CategoriaInventario
     template_name = 'history/list.html'

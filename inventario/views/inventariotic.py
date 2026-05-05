@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from inventario.models import InventarioInformatica
 MODULE_NAME = 'Inventario TIC'
 
 
-class InventarioTICListView(DataTableMixin, TemplateView):
+class InventarioTICListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'inventariotic/list.html'
     model = InventarioInformatica
     datatable_columns = ['ID', 'Producto', 'Código', 'Stock Actual', 'Categoría']
@@ -51,7 +52,7 @@ class InventarioTICListView(DataTableMixin, TemplateView):
         return context
 
 
-class InventarioTICDetailView(DetailView):
+class InventarioTICDetailView(LoginRequiredMixin, DetailView):
     model = InventarioInformatica
     template_name = 'inventariotic/detail.html'
 
@@ -70,7 +71,7 @@ class InventarioTICDetailView(DetailView):
         return context
 
 
-class InventarioTICCreateView(IncludeUserFormCreate, CreateView):
+class InventarioTICCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'inventariotic/form.html'
     model = InventarioInformatica
     form_class = FormInventarioTIC
@@ -93,7 +94,7 @@ class InventarioTICCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class InventarioTICUpdateView(IncludeUserFormUpdate, UpdateView):
+class InventarioTICUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'inventariotic/form.html'
     model = InventarioInformatica
     form_class = FormInventarioTIC
@@ -120,6 +121,6 @@ class InventarioTICUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class InventarioTICHistoryListView(GenericHistoryListView):
+class InventarioTICHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = InventarioInformatica
     template_name = 'history/list.html'

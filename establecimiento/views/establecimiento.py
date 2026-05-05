@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from establecimiento.models.establecimiento import Establecimiento
 MODULE_NAME = 'Establecimientos'
 
 
-class EstablecimientoListView(DataTableMixin, TemplateView):
+class EstablecimientoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'establecimiento/list.html'
     model = Establecimiento
     datatable_columns = ['ID', 'Nombre', 'Dirección', 'Teléfono', 'Comuna']
@@ -52,7 +53,7 @@ class EstablecimientoListView(DataTableMixin, TemplateView):
         return context
 
 
-class EstablecimientoDetailView(DetailView):
+class EstablecimientoDetailView(LoginRequiredMixin, DetailView):
     model = Establecimiento
     template_name = 'establecimiento/detail.html'
 
@@ -65,7 +66,7 @@ class EstablecimientoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class EstablecimientoCreateView(IncludeUserFormCreate, CreateView):
+class EstablecimientoCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'establecimiento/form.html'
     model = Establecimiento
     form_class = FormEstablecimiento
@@ -88,7 +89,7 @@ class EstablecimientoCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class EstablecimientoUpdateView(IncludeUserFormUpdate, UpdateView):
+class EstablecimientoUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'establecimiento/form.html'
     model = Establecimiento
     form_class = FormEstablecimiento
@@ -115,6 +116,6 @@ class EstablecimientoUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class EstablecimientoHistoryListView(GenericHistoryListView):
+class EstablecimientoHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Establecimiento
     template_name = 'history/list.html'

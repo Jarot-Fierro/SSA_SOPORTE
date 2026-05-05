@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Contrato'
 
 
-class ContratoListView(DataTableMixin, TemplateView):
+class ContratoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'contrato/list.html'
     model = Contrato
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class ContratoListView(DataTableMixin, TemplateView):
         return context
 
 
-class ContratoDetailView(DetailView):
+class ContratoDetailView(LoginRequiredMixin, DetailView):
     model = Contrato
     template_name = 'contrato/detail.html'
 
@@ -61,7 +62,7 @@ class ContratoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ContratoCreateView(IncludeUserFormCreate, CreateView):
+class ContratoCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'contrato/form.html'
     model = Contrato
     form_class = FormContrato
@@ -84,7 +85,7 @@ class ContratoCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class ContratoUpdateView(IncludeUserFormUpdate, UpdateView):
+class ContratoUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'contrato/form.html'
     model = Contrato
     form_class = FormContrato
@@ -111,6 +112,6 @@ class ContratoUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class ContratoHistoryListView(GenericHistoryListView):
+class ContratoHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Contrato
     template_name = 'history/list.html'

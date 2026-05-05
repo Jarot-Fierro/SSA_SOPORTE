@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Tipo Computador'
 
 
-class TipoComputadorListView(DataTableMixin, TemplateView):
+class TipoComputadorListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'tipo_computador/list.html'
     model = TipoComputador
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class TipoComputadorListView(DataTableMixin, TemplateView):
         return context
 
 
-class TipoComputadorDetailView(DetailView):
+class TipoComputadorDetailView(LoginRequiredMixin, DetailView):
     model = TipoComputador
     template_name = 'tipo_computador/detail.html'
 
@@ -61,7 +62,7 @@ class TipoComputadorDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class TipoComputadorCreateView(IncludeUserFormCreate, CreateView):
+class TipoComputadorCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'tipo_computador/form.html'
     model = TipoComputador
     form_class = FormTipoComputador
@@ -84,7 +85,7 @@ class TipoComputadorCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class TipoComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
+class TipoComputadorUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'tipo_computador/form.html'
     model = TipoComputador
     form_class = FormTipoComputador
@@ -111,6 +112,6 @@ class TipoComputadorUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class TipoComputadorHistoryListView(GenericHistoryListView):
+class TipoComputadorHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = TipoComputador
     template_name = 'history/list.html'

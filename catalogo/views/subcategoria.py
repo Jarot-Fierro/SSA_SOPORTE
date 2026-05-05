@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'SubCategorias'
 
 
-class SubCategoriaListView(DataTableMixin, TemplateView):
+class SubCategoriaListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'subcategoria/list.html'
     model = SubCategoria
     datatable_columns = ['ID', 'Nombre', 'Categoria']
@@ -49,7 +50,7 @@ class SubCategoriaListView(DataTableMixin, TemplateView):
         return context
 
 
-class SubCategoriaDetailView(DetailView):
+class SubCategoriaDetailView(LoginRequiredMixin, DetailView):
     model = SubCategoria
     template_name = 'subcategoria/detail.html'
 
@@ -62,7 +63,7 @@ class SubCategoriaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class SubCategoriaCreateView(IncludeUserFormCreate, CreateView):
+class SubCategoriaCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'subcategoria/form.html'
     model = SubCategoria
     form_class = FormSubCategoria
@@ -85,7 +86,7 @@ class SubCategoriaCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class SubCategoriaUpdateView(IncludeUserFormUpdate, UpdateView):
+class SubCategoriaUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'subcategoria/form.html'
     model = SubCategoria
     form_class = FormSubCategoria
@@ -112,6 +113,6 @@ class SubCategoriaUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class SubCategoriaHistoryListView(GenericHistoryListView):
+class SubCategoriaHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = SubCategoria
     template_name = 'history/list.html'

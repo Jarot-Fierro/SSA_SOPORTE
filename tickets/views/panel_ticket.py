@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView
 
@@ -10,7 +11,7 @@ from tickets.models import Ticket
 MODULE_NAME = 'Tickets'
 
 
-class PanelTicketListView(DataTableMixinAuto, TemplateView):
+class PanelTicketListView(LoginRequiredMixin, DataTableMixinAuto, TemplateView):
     template_name = 'panel_tickets/list.html'
     model = Ticket
 
@@ -150,7 +151,7 @@ class PanelTicketListView(DataTableMixinAuto, TemplateView):
         return context
 
 
-class PanelTicketCreateView(CreateView):
+class PanelTicketCreateView(LoginRequiredMixin, CreateView):
     template_name = 'panel_tickets/form.html'
     model = Ticket
     form_class = FormPanelTicket
@@ -176,7 +177,7 @@ class PanelTicketCreateView(CreateView):
         return context
 
 
-class PanelTicketsUpdateView(IncludeUserFormUpdate, UpdateView):
+class PanelTicketsUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'panel_tickets/form.html'
     model = Ticket
     form_class = FormPanelTicket

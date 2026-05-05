@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Categorias'
 
 
-class CategoriaListView(DataTableMixin, TemplateView):
+class CategoriaListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'categoria/list.html'
     model = Categoria
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class CategoriaListView(DataTableMixin, TemplateView):
         return context
 
 
-class CategoriaDetailView(DetailView):
+class CategoriaDetailView(LoginRequiredMixin, DetailView):
     model = Categoria
     template_name = 'categoria/detail.html'
 
@@ -61,7 +62,7 @@ class CategoriaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class CategoriaCreateView(IncludeUserFormCreate, CreateView):
+class CategoriaCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'categoria/form.html'
     model = Categoria
     form_class = FormCategoria
@@ -84,7 +85,7 @@ class CategoriaCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class CategoriaUpdateView(IncludeUserFormUpdate, UpdateView):
+class CategoriaUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'categoria/form.html'
     model = Categoria
     form_class = FormCategoria
@@ -111,6 +112,6 @@ class CategoriaUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class CategoriaHistoryListView(GenericHistoryListView):
+class CategoriaHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Categoria
     template_name = 'history/list.html'

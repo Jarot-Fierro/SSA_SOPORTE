@@ -199,6 +199,6 @@ class CelularUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class CelularHistoryListView(GenericHistoryListView):
+class CelularHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Celular
     template_name = 'history/list.html'

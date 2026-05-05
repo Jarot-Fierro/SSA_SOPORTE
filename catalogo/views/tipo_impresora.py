@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Tipo Impresoras'
 
 
-class TipoImpresoraListView(DataTableMixin, TemplateView):
+class TipoImpresoraListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'tipo_impresora/list.html'
     model = TipoImpresora
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class TipoImpresoraListView(DataTableMixin, TemplateView):
         return context
 
 
-class TipoImpresoraDetailView(DetailView):
+class TipoImpresoraDetailView(LoginRequiredMixin, DetailView):
     model = TipoImpresora
     template_name = 'tipo_impresora/detail.html'
 
@@ -61,7 +62,7 @@ class TipoImpresoraDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class TipoImpresoraCreateView(IncludeUserFormCreate, CreateView):
+class TipoImpresoraCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'tipo_impresora/form.html'
     model = TipoImpresora
     form_class = FormTipoImpresora
@@ -84,7 +85,7 @@ class TipoImpresoraCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class TipoImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
+class TipoImpresoraUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'tipo_impresora/form.html'
     model = TipoImpresora
     form_class = FormTipoImpresora
@@ -111,6 +112,6 @@ class TipoImpresoraUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class TipoImpresoraHistoryListView(GenericHistoryListView):
+class TipoImpresoraHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = TipoImpresora
     template_name = 'history/list.html'

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -8,6 +9,7 @@ from equipo.models.celular import Celular
 from equipo.models.equipos import Equipo
 
 
+@login_required
 def generar_pdf_computador(request, pk=None):
     # Datos a pasar a la plantilla
     equipo = Equipo.objects.filter(status=True).get(id=pk)
@@ -28,6 +30,7 @@ def generar_pdf_computador(request, pk=None):
     return response
 
 
+@login_required
 def generar_pdf_celular(request, pk=None):
     # Datos a pasar a la plantilla
     equipo = Celular.objects.filter(status=True).get(id=pk)
@@ -48,6 +51,7 @@ def generar_pdf_celular(request, pk=None):
     return response
 
 
+@login_required
 def generar_pdf_impresora(request, pk=None):
     # Datos a pasar a la plantilla
     equipo = Equipo.objects.filter(status=True).get(id=pk)

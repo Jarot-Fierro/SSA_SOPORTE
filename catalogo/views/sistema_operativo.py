@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'SistemaOperativos'
 
 
-class SistemaOperativoListView(DataTableMixin, TemplateView):
+class SistemaOperativoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'sistema_operativo/list.html'
     model = SistemaOperativo
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class SistemaOperativoListView(DataTableMixin, TemplateView):
         return context
 
 
-class SistemaOperativoDetailView(DetailView):
+class SistemaOperativoDetailView(LoginRequiredMixin, DetailView):
     model = SistemaOperativo
     template_name = 'sistema_operativo/detail.html'
 
@@ -61,7 +62,7 @@ class SistemaOperativoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class SistemaOperativoCreateView(IncludeUserFormCreate, CreateView):
+class SistemaOperativoCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'sistema_operativo/form.html'
     model = SistemaOperativo
     form_class = FormSistemaOperativo
@@ -84,7 +85,7 @@ class SistemaOperativoCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class SistemaOperativoUpdateView(IncludeUserFormUpdate, UpdateView):
+class SistemaOperativoUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'sistema_operativo/form.html'
     model = SistemaOperativo
     form_class = FormSistemaOperativo
@@ -111,6 +112,6 @@ class SistemaOperativoUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class SistemaOperativoHistoryListView(GenericHistoryListView):
+class SistemaOperativoHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = SistemaOperativo
     template_name = 'history/list.html'

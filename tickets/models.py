@@ -42,7 +42,7 @@ class Ticket(StandardModel):
 
     history = HistoricalRecords()
 
-    UPPERCASE_FIELDS = ['numero_ticket', ]
+    UPPERCASE_FIELDS = ['numero_ticket', 'titulo']
     LOWERCASE_FIELDS = ['solucion', ]
 
     class Meta:

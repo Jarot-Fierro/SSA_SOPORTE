@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Marcas'
 
 
-class MarcaListView(DataTableMixin, TemplateView):
+class MarcaListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'marca/list.html'
     model = Marca
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class MarcaListView(DataTableMixin, TemplateView):
         return context
 
 
-class MarcaDetailView(DetailView):
+class MarcaDetailView(LoginRequiredMixin, DetailView):
     model = Marca
     template_name = 'marca/detail.html'
 
@@ -61,7 +62,7 @@ class MarcaDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class MarcaCreateView(IncludeUserFormCreate, CreateView):
+class MarcaCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'marca/form.html'
     model = Marca
     form_class = FormMarca
@@ -84,7 +85,7 @@ class MarcaCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
+class MarcaUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'marca/form.html'
     model = Marca
     form_class = FormMarca
@@ -111,6 +112,6 @@ class MarcaUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class MarcaHistoryListView(GenericHistoryListView):
+class MarcaHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Marca
     template_name = 'history/list.html'

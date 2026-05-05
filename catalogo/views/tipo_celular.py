@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'TipoCelulars'
 
 
-class TipoCelularListView(DataTableMixin, TemplateView):
+class TipoCelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'tipo_celular/list.html'
     model = TipoCelular
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class TipoCelularListView(DataTableMixin, TemplateView):
         return context
 
 
-class TipoCelularDetailView(DetailView):
+class TipoCelularDetailView(LoginRequiredMixin, DetailView):
     model = TipoCelular
     template_name = 'tipo_celular/detail.html'
 
@@ -61,7 +62,7 @@ class TipoCelularDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class TipoCelularCreateView(IncludeUserFormCreate, CreateView):
+class TipoCelularCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'tipo_celular/form.html'
     model = TipoCelular
     form_class = FormTipoCelular
@@ -84,7 +85,7 @@ class TipoCelularCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class TipoCelularUpdateView(IncludeUserFormUpdate, UpdateView):
+class TipoCelularUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'tipo_celular/form.html'
     model = TipoCelular
     form_class = FormTipoCelular
@@ -111,6 +112,6 @@ class TipoCelularUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class TipoCelularHistoryListView(GenericHistoryListView):
+class TipoCelularHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = TipoCelular
     template_name = 'history/list.html'

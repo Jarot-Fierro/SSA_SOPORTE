@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'MicrosoftOffices'
 
 
-class MicrosoftOfficeListView(DataTableMixin, TemplateView):
+class MicrosoftOfficeListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'microsoft_office/list.html'
     model = MicrosoftOffice
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class MicrosoftOfficeListView(DataTableMixin, TemplateView):
         return context
 
 
-class MicrosoftOfficeDetailView(DetailView):
+class MicrosoftOfficeDetailView(LoginRequiredMixin, DetailView):
     model = MicrosoftOffice
     template_name = 'microsoft_office/detail.html'
 
@@ -61,7 +62,7 @@ class MicrosoftOfficeDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class MicrosoftOfficeCreateView(IncludeUserFormCreate, CreateView):
+class MicrosoftOfficeCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'microsoft_office/form.html'
     model = MicrosoftOffice
     form_class = FormMicrosoftOffice
@@ -84,7 +85,7 @@ class MicrosoftOfficeCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class MicrosoftOfficeUpdateView(IncludeUserFormUpdate, UpdateView):
+class MicrosoftOfficeUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'microsoft_office/form.html'
     model = MicrosoftOffice
     form_class = FormMicrosoftOffice
@@ -111,6 +112,6 @@ class MicrosoftOfficeUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class MicrosoftOfficeHistoryListView(GenericHistoryListView):
+class MicrosoftOfficeHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = MicrosoftOffice
     template_name = 'history/list.html'

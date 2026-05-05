@@ -258,6 +258,6 @@ class ImpresoraUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView)
         return context
 
 
-class ImpresoraHistoryListView(GenericHistoryListView):
+class ImpresoraHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Equipo
     template_name = 'history/list.html'

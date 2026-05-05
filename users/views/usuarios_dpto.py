@@ -41,7 +41,7 @@ def login_view_depto(request):
                   )
 
 
-class UserDptoListView(DataTableMixin, TemplateView):
+class UserDptoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'usuarios_dpto/list.html'
     model = User
 
@@ -106,7 +106,7 @@ class UserDptoListView(DataTableMixin, TemplateView):
         return context
 
 
-class UserDptoDetailView(DetailView):
+class UserDptoDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'usuarios_dpto/detail.html'
 
@@ -118,7 +118,7 @@ class UserDptoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class UserDptoCreateView(CreateView):
+class UserDptoCreateView(LoginRequiredMixin, CreateView):
     template_name = 'usuarios_dpto/form.html'
     model = User
     form_class = FormUsuarioDpto
@@ -220,7 +220,7 @@ class UserDptoCreateView(CreateView):
         return context
 
 
-class UserDptoUpdateView(UpdateView):
+class UserDptoUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'usuarios_dpto/form.html'
     model = User
     form_class = FormUsuarioDptoUpdate

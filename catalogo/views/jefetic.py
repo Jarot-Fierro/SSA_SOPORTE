@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'JefeTic'
 
 
-class JefeTicListView(DataTableMixin, TemplateView):
+class JefeTicListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'jefetic/list.html'
     model = JefeTic
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class JefeTicListView(DataTableMixin, TemplateView):
         return context
 
 
-class JefeTicDetailView(DetailView):
+class JefeTicDetailView(LoginRequiredMixin, DetailView):
     model = JefeTic
     template_name = 'jefetic/detail.html'
 
@@ -61,7 +62,7 @@ class JefeTicDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class JefeTicCreateView(IncludeUserFormCreate, CreateView):
+class JefeTicCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'jefetic/form.html'
     model = JefeTic
     form_class = FormJefeTic
@@ -84,7 +85,7 @@ class JefeTicCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class JefeTicUpdateView(IncludeUserFormUpdate, UpdateView):
+class JefeTicUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'jefetic/form.html'
     model = JefeTic
     form_class = FormJefeTic
@@ -111,6 +112,6 @@ class JefeTicUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class JefeTicHistoryListView(GenericHistoryListView):
+class JefeTicHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = JefeTic
     template_name = 'history/list.html'

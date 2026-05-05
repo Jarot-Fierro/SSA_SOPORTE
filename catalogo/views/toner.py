@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from core.utils import IncludeUserFormCreate, IncludeUserFormUpdate
 MODULE_NAME = 'Toner'
 
 
-class TonerListView(DataTableMixin, TemplateView):
+class TonerListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'toner/list.html'
     model = Toner
     datatable_columns = ['ID', 'Nombre']
@@ -48,7 +49,7 @@ class TonerListView(DataTableMixin, TemplateView):
         return context
 
 
-class TonerDetailView(DetailView):
+class TonerDetailView(LoginRequiredMixin, DetailView):
     model = Toner
     template_name = 'toner/detail.html'
 
@@ -61,7 +62,7 @@ class TonerDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class TonerCreateView(IncludeUserFormCreate, CreateView):
+class TonerCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'toner/form.html'
     model = Toner
     form_class = FormToner
@@ -84,7 +85,7 @@ class TonerCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class TonerUpdateView(IncludeUserFormUpdate, UpdateView):
+class TonerUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'toner/form.html'
     model = Toner
     form_class = FormToner
@@ -111,6 +112,6 @@ class TonerUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class TonerHistoryListView(GenericHistoryListView):
+class TonerHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Toner
     template_name = 'history/list.html'

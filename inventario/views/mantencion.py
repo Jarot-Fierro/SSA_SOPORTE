@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from inventario.models import InventarioMantencion
 MODULE_NAME = 'Inventario Mantención'
 
 
-class InventarioMantencionListView(DataTableMixin, TemplateView):
+class InventarioMantencionListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'inventariomantencion/list.html'
     model = InventarioMantencion
     datatable_columns = ['ID', 'Producto', 'Código', 'Stock Actual', 'Categoría']
@@ -51,7 +52,7 @@ class InventarioMantencionListView(DataTableMixin, TemplateView):
         return context
 
 
-class InventarioMantencionDetailView(DetailView):
+class InventarioMantencionDetailView(LoginRequiredMixin, DetailView):
     model = InventarioMantencion
     template_name = 'inventariomantencion/detail.html'
 
@@ -70,7 +71,7 @@ class InventarioMantencionDetailView(DetailView):
         return context
 
 
-class InventarioMantencionCreateView(IncludeUserFormCreate, CreateView):
+class InventarioMantencionCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'inventariomantencion/form.html'
     model = InventarioMantencion
     form_class = FormInventarioMantencion
@@ -93,7 +94,7 @@ class InventarioMantencionCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class InventarioMantencionUpdateView(IncludeUserFormUpdate, UpdateView):
+class InventarioMantencionUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'inventariomantencion/form.html'
     model = InventarioMantencion
     form_class = FormInventarioMantencion
@@ -120,6 +121,6 @@ class InventarioMantencionUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class InventarioMantencionHistoryListView(GenericHistoryListView):
+class InventarioMantencionHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = InventarioMantencion
     template_name = 'history/list.html'

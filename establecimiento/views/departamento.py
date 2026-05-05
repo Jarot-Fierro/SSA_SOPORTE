@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView
@@ -13,7 +14,7 @@ from establecimiento.models.departamento import Departamento
 MODULE_NAME = 'Departamentos'
 
 
-class DepartamentoListView(DataTableMixin, TemplateView):
+class DepartamentoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'departamento/list.html'
     model = Departamento
     datatable_columns = ['ID', 'Nombre', 'Alias', 'Dirección', 'Establecimiento']
@@ -54,7 +55,7 @@ class DepartamentoListView(DataTableMixin, TemplateView):
         return context
 
 
-class DepartamentoDetailView(DetailView):
+class DepartamentoDetailView(LoginRequiredMixin, DetailView):
     model = Departamento
     template_name = 'departamento/detail.html'
 
@@ -67,7 +68,7 @@ class DepartamentoDetailView(DetailView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class DepartamentoCreateView(IncludeUserFormCreate, CreateView):
+class DepartamentoCreateView(LoginRequiredMixin, IncludeUserFormCreate, CreateView):
     template_name = 'departamento/form.html'
     model = Departamento
     form_class = FormDepartamento
@@ -90,7 +91,7 @@ class DepartamentoCreateView(IncludeUserFormCreate, CreateView):
         return context
 
 
-class DepartamentoUpdateView(IncludeUserFormUpdate, UpdateView):
+class DepartamentoUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     template_name = 'departamento/form.html'
     model = Departamento
     form_class = FormDepartamento
@@ -117,6 +118,6 @@ class DepartamentoUpdateView(IncludeUserFormUpdate, UpdateView):
         return context
 
 
-class DepartamentoHistoryListView(GenericHistoryListView):
+class DepartamentoHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = Departamento
     template_name = 'history/list.html'
