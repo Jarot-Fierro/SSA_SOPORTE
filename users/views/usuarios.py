@@ -62,16 +62,16 @@ class UserListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'usuarios/list.html'
     model = User
 
-    datatable_columns = ['ID', 'Usuario', 'Nombre', 'Correo', 'Establecimiento', 'Último inicio']
+    datatable_columns = ['ID', 'Usuario', 'Nombre', 'Correo', 'Establecimiento', 'Rol', 'Último inicio']
 
     datatable_order_fields = [
         'id', 'username', 'first_name', 'email',
-        'establecimiento__nombre', 'last_login'
+        'establecimiento__nombre', 'rol__nombre', 'last_login'
     ]
 
     datatable_search_fields = [
         'username__icontains', 'first_name__icontains', 'last_name__icontains',
-        'email__icontains', 'establecimiento__nombre__icontains'
+        'email__icontains', 'establecimiento__nombre__icontains', 'rol__nombre__icontains'
     ]
 
     # url_update = 'usuarios_update'
@@ -108,6 +108,7 @@ class UserListView(LoginRequiredMixin, DataTableMixin, TemplateView):
             'Nombre': nombre if nombre else '—',
             'Correo': obj.email or '—',
             'Establecimiento': obj.establecimiento.nombre if obj.establecimiento else '—',
+            'Rol': obj.rol.role_name if obj.rol else '—',
             'Último inicio': obj.last_login.strftime('%d-%m-%Y %H:%M') if obj.last_login else 'Nunca',
         }
 
