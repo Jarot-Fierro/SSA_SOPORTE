@@ -255,6 +255,24 @@
     });
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('.mac-address').inputmask({
+            mask: "HH:HH:HH:HH:HH:HH",
+            definitions: {
+                'H': {
+                    validator: "[0-9A-Fa-f]",
+                    casing: "upper"
+                }
+            },
+            placeholder: "__:__:__:__:__:__",
+            showMaskOnHover: false,
+            showMaskOnFocus: true,
+            clearIncomplete: true
+        });
+    });
+</script>
+
 <!--    SCRIPT PARA VER DETALLES DE UN REGISTRO, ES UN MODAL-->
 <script>
     // Delegated handler for detail view buttons

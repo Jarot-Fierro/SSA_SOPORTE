@@ -39,7 +39,7 @@ class FormComputador(forms.ModelForm):
         label='Dirección MAC',
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
+                'class': 'form-control mac-address',
                 'placeholder': 'Ej: 00:1A:2B:3C:4D:5E',
             }
         ),

@@ -22,7 +22,7 @@ class FormCelular(forms.ModelForm):
     numero_telefono = forms.CharField(
         label='Número de Teléfono',
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control telefono_personal',
             'placeholder': 'Ej: 912345678'
         }),
         required=True
