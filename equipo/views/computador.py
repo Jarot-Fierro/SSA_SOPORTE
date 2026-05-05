@@ -267,7 +267,7 @@ class ComputadorUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView
         return context
 
 
-class ComputadorArmadoCreateView(LoginRequiredMixin, ComputadorCreateView):
+class ComputadorArmadoCreateView(ComputadorCreateView):
     def form_valid(self, form):
         computador = form.save(commit=False)
         computador.es_armado = True
