@@ -46,7 +46,36 @@ class DashboardView(DataTableMixinAuto, LoginRequiredMixin, TemplateView):
         'funcionario__nombres__icontains',
     ]
 
-    url_update = 'ticket_panel_update'
+    # url_update = 'ticket_panel_update'
+    
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.soporte == 2:
+            return 'ticket_update'
+        return None
+
+    def get_actions(self, obj):
+        """
+        Oculta el botón de editar si el ticket está CERRADO.
+        """
+        user = self.request.user
+        actions = []
+
+        # Obtenemos la URL base (que ya valida permisos)
+        url = self.get_url_update()
+
+        # Si el ticket está cerrado, no mostrar el botón de editar
+        if obj.estado == 'CERRADO':
+            self.url_update = None
+        else:
+            self.url_update = url
+
+        # Reutilizamos la lógica del mixin pero con el url_update condicional
+        res = super().get_actions(obj)
+
+        # Restauramos url_update para el siguiente objeto en el bucle
+        self.url_update = url
+        return res
 
     def get_base_queryset(self):
         return Ticket.objects.filter(establecimiento=self.request.user.establecimiento).select_related(
