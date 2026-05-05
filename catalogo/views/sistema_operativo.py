@@ -22,7 +22,14 @@ class SistemaOperativoListView(LoginRequiredMixin, DataTableMixin, TemplateView)
     datatable_search_fields = ['nombre__icontains', 'sistema_operativo__nombre__icontains']
 
     url_detail = 'detail_sistemas_operativos'
-    url_update = 'update_sistemas_operativos'
+
+    # url_update = 'update_sistemas_operativos'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_sistemas_operativos'
+        return None
 
     def render_row(self, obj):
         return {

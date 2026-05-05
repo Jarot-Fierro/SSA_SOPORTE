@@ -22,7 +22,14 @@ class MicrosoftOfficeListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['nombre__icontains', 'microsoft_office__nombre__icontains']
 
     url_detail = 'detail_microsoft_office'
-    url_update = 'update_microsoft_office'
+
+    # url_update = 'update_microsoft_office'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_microsoft_office'
+        return None
 
     def render_row(self, obj):
         return {

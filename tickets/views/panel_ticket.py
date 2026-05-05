@@ -51,7 +51,13 @@ class PanelTicketListView(LoginRequiredMixin, DataTableMixinAuto, TemplateView):
         'departamento__alias__icontains',
     ]
 
-    url_update = 'ticket_panel_update'
+    # url_update = 'ticket_panel_update'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.soporte == 2:
+            return 'ticket_panel_update'
+        return None
 
     def get_base_queryset(self):
 

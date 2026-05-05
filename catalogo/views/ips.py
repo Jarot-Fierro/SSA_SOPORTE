@@ -22,7 +22,14 @@ class IpsListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['ip__icontains']
 
     url_detail = 'detail_ips'
-    url_update = 'update_ips'
+
+    # url_update = 'update_ips'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_ips'
+        return None
 
     def get_base_queryset(self):
         return super().get_base_queryset().select_related('asignacion_ip')

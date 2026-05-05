@@ -22,7 +22,15 @@ class PuestoTrabajoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['nombre__icontains', 'puesto_trabajo__nombre__icontains']
 
     url_detail = 'detail_puesto_trabajo'
-    url_update = 'update_puesto_trabajo'
+
+    url_update = None
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_puesto_trabajo'
+
+        return None
 
     def render_row(self, obj):
         return {

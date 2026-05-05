@@ -143,6 +143,7 @@ class RoleAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
 
         'mantenedores',
         'organizacion',
+        'inventario',
 
         'equipos',
 
@@ -169,6 +170,7 @@ class RoleAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         ("Activos / Inventario", {
             "fields": (
                 "equipos",
+                "inventario",
             ),
         }),
 

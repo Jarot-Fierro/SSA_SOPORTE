@@ -22,7 +22,14 @@ class TonerListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['nombre__icontains', 'toner__nombre__icontains']
 
     url_detail = 'detail_toner'
-    url_update = 'update_toner'
+
+    # url_update = 'update_toner'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_toner'
+        return None
 
     def render_row(self, obj):
         return {

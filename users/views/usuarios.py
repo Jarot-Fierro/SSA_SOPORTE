@@ -74,8 +74,14 @@ class UserListView(LoginRequiredMixin, DataTableMixin, TemplateView):
         'email__icontains', 'establecimiento__nombre__icontains'
     ]
 
-    url_update = 'usuarios_update'
+    # url_update = 'usuarios_update'
     url_detail = 'usuarios_detail'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.usuarios == 2:
+            return 'usuarios_update'
+        return None
 
     # FILTRA SOLO USUARIOS DEL MISMO ESTABLECIMIENTO QUE EL USUARIO LOGUEADO
     def get_base_queryset(self):

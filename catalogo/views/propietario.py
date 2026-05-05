@@ -22,7 +22,14 @@ class PropietarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['nombre__icontains', 'propietario__nombre__icontains']
 
     url_detail = 'detail_propietarios'
-    url_update = 'update_propietarios'
+
+    # url_update = 'update_propietarios'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_propietarios'
+        return None
 
     def render_row(self, obj):
         return {

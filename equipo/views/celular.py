@@ -66,7 +66,14 @@ class CelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
         'responsable__nombres__icontains',
         'jefe_entrega__nombre__icontains',
     ]
-    url_update = 'update_celular'
+
+    # url_update = 'update_celular'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.equipos == 2:
+            return 'update_celular'
+        return None
 
     def render_row(self, obj):
         return {

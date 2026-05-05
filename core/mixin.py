@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.http import JsonResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 
 class DataTableMixin:
@@ -16,6 +16,20 @@ class DataTableMixin:
     permission_view = None
     permission_update = None
     permission_delete = None
+
+    def get_url_update(self):
+        """
+        Devuelve el nombre de la URL de actualización si el usuario tiene permiso.
+        Puede ser sobreescrito en la clase hija.
+        """
+        return self.url_update
+
+    def get_url_delete(self):
+        """
+        Devuelve el nombre de la URL de eliminación si el usuario tiene permiso.
+        Puede ser sobreescrito en la clase hija.
+        """
+        return self.url_delete
 
     def get_base_queryset(self):
         qs = self.model.objects.all()
@@ -46,38 +60,38 @@ class DataTableMixin:
             'Codigo': getattr(obj, 'codigo', ''),
         }
 
-    def get_actions(self, obj):
-        """
-        Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
-        """
-        user = self.request.user
-        actions = []
-
-        if self.url_detail:
-            # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
-            detail_kwargs = {'pk': obj.pk}
-            if self.url_detail == 'paciente_view_param':
-                detail_kwargs = {'paciente_id': obj.pk}
-
-            actions.append(f"""
-                <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
-                   class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
-                   <i class="fas fa-search"></i></a>
-            """)
-
-        if self.url_update:
-            # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
-            update_kwargs = {'pk': obj.pk}
-            if self.url_update == 'paciente_view_param':
-                update_kwargs = {'paciente_id': obj.pk}
-
-            actions.append(f"""
-                <a href="{reverse_lazy(f'{self.url_update}', kwargs=update_kwargs)}"
-                   class="btn p-1 btn-sm btn-info" title="Editar">
-                   <i class="fas fa-edit"></i></a>
-            """)
-
-        return ''.join(actions)
+    # def get_actions(self, obj):
+    #     """
+    #     Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
+    #     """
+    #     user = self.request.user
+    #     actions = []
+    #
+    #     if self.url_detail:
+    #         # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+    #         detail_kwargs = {'pk': obj.pk}
+    #         if self.url_detail == 'paciente_view_param':
+    #             detail_kwargs = {'paciente_id': obj.pk}
+    #
+    #         actions.append(f"""
+    #             <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
+    #                class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
+    #                <i class="fas fa-search"></i></a>
+    #         """)
+    #
+    #     if self.url_update:
+    #         # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+    #         update_kwargs = {'pk': obj.pk}
+    #         if self.url_update == 'paciente_view_param':
+    #             update_kwargs = {'paciente_id': obj.pk}
+    #
+    #         actions.append(f"""
+    #             <a href="{reverse_lazy(f'{self.url_update}', kwargs=update_kwargs)}"
+    #                class="btn p-1 btn-sm btn-info" title="Editar">
+    #                <i class="fas fa-edit"></i></a>
+    #         """)
+    #
+    #     return ''.join(actions)
 
     def filter_queryset(self, qs, search_value):
         """
@@ -134,6 +148,66 @@ class DataTableMixin:
             'data': data,
         })
 
+    def get_actions(self, obj):
+        """
+        Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
+        """
+        user = self.request.user
+        actions = []
+
+        if self.url_detail:
+            # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+            detail_kwargs = {'pk': obj.pk}
+            if self.url_detail == 'paciente_view_param':
+                detail_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
+                   class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
+                   <i class="fas fa-search"></i></a>
+            """)
+
+        url_update = self.get_url_update()
+        if url_update:
+            # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+            update_kwargs = {'pk': obj.pk}
+            if url_update == 'paciente_view_param':
+                update_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{url_update}', kwargs=update_kwargs)}"
+                   class="btn p-1 btn-sm btn-info" title="Editar">
+                   <i class="fas fa-edit"></i></a>
+            """)
+
+        url_delete = self.get_url_delete()
+        if url_delete:
+            delete_kwargs = {'pk': obj.pk}
+            if url_delete == 'paciente_view_param':
+                delete_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{url_delete}', kwargs=delete_kwargs)}"
+                   class="btn p-1 btn-sm btn-danger delete-btn" title="Eliminar">
+                   <i class="fas fa-trash"></i></a>
+            """)
+
+        # Si el modelo es Paciente, agregar el botón "Actualizar v2"
+        if self.model.__name__ == 'Paciente':
+            rut_param = getattr(obj, 'rut', '') or ''
+            try:
+                base_url = reverse('ficha_paciente_manage')
+                url_v2 = f"{base_url}?rut={rut_param}"
+                actions.append(f"""
+                    <a href="{url_v2}"
+                       class="btn p-1 btn-sm btn-success" title="Actualizar v2">
+                       <i class="fas fa-edit"></i></a>
+                """)
+            except:
+                pass
+
+        return ''.join(actions)
+
 
 class DataTableMixinAuto:
     datatable_columns = []  # e.g. ['ID', 'Nombre', 'Codigo']
@@ -148,6 +222,20 @@ class DataTableMixinAuto:
     permission_view = None
     permission_update = None
     permission_delete = None
+
+    def get_url_update(self):
+        """
+        Devuelve el nombre de la URL de actualización si el usuario tiene permiso.
+        Puede ser sobreescrito en la clase hija.
+        """
+        return self.url_update
+
+    def get_url_delete(self):
+        """
+        Devuelve el nombre de la URL de eliminación si el usuario tiene permiso.
+        Puede ser sobreescrito en la clase hija.
+        """
+        return self.url_delete
 
     def get_base_queryset(self):
         qs = self.model.objects.all()
@@ -178,38 +266,38 @@ class DataTableMixinAuto:
             'Codigo': getattr(obj, 'codigo', ''),
         }
 
-    def get_actions(self, obj):
-        """
-        Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
-        """
-        user = self.request.user
-        actions = []
-
-        if self.url_detail:
-            # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
-            detail_kwargs = {'pk': obj.pk}
-            if self.url_detail == 'paciente_view_param':
-                detail_kwargs = {'paciente_id': obj.pk}
-
-            actions.append(f"""
-                <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
-                   class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
-                   <i class="fas fa-search"></i></a>
-            """)
-
-        if self.url_update:
-            # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
-            update_kwargs = {'pk': obj.pk}
-            if self.url_update == 'paciente_view_param':
-                update_kwargs = {'paciente_id': obj.pk}
-
-            actions.append(f"""
-                <a href="{reverse_lazy(f'{self.url_update}', kwargs=update_kwargs)}"
-                   class="btn p-1 btn-sm btn-info" title="Editar">
-                   <i class="fas fa-edit"></i></a>
-            """)
-
-        return ''.join(actions)
+    # def get_actions(self, obj):
+    #     """
+    #     Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
+    #     """
+    #     user = self.request.user
+    #     actions = []
+    #
+    #     if self.url_detail:
+    #         # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+    #         detail_kwargs = {'pk': obj.pk}
+    #         if self.url_detail == 'paciente_view_param':
+    #             detail_kwargs = {'paciente_id': obj.pk}
+    #
+    #         actions.append(f"""
+    #             <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
+    #                class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
+    #                <i class="fas fa-search"></i></a>
+    #         """)
+    #
+    #     if self.url_update:
+    #         # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+    #         update_kwargs = {'pk': obj.pk}
+    #         if self.url_update == 'paciente_view_param':
+    #             update_kwargs = {'paciente_id': obj.pk}
+    #
+    #         actions.append(f"""
+    #             <a href="{reverse_lazy(f'{self.url_update}', kwargs=update_kwargs)}"
+    #                class="btn p-1 btn-sm btn-info" title="Editar">
+    #                <i class="fas fa-edit"></i></a>
+    #         """)
+    #
+    #     return ''.join(actions)
 
     def filter_queryset(self, qs, search_value):
         """
@@ -278,3 +366,63 @@ class DataTableMixinAuto:
         Para ser sobreescrito en clases hijas si necesitan enviar datos extras en el JSON de DataTable.
         """
         return {}
+
+    def get_actions(self, obj):
+        """
+        Devuelve el HTML de los botones de acciones, según permisos definidos en la clase hija.
+        """
+        user = self.request.user
+        actions = []
+
+        if self.url_detail:
+            # Check if url_detail is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+            detail_kwargs = {'pk': obj.pk}
+            if self.url_detail == 'paciente_view_param':
+                detail_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{self.url_detail}', kwargs=detail_kwargs)}"
+                   class="btn p-1 btn-sm btn-secondary view-btn" title="Ver detalle">
+                   <i class="fas fa-search"></i></a>
+            """)
+
+        url_update = self.get_url_update()
+        if url_update:
+            # Check if url_update is 'paciente_view_param' to use 'paciente_id' instead of 'pk'
+            update_kwargs = {'pk': obj.pk}
+            if url_update == 'paciente_view_param':
+                update_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{url_update}', kwargs=update_kwargs)}"
+                   class="btn p-1 btn-sm btn-info" title="Editar">
+                   <i class="fas fa-edit"></i></a>
+            """)
+
+        url_delete = self.get_url_delete()
+        if url_delete:
+            delete_kwargs = {'pk': obj.pk}
+            if url_delete == 'paciente_view_param':
+                delete_kwargs = {'paciente_id': obj.pk}
+
+            actions.append(f"""
+                <a href="{reverse_lazy(f'{url_delete}', kwargs=delete_kwargs)}"
+                   class="btn p-1 btn-sm btn-danger delete-btn" title="Eliminar">
+                   <i class="fas fa-trash"></i></a>
+            """)
+
+        # Si el modelo es Paciente, agregar el botón "Actualizar v2"
+        if self.model.__name__ == 'Paciente':
+            rut_param = getattr(obj, 'rut', '') or ''
+            try:
+                base_url = reverse('ficha_paciente_manage')
+                url_v2 = f"{base_url}?rut={rut_param}"
+                actions.append(f"""
+                    <a href="{url_v2}"
+                       class="btn p-1 btn-sm btn-success" title="Actualizar v2">
+                       <i class="fas fa-edit"></i></a>
+                """)
+            except:
+                pass
+
+        return ''.join(actions)

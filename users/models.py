@@ -18,6 +18,8 @@ class Role(models.Model):
 
     equipos = models.IntegerField(choices=PERMISSION_CHOICES, default=0)
 
+    inventario = models.IntegerField(choices=PERMISSION_CHOICES, default=0)
+
     usuarios = models.IntegerField(choices=PERMISSION_CHOICES, default=0)
 
     soporte = models.IntegerField(choices=PERMISSION_CHOICES, default=0)
@@ -31,6 +33,11 @@ class Role(models.Model):
 
     def __str__(self):
         return self.role_name
+
+    def save(self, *args, **kwargs):
+        if self.role_name:
+            self.role_name = self.role_name.upper()
+        super().save(*args, **kwargs)
 
 
 class User(AbstractUser):

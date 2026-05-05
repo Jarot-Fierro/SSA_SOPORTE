@@ -12,6 +12,7 @@ class RoleForm(forms.ModelForm):
             'organizacion',
 
             'equipos',
+            'inventario',
 
             'usuarios',
 
@@ -24,6 +25,7 @@ class RoleForm(forms.ModelForm):
             'mantenedores': forms.Select(attrs={'class': 'form-control'}),
 
             'organizacion': forms.Select(attrs={'class': 'form-control'}),
+            'inventario': forms.Select(attrs={'class': 'form-control'}),
 
             'equipos': forms.Select(attrs={'class': 'form-control'}),
 

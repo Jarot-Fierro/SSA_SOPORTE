@@ -69,9 +69,11 @@
                     </a>
                 </div>
                 <div class="col-auto text-end">
+                    {% if request.user.rol.soporte == 2 %}
                     <a href="{% url 'ticket_create' %}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Nuevo Soporte
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -23,14 +23,6 @@
                 <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>
-
-        <div class="col-md-6 mb-3">
-            <label for="id_establecimiento">Establecimiento</label>
-            {{ form.establecimiento }}
-            {% for error in form.establecimiento.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
-        </div>
     </div>
 
     <hr>
@@ -59,6 +51,14 @@
             <label for="id_equipos">Equipos</label>
             {{ form.equipos }}
             {% for error in form.equipos.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="id_inventario">Inventario</label>
+            {{ form.inventario }}
+            {% for error in form.inventario.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
         </div>

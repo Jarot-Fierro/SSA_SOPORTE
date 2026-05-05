@@ -56,38 +56,6 @@
             <div class="row">
                 <!-- Left col -->
                 <div class="col-md-9">
-                    <!-- MAP & BOX PANE -->
-                    {#                    <div class="card">#}
-                    {#                        <div class="card-header border-transparent">#}
-                    {#                            <h3 class="card-title">Tickets por Persona (Top 10 Abiertos)</h3>#}
-                    {#                            <div class="card-tools">#}
-                    {#                                <button type="button" class="btn btn-tool" data-card-widget="collapse">#}
-                    {#                                    <i class="fas fa-minus"></i>#}
-                    {#                                </button>#}
-                    {#                            </div>#}
-                    {#                        </div>#}
-                    {#                        <div class="card-body p-0">#}
-                    {#                            <div class="table-responsive">#}
-                    {#                                <table class="table m-0">#}
-                    {#                                    <thead>#}
-                    {#                                    <tr>#}
-                    {#                                        <th>Persona</th>#}
-                    {#                                        <th>Abiertos</th>#}
-                    {#                                        <th>Cerrados</th>#}
-                    {#                                        <th>Progreso</th>#}
-                    {#                                    </tr>#}
-                    {#                                    </thead>#}
-                    {#                                    <tbody id="table-tickets-persona">#}
-                    {#                                    <tr>#}
-                    {#                                        <td colspan="4" class="text-center">Cargando datos...</td>#}
-                    {#                                    </tr>#}
-                    {#                                    </tbody>#}
-                    {#                                </table>#}
-                    {#                            </div>#}
-                    {#                        </div>#}
-                    {#                        #}
-                    {#                    </div>#}
-
                     <div class="card">
                         <div class="card-header border-transparent pb-0">
                             <h3 class="card-title">Listado de Tickets Recientes</h3>
@@ -195,13 +163,21 @@
                         <div class="card-body p-0">
                             <ul class="nav nav-pills flex-column">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="
+
+
+                                            {% if request.user.rol.mantenedores > 0 %}{% url 'list_establecimientos' %}{% else %}#{% endif %}"
+                                       class="nav-link">
                                         Departamentos
                                         <span class="float-right text-primary" id="total-departamentos">0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="
+
+
+                                            {% if request.user.rol.mantenedores > 0 %}{% url 'list_celular' %}{% else %}#{% endif %}"
+                                       class="nav-link">
                                         Celulares
                                         <span class="float-right text-info" id="total-celulares">0</span>
                                     </a>

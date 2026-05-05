@@ -63,7 +63,13 @@ class ImpresoraListView(LoginRequiredMixin, DataTableMixin, TemplateView):
 
     ]
 
-    url_update = 'update_impresora'
+    # url_update = 'update_impresora'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.equipos == 2:
+            return 'update_impresora'
+        return None
 
     def render_row(self, obj):
         return {

@@ -64,7 +64,13 @@ class ComputadorListView(LoginRequiredMixin, DataTableMixin, TemplateView):
         'jefe_tic__nombre__icontains',
     ]
 
-    url_update = 'update_computador'
+    # url_update = 'update_computador'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.equipos == 2:
+            return 'update_computador'
+        return None
 
     def render_row(self, obj):
         return {

@@ -23,7 +23,14 @@ class FuncionarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
                                'departamento__nombre__icontains']
 
     url_detail = 'detail_funcionarios'
-    url_update = 'update_funcionarios'
+
+    # url_update = 'update_funcionarios'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.organizacion == 2:
+            return 'update_funcionarios'
+        return None
 
     def render_row(self, obj):
         return {

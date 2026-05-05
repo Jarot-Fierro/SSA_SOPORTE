@@ -22,7 +22,14 @@ class TipoCelularListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     datatable_search_fields = ['nombre__icontains', 'tipo_celular__nombre__icontains']
 
     url_detail = 'detail_tipo_celular'
-    url_update = 'update_tipo_celular'
+
+    # url_update = 'update_tipo_celular'
+
+    def get_url_update(self):
+        user = self.request.user
+        if getattr(user, 'rol', None) and user.rol.mantenedores == 2:
+            return 'update_tipo_celular'
+        return None
 
     def render_row(self, obj):
         return {
