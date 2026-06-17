@@ -5,6 +5,12 @@ from tickets.models import Ticket
 
 
 class FormTicket(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and getattr(user, 'usuario_soporte', False):
+            self.fields['funcionario'].queryset = Funcionario.objects.filter(departamento=user.departamento)
+
     titulo = forms.CharField(
         label='Título del problema',
         widget=forms.TextInput(attrs={

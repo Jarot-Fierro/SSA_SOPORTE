@@ -24,11 +24,17 @@ class RestrictSoporteMiddleware:
             if getattr(request.user, 'usuario_soporte', False):
                 # URLs permitidas para el usuario de soporte (lista blanca)
                 allowed_for_soporte = [
+                    'ticket_list',
+                    'ticket_create',
+                    'ticket_update',
                     'ticket_asignar_equipo',
                     'get_equipos_ajax',
                     'ticket_eliminar_equipo',
                     'login',
                     'logout',
+                    'dashboard',
+                    'dashboard_data',
+                    'home',
                 ]
 
                 # Si intenta acceder al admin o a una URL no permitida

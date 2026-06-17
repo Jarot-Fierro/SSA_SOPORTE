@@ -11,12 +11,16 @@ from tickets.models import Ticket
 
 class FormPanelTicket(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
         self.fields['asignado_a'].label_from_instance = lambda obj: obj.nombre_completo
 
         if self.instance and self.instance.departamento:
             self.initial['departamento'] = str(self.instance.departamento)
+
+        if user and getattr(user, 'usuario_soporte', False):
+            self.fields['funcionario'].queryset = Funcionario.objects.filter(departamento=user.departamento)
 
     numero_ticket = forms.CharField(
         label='Número de ticket',

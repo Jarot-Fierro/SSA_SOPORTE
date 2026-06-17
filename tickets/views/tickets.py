@@ -187,6 +187,11 @@ class TicketCreateView(LoginRequiredMixin, CreateView):
     form_class = FormTicket
     success_url = reverse_lazy('ticket_list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         messages.success(self.request, 'Ticket Generado correctamente')
         form.instance.departamento = self.request.user.departamento
@@ -213,6 +218,11 @@ class TicketsUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateView):
     model = Ticket
     form_class = FormTicket
     success_url = reverse_lazy('ticket_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
