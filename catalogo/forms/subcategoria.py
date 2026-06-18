@@ -29,6 +29,16 @@ class FormSubCategoria(forms.ModelForm):
             }
         ),
     )
+    ver_mantencion = forms.BooleanField(
+        required=False,
+        label='Ver para Mantención',
+        widget=forms.CheckboxInput(attrs={'class': 'mt-4 form-check-input'}),
+    )
+    ver_informatica = forms.BooleanField(
+        required=False,
+        label='Ver para Informática',
+        widget=forms.CheckboxInput(attrs={'class': 'mt-4 form-check-input'}),
+    )
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre'].strip()
@@ -42,4 +52,4 @@ class FormSubCategoria(forms.ModelForm):
 
     class Meta:
         model = SubCategoria
-        fields = ['nombre', 'categoria']
+        fields = ['nombre', 'categoria', 'ver_mantencion', 'ver_informatica']

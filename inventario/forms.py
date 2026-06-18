@@ -1,5 +1,6 @@
 from django import forms
 
+from catalogo.models import SubCategoria
 from .models import InventarioMantencion, InventarioInformatica
 
 
@@ -19,7 +20,11 @@ class FormInventarioMantencion(forms.ModelForm):
             'ubicacion',
             'lote',
             'fecha_vencimiento',
-            'categoria'
+            'status_stock',
+            'categoria',
+            'responsable',
+            'fecha_ingreso',
+            'ultima_salida'
         ]
 
         widgets = {
@@ -32,7 +37,7 @@ class FormInventarioMantencion(forms.ModelForm):
                 'rows': 2,
                 'id': 'descripcion_inventario_mant'
             }),
-            'unidad': forms.TextInput(attrs={
+            'unidad': forms.Select(attrs={
                 'class': 'form-control'
             }),
             'tipo_material': forms.TextInput(attrs={
@@ -66,7 +71,29 @@ class FormInventarioMantencion(forms.ModelForm):
             'categoria': forms.Select(attrs={
                 'class': 'form-control'
             }),
+            'status_stock': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'responsable': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'fecha_ingreso': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'ultima_salida': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            })
         }
+
+        labels = {
+            'tipo_material': 'Medida / Especificacion'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['categoria'].queryset = SubCategoria.objects.filter(ver_mantencion=True)
 
     # ✅ Validación nombre único (case insensitive)
     def clean_producto(self):
@@ -125,7 +152,11 @@ class FormInventarioTIC(forms.ModelForm):
             'ubicacion',
             'lote',
             'fecha_vencimiento',
-            'categoria'
+            'status_stock',
+            'categoria',
+            'responsable',
+            'fecha_ingreso',
+            'ultima_salida'
         ]
 
         widgets = {
@@ -138,7 +169,7 @@ class FormInventarioTIC(forms.ModelForm):
                 'rows': 2,
                 'id': 'descripcion_inventario_tic'
             }),
-            'unidad': forms.TextInput(attrs={
+            'unidad': forms.Select(attrs={
                 'class': 'form-control'
             }),
             'tipo_material': forms.TextInput(attrs={
@@ -172,7 +203,29 @@ class FormInventarioTIC(forms.ModelForm):
             'categoria': forms.Select(attrs={
                 'class': 'form-control'
             }),
+            'status_stock': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'responsable': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'fecha_ingreso': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'ultima_salida': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            })
         }
+
+        labels = {
+            'tipo_material': 'Medida / Especificacion'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['categoria'].queryset = SubCategoria.objects.filter(ver_informatica=True)
 
     # ✅ Validación nombre único (case insensitive)
     def clean_producto(self):

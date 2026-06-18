@@ -35,7 +35,9 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
 
-FORCE_SCRIPT_NAME = os.getenv('FORCE_SCRIPT_NAME', '/soporte_contulmo')
+FORCE_SCRIPT_NAME = os.getenv('FORCE_SCRIPT_NAME', '')
+if FORCE_SCRIPT_NAME == '':
+    FORCE_SCRIPT_NAME = None
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = reverse_lazy('login')
@@ -44,11 +46,11 @@ LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
 SIMPLE_HISTORY_HISTORY_ID_USE_UUID = False
 
-SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', 'soporte_contulmo_sessionid')
-CSRF_COOKIE_NAME = os.getenv('CSRF_COOKIE_NAME', 'soporte_contulmo_csrftoken')
+SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME') or 'sessionid'
+CSRF_COOKIE_NAME = os.getenv('CSRF_COOKIE_NAME') or 'csrftoken'
 #
-SESSION_COOKIE_PATH = os.getenv('SESSION_COOKIE_PATH', '/soporte_contulmo/')
-CSRF_COOKIE_PATH = os.getenv('CSRF_COOKIE_PATH', '/soporte_contulmo/')
+SESSION_COOKIE_PATH = os.getenv('SESSION_COOKIE_PATH', '/')
+CSRF_COOKIE_PATH = os.getenv('CSRF_COOKIE_PATH', '/')
 
 SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False') == 'True'
 CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False') == 'True'
@@ -162,7 +164,8 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = '/soporte_contulmo/static/'
+_static_prefix = FORCE_SCRIPT_NAME if FORCE_SCRIPT_NAME else ''
+STATIC_URL = f'{_static_prefix}/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'

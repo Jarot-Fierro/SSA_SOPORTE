@@ -41,7 +41,7 @@
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.unidad.id_for_label }}">{{ form.unidad.label }}</label>
                         {{ form.unidad }}
                         {% if form.unidad.help_text %}
@@ -49,7 +49,7 @@
                         {% for error in form.unidad.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.tipo_material.id_for_label }}">{{ form.tipo_material.label }}</label>
                         {{ form.tipo_material }}
                         {% if form.tipo_material.help_text %}
@@ -57,7 +57,7 @@
                         {% for error in form.tipo_material.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.tipo_compra.id_for_label }}">{{ form.tipo_compra.label }}</label>
                         {{ form.tipo_compra }}
                         {% if form.tipo_compra.help_text %}
@@ -67,7 +67,7 @@
                     </div>
 
                     <!-- Sección: Stocks (Todos en una fila) -->
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.stock_actual.id_for_label }}">{{ form.stock_actual.label }}</label>
                         {{ form.stock_actual }}
                         {% if form.stock_actual.help_text %}
@@ -75,7 +75,7 @@
                         {% for error in form.stock_actual.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.stock_minimo.id_for_label }}">{{ form.stock_minimo.label }}</label>
                         {{ form.stock_minimo }}
                         {% if form.stock_minimo.help_text %}
@@ -83,7 +83,7 @@
                         {% for error in form.stock_minimo.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.stock_maximo.id_for_label }}">{{ form.stock_maximo.label }}</label>
                         {{ form.stock_maximo }}
                         {% if form.stock_maximo.help_text %}
@@ -93,7 +93,7 @@
                     </div>
 
                     <!-- Sección: Ubicación y Detalles -->
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.ubicacion.id_for_label }}">{{ form.ubicacion.label }}</label>
                         {{ form.ubicacion }}
                         {% if form.ubicacion.help_text %}
@@ -101,7 +101,7 @@
                         {% for error in form.ubicacion.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.lote.id_for_label }}">{{ form.lote.label }}</label>
                         {{ form.lote }}
                         {% if form.lote.help_text %}
@@ -109,12 +109,28 @@
                         {% for error in form.lote.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="{{ form.fecha_vencimiento.id_for_label }}">{{ form.fecha_vencimiento.label }}</label>
                         {{ form.fecha_vencimiento }}
                         {% if form.fecha_vencimiento.help_text %}
                             <small class="form-text text-muted">{{ form.fecha_vencimiento.help_text }}</small>{% endif %}
                         {% for error in form.fecha_vencimiento.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="{{ form.fecha_ingreso.id_for_label }}">{{ form.fecha_ingreso.label }}</label>
+                        {{ form.fecha_ingreso }}
+                        {% if form.fecha_ingreso.help_text %}
+                            <small class="form-text text-muted">{{ form.fecha_ingreso.help_text }}</small>{% endif %}
+                        {% for error in form.fecha_ingreso.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="{{ form.ultima_salida.id_for_label }}">{{ form.ultima_salida.label }}</label>
+                        {{ form.ultima_salida }}
+                        {% if form.ultima_salida.help_text %}
+                            <small class="form-text text-muted">{{ form.ultima_salida.help_text }}</small>{% endif %}
+                        {% for error in form.ultima_salida.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
 

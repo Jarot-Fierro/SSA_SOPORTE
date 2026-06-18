@@ -41,6 +41,8 @@ class SubCategoria(StandardModel):
         on_delete=models.CASCADE,
         verbose_name='Categoría'
     )
+    ver_mantencion = models.BooleanField(default=False)
+    ver_informatica = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     UPPERCASE_FIELDS = ['nombre']
