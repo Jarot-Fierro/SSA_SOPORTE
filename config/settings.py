@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from django.urls import reverse_lazy
+from dotenv import load_dotenv
 
-from config.db import MYSQL
+from config import db
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,21 +27,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%sx-xgfzaq2qacibrc(v65(7h*!*izx!vhd2i%8h(cy=(=)b1c'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['10.8.85.141', '10.8.85.222', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = [
-    'http://10.8.85.27',
-    'http://10.8.85.141',
-    'http://127.0.0.1',
-    'http://localhost',
-    'http://10.8.85.222',
-]
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
 
-# FORCE_SCRIPT_NAME = '/soporte_contulmo'
+FORCE_SCRIPT_NAME = os.getenv('FORCE_SCRIPT_NAME', '/soporte_contulmo')
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = reverse_lazy('login')
@@ -46,14 +44,21 @@ LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
 SIMPLE_HISTORY_HISTORY_ID_USE_UUID = False
 
-# SESSION_COOKIE_NAME = 'soporte_contulmo_sessionid'
-# CSRF_COOKIE_NAME = 'soporte_contulmo_csrftoken'
+SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', 'soporte_contulmo_sessionid')
+CSRF_COOKIE_NAME = os.getenv('CSRF_COOKIE_NAME', 'soporte_contulmo_csrftoken')
 #
-# SESSION_COOKIE_PATH = '/soporte_contulmo/'
-# CSRF_COOKIE_PATH = '/soporte_contulmo/'
+SESSION_COOKIE_PATH = os.getenv('SESSION_COOKIE_PATH', '/soporte_contulmo/')
+CSRF_COOKIE_PATH = os.getenv('CSRF_COOKIE_PATH', '/soporte_contulmo/')
+
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False') == 'True'
+
+SESSION_COOKIE_SAMESITE = os.getenv('SESSION_COOKIE_SAMESITE', 'Lax')
+CSRF_COOKIE_SAMESITE = os.getenv('CSRF_COOKIE_SAMESITE', 'Lax')
+
 #
-# USE_X_FORWARDED_HOST = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+USE_X_FORWARDED_HOST = os.getenv('USE_X_FORWARDED_HOST', 'True') == 'True'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
 # Application definition
 
 INSTALLED_APPS = [
@@ -81,7 +86,7 @@ INSTALLED_APPS = [
 # En Django, X_FRAME_OPTIONS controla si TU sitio puede ser embebido.
 # Si quieres embeber OTRO sitio, debes asegurarte de que ese sitio lo permita.
 # Sin embargo, a veces configuraciones de seguridad de Django pueden interferir.
-X_FRAME_OPTIONS = 'ALLOWALL'
+X_FRAME_OPTIONS = os.getenv('X_FRAME_OPTIONS', 'ALLOWALL')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -116,7 +121,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = MYSQL
+DB_TYPE = os.getenv('DB_TYPE', 'SQLITE')
+
+if DB_TYPE == 'POSTGRESQL':
+    DATABASES = db.POSTGRESQL
+elif DB_TYPE == 'MYSQL':
+    DATABASES = db.MYSQL
+else:
+    DATABASES = db.SQLITE
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -138,9 +151,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'es-es'
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'es-es')
 
-TIME_ZONE = 'America/Santiago'
+TIME_ZONE = os.getenv('TIME_ZONE', 'America/Santiago')
 
 USE_I18N = True
 
