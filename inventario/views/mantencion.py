@@ -17,11 +17,11 @@ MODULE_NAME = 'Inventario Mantención'
 class InventarioMantencionListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'inventariomantencion/list.html'
     model = InventarioMantencion
-    datatable_columns = ['ID', 'Producto', 'Código', 'Stock Actual', 'Categoría', 'Responsable', 'Estado', 'F. Ingreso',
-                         'U. Salida']
-    datatable_order_fields = ['id', 'producto', 'codigo', 'stock_actual', 'categoria__nombre', 'responsable',
+    datatable_columns = ['ID', 'Producto', 'Stock Actual', 'Categoría', 'Responsable', 'Estado', 'Fecha Ingreso',
+                         'Fecha Salida']
+    datatable_order_fields = ['id', 'producto', 'stock_actual', 'categoria__nombre', 'responsable',
                               'status_stock', 'fecha_ingreso', 'ultima_salida']
-    datatable_search_fields = ['producto__icontains', 'codigo__icontains', 'categoria__nombre__icontains',
+    datatable_search_fields = ['producto__icontains', 'categoria__nombre__icontains',
                                'responsable__icontains']
 
     url_detail = 'detail_inventarios_mantencion'
@@ -38,13 +38,12 @@ class InventarioMantencionListView(LoginRequiredMixin, DataTableMixin, TemplateV
         return {
             'ID': obj.id,
             'Producto': obj.producto,
-            'Código': obj.codigo,
             'Stock Actual': obj.stock_actual,
             'Categoría': obj.categoria.nombre if obj.categoria else 'N/A',
             'Responsable': obj.responsable,
             'Estado': obj.status_stock,
-            'F. Ingreso': obj.fecha_ingreso.strftime('%d/%m/%Y') if obj.fecha_ingreso else 'N/A',
-            'U. Salida': obj.ultima_salida.strftime('%d/%m/%Y') if obj.ultima_salida else 'N/A',
+            'Fecha Ingreso': obj.fecha_ingreso.strftime('%d/%m/%Y') if obj.fecha_ingreso else 'N/A',
+            'Fecha Salida': obj.ultima_salida.strftime('%d/%m/%Y') if obj.ultima_salida else 'N/A',
         }
 
     def get(self, request, *args, **kwargs):
