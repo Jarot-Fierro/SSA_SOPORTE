@@ -17,6 +17,9 @@
                     <a href="{% url 'export_inventario_mantencion' %}" class="btn btn-success me-2">
                         <i class="bi bi-file-earmark-excel"></i> Reporte
                     </a>
+                    <a href="{% url 'update_status_inventario_mantencion' %}" class="btn btn-info me-2">
+                        <i class="fas fa-sync"></i> Actualizar Estados
+                    </a>
                     {% if request.user.rol.inventario == 2 %}
                         <a href="{% url 'create_inventarios_mantencion' %}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Nuevo Producto

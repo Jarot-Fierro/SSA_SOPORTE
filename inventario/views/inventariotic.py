@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, UpdateView, DetailView, View
 from django.views.generic import TemplateView
 
 from core.history import GenericHistoryListView
@@ -35,6 +36,15 @@ class InventarioTICListView(LoginRequiredMixin, DataTableMixin, TemplateView):
         return None
 
     def render_row(self, obj):
+        status_stock = obj.status_stock
+        badge_class = 'bg-success'
+        if status_stock == 'REPOSICIÓN':
+            badge_class = 'bg-danger'
+        elif status_stock == 'SOBRESTOCK':
+            badge_class = 'bg-warning text-dark'
+
+        status_html = f'<span class="badge {badge_class}">{status_stock}</span>'
+
         return {
             'ID': obj.id,
             'Producto': obj.producto,
@@ -42,7 +52,7 @@ class InventarioTICListView(LoginRequiredMixin, DataTableMixin, TemplateView):
             'Stock Actual': obj.stock_actual,
             'Categoría': obj.categoria.nombre if obj.categoria else 'N/A',
             'Responsable': obj.responsable,
-            'Estado': obj.status_stock,
+            'Estado': status_html,
             'F. Ingreso': obj.fecha_ingreso.strftime('%d/%m/%Y') if obj.fecha_ingreso else 'N/A',
             'U. Salida': obj.ultima_salida.strftime('%d/%m/%Y') if obj.ultima_salida else 'N/A',
         }
@@ -138,3 +148,22 @@ class InventarioTICUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateV
 class InventarioTICHistoryListView(LoginRequiredMixin, GenericHistoryListView):
     base_model = InventarioInformatica
     template_name = 'history/list.html'
+
+
+class InventarioTICUpdateStatusView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        productos = InventarioInformatica.objects.all()
+        for p in productos:
+            if p.stock_minimo == 0 and (p.stock_maximo == 0 or p.stock_maximo is None):
+                continue
+
+            if p.stock_actual < p.stock_minimo:
+                p.status_stock = 'REPOSICIÓN'
+            elif p.stock_maximo is not None and p.stock_actual > p.stock_maximo:
+                p.status_stock = 'SOBRESTOCK'
+            else:
+                p.status_stock = 'OK'
+            p.save()
+
+        messages.success(request, 'Estados de stock TIC actualizados correctamente.')
+        return redirect('list_inventarios_tic')

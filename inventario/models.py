@@ -29,6 +29,7 @@ class InventarioMantencion(StandardModel):
     STATUS_CHOICES = [
         ('OK', 'OK'),
         ('REPOSICIÓN', 'REPOSICIÓN'),
+        ('SOBRESTOCK', 'SOBRESTOCK')
     ]
     RESPONSABLE_CHOICES = [
         ('MANTENCIÓN', 'MANTENCIÓN'),
@@ -89,6 +90,7 @@ class InventarioInformatica(StandardModel):
     STATUS_CHOICES = [
         ('OK', 'OK'),
         ('REPOSICIÓN', 'REPOSICIÓN'),
+        ('SOBRESTOCK', 'SOBRESTOCK')
     ]
     RESPONSABLE_CHOICES = [
         ('MANTENCIÓN', 'MANTENCIÓN'),
