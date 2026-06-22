@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
@@ -129,6 +130,12 @@ class InventarioTICUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, UpdateV
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        old_obj = self.get_object()
+        new_stock = form.cleaned_data.get('stock_actual')
+
+        if new_stock is not None and old_obj.stock_actual > new_stock:
+            form.instance.ultima_salida = timezone.now().date()
+
         messages.success(self.request, 'Producto TIC actualizado correctamente')
         return super().form_valid(form)
 

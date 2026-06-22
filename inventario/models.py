@@ -41,8 +41,8 @@ class InventarioMantencion(StandardModel):
     producto = models.CharField(max_length=100)
     descripcion = models.TextField(max_length=250, blank=True)
     unidad = models.CharField(max_length=50, choices=UNIDAD_CHOICES, default='UNIDAD')
-    tipo_material = models.CharField(max_length=50)
-    tipo_compra = models.CharField(max_length=50)
+    tipo_material = models.CharField(max_length=50, null=True, blank=True)
+    tipo_compra = models.CharField(max_length=50, null=True, blank=True)
 
     codigo = models.CharField(max_length=50, blank=True, null=True)
     stock_actual = models.PositiveIntegerField(default=0)
@@ -53,7 +53,7 @@ class InventarioMantencion(StandardModel):
 
     lote = models.CharField(max_length=50, blank=True, null=True)
     fecha_vencimiento = models.DateField(null=True, blank=True)
-    status_stock = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ACTIVO')
+    status_stock = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ACTIVO', null=True, blank=True)
 
     categoria = models.ForeignKey('catalogo.SubCategoria', on_delete=models.PROTECT)
     responsable = models.CharField(max_length=100, choices=RESPONSABLE_CHOICES, default='OTRO')
@@ -102,8 +102,8 @@ class InventarioInformatica(StandardModel):
     producto = models.CharField(max_length=100)
     descripcion = models.TextField(max_length=250, blank=True)
     unidad = models.CharField(max_length=50, choices=UNIDAD_CHOICES, default='UNIDAD')
-    tipo_material = models.CharField(max_length=50)
-    tipo_compra = models.CharField(max_length=50)
+    tipo_material = models.CharField(max_length=50, null=True, blank=True)
+    tipo_compra = models.CharField(max_length=50, null=True, blank=True)
 
     codigo = models.CharField(max_length=50, blank=True, null=True)
     stock_actual = models.PositiveIntegerField(default=0)
@@ -114,7 +114,7 @@ class InventarioInformatica(StandardModel):
 
     lote = models.CharField(max_length=50, blank=True, null=True)
     fecha_vencimiento = models.DateField(null=True, blank=True)
-    status_stock = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ACTIVO')
+    status_stock = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ACTIVO', null=True, blank=True)
 
     categoria = models.ForeignKey('catalogo.SubCategoria', on_delete=models.PROTECT)
     responsable = models.CharField(max_length=100, choices=RESPONSABLE_CHOICES, default='OTRO')

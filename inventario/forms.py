@@ -23,8 +23,6 @@ class FormInventarioMantencion(forms.ModelForm):
             'status_stock',
             'categoria',
             'responsable',
-            'fecha_ingreso',
-            'ultima_salida'
         ]
 
         widgets = {
@@ -76,14 +74,6 @@ class FormInventarioMantencion(forms.ModelForm):
             }),
             'responsable': forms.Select(attrs={
                 'class': 'form-control'
-            }),
-            'fecha_ingreso': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'ultima_salida': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
             })
         }
 

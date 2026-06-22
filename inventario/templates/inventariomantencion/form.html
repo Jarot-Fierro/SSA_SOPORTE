@@ -110,30 +110,13 @@
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="col-md-2 mb-3">
-                        <label for="{{ form.fecha_vencimiento.id_for_label }}">{{ form.fecha_vencimiento.label }}</label>
-                        {{ form.fecha_vencimiento }}
-                        {% if form.fecha_vencimiento.help_text %}
-                            <small class="form-text text-muted">{{ form.fecha_vencimiento.help_text }}</small>{% endif %}
-                        {% for error in form.fecha_vencimiento.errors %}
+                        <label for="{{ form.responsable.id_for_label }}">{{ form.responsable.label }}</label>
+                        {{ form.responsable }}
+                        {% if form.responsable.help_text %}
+                            <small class="form-text text-muted">{{ form.responsable.help_text }}</small>{% endif %}
+                        {% for error in form.responsable.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="col-md-2 mb-3">
-                        <label for="{{ form.fecha_ingreso.id_for_label }}">{{ form.fecha_ingreso.label }}</label>
-                        {{ form.fecha_ingreso }}
-                        {% if form.fecha_ingreso.help_text %}
-                            <small class="form-text text-muted">{{ form.fecha_ingreso.help_text }}</small>{% endif %}
-                        {% for error in form.fecha_ingreso.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <label for="{{ form.ultima_salida.id_for_label }}">{{ form.ultima_salida.label }}</label>
-                        {{ form.ultima_salida }}
-                        {% if form.ultima_salida.help_text %}
-                            <small class="form-text text-muted">{{ form.ultima_salida.help_text }}</small>{% endif %}
-                        {% for error in form.ultima_salida.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
-                    </div>
-
                     <!-- Sección: Descripción (Al final) -->
                     <div class="col-12 mb-3">
                         <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>

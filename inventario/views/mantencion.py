@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, DetailView, View
 from django.views.generic import TemplateView
 
@@ -128,11 +129,18 @@ class InventarioMantencionUpdateView(LoginRequiredMixin, IncludeUserFormUpdate, 
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        old_obj = self.get_object()
+        new_stock = form.cleaned_data.get('stock_actual')
+
+        if new_stock is not None and old_obj.stock_actual > new_stock:
+            form.instance.ultima_salida = timezone.now().date()
+
         messages.success(self.request, 'Producto de mantención actualizado correctamente')
         return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, 'Hay errores en el formulario')
+        print(form.errors)
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
