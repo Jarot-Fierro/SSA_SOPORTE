@@ -37,7 +37,7 @@ class DepartamentoListView(LoginRequiredMixin, DataTableMixin, TemplateView):
             'Nombre': obj.nombre.upper(),
             'Alias': obj.alias.upper(),
             'Dirección': (obj.direccion or '').upper(),
-            'Establecimiento': (obj.establecimiento.nombre or '').upper(),
+            'Establecimiento': (obj.establecimiento.nombre if obj.establecimiento else '').upper(),
         }
 
     def get_queryset(self):

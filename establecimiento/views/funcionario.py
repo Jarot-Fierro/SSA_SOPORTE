@@ -39,7 +39,7 @@ class FuncionarioListView(LoginRequiredMixin, DataTableMixin, TemplateView):
             'Nombres': obj.nombres.upper(),
             'Correo': (obj.correo or '').upper(),
             'Jefatura': 'SI' if obj.jefatura else 'NO',
-            'Departamento': (obj.departamento.nombre or '').upper(),
+            'Departamento': (obj.departamento.nombre if obj.departamento else '').upper(),
         }
 
     def get(self, request, *args, **kwargs):
