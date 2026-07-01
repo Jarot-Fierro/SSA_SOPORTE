@@ -1,9 +1,9 @@
-from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, UpdateView, DetailView, View
 from django.views.generic import TemplateView
 
@@ -19,9 +19,10 @@ MODULE_NAME = 'Inventario TIC'
 class InventarioTICListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'inventariotic/list.html'
     model = InventarioInformatica
-    datatable_columns = ['ID', 'Producto', 'Código', 'Stock Actual', 'Categoría', 'Responsable', 'Estado', 'F. Ingreso',
+    datatable_columns = ['ID', 'Producto', 'Código', 'Stock Actual', 'Categoría', 'Responsable', 'Estado',
+                         'F. Ingreso',
                          'U. Salida']
-    datatable_order_fields = ['id', 'producto', 'codigo', 'stock_actual', 'categoria__nombre', 'responsable',
+    datatable_order_fields = ['id', None, 'producto', 'codigo', 'stock_actual', 'categoria__nombre', 'responsable',
                               'status_stock', 'fecha_ingreso', 'ultima_salida']
     datatable_search_fields = ['producto__icontains', 'codigo__icontains', 'categoria__nombre__icontains',
                                'responsable__icontains']
@@ -46,8 +47,16 @@ class InventarioTICListView(LoginRequiredMixin, DataTableMixin, TemplateView):
 
         status_html = f'<span class="badge {badge_class}">{status_stock}</span>'
 
+        # Botones de ajuste de stock
+        btn_plus = f'<button type="button" class="btn btn-sm btn-success btn-ajustar-stock" data-id="{obj.id}" data-operacion="sumar" title="Agregar Stock"><i class="fas fa-plus"></i></button>'
+        btn_minus = f'<button type="button" class="btn btn-sm btn-danger btn-ajustar-stock" data-id="{obj.id}" data-operacion="restar" title="Quitar Stock"><i class="fas fa-minus"></i></button>'
+
+        standard_actions = self.get_actions(obj)
+        actions = f'<div class="btn-group">{btn_plus}{btn_minus}{standard_actions}</div>'
+
         return {
             'ID': obj.id,
+            'actions': actions,
             'Producto': obj.producto,
             'Código': obj.codigo,
             'Stock Actual': obj.stock_actual,
@@ -158,19 +167,68 @@ class InventarioTICHistoryListView(LoginRequiredMixin, GenericHistoryListView):
 
 
 class InventarioTICUpdateStatusView(LoginRequiredMixin, View):
+    def update_stock_status(self, p):
+        if p.stock_minimo == 0 and (p.stock_maximo == 0 or p.stock_maximo is None):
+            return
+        if p.stock_actual < p.stock_minimo:
+            p.status_stock = 'REPOSICIÓN'
+        elif p.stock_maximo is not None and p.stock_actual > p.stock_maximo:
+            p.status_stock = 'SOBRESTOCK'
+        else:
+            p.status_stock = 'OK'
+        p.save()
+
     def get(self, request, *args, **kwargs):
         productos = InventarioInformatica.objects.all()
         for p in productos:
-            if p.stock_minimo == 0 and (p.stock_maximo == 0 or p.stock_maximo is None):
-                continue
-
-            if p.stock_actual < p.stock_minimo:
-                p.status_stock = 'REPOSICIÓN'
-            elif p.stock_maximo is not None and p.stock_actual > p.stock_maximo:
-                p.status_stock = 'SOBRESTOCK'
-            else:
-                p.status_stock = 'OK'
-            p.save()
+            self.update_stock_status(p)
 
         messages.success(request, 'Estados de stock TIC actualizados correctamente.')
         return redirect('list_inventarios_tic')
+
+
+class InventarioTICAjustarStockView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        import json
+        from django.http import JsonResponse
+        try:
+            data = json.loads(request.body)
+            pk = data.get('pk')
+            cantidad = data.get('cantidad')
+            operacion = data.get('operacion')
+
+            try:
+                cantidad = int(cantidad)
+            except (ValueError, TypeError):
+                return JsonResponse({'status': 'error', 'message': 'La cantidad debe ser un número entero.'},
+                                    status=400)
+
+            if cantidad <= 0:
+                return JsonResponse({'status': 'error', 'message': 'La cantidad debe ser mayor a cero.'}, status=400)
+
+            producto = InventarioInformatica.objects.get(pk=pk)
+            producto.updated_by = request.user
+
+            if operacion == 'sumar':
+                producto.stock_actual += cantidad
+            elif operacion == 'restar':
+                if producto.stock_actual < cantidad:
+                    return JsonResponse(
+                        {'status': 'error', 'message': f'No hay suficiente stock. Disponible: {producto.stock_actual}'},
+                        status=400)
+                producto.stock_actual -= cantidad
+                producto.ultima_salida = timezone.now().date()
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Operación no válida.'}, status=400)
+
+            producto.save()
+
+            # Actualizar estado automáticamente
+            status_view = InventarioTICUpdateStatusView()
+            status_view.update_stock_status(producto)
+
+            return JsonResponse({'status': 'success', 'message': 'Stock actualizado correctamente.'})
+        except InventarioInformatica.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Producto no encontrado.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

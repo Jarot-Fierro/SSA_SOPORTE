@@ -19,9 +19,10 @@ MODULE_NAME = 'Inventario Mantención'
 class InventarioMantencionListView(LoginRequiredMixin, DataTableMixin, TemplateView):
     template_name = 'inventariomantencion/list.html'
     model = InventarioMantencion
-    datatable_columns = ['ID', 'Producto', 'Stock Actual', 'Categoría', 'Responsable', 'Estado', 'Fecha Ingreso',
+    datatable_columns = ['ID', 'Producto', 'Stock Actual', 'Categoría', 'Responsable', 'Estado',
+                         'Fecha Ingreso',
                          'Fecha Salida']
-    datatable_order_fields = ['id', 'producto', 'stock_actual', 'categoria__nombre', 'responsable',
+    datatable_order_fields = ['id', None, 'producto', 'stock_actual', 'categoria__nombre', 'responsable',
                               'status_stock', 'fecha_ingreso', 'ultima_salida']
     datatable_search_fields = ['producto__icontains', 'categoria__nombre__icontains',
                                'responsable__icontains']
@@ -46,8 +47,16 @@ class InventarioMantencionListView(LoginRequiredMixin, DataTableMixin, TemplateV
 
         status_html = f'<span class="badge {badge_class}">{status_stock}</span>'
 
+        # Botones de ajuste de stock
+        btn_plus = f'<button type="button" class="btn btn-sm btn-success btn-ajustar-stock" data-id="{obj.id}" data-operacion="sumar" title="Agregar Stock"><i class="fas fa-plus"></i></button>'
+        btn_minus = f'<button type="button" class="btn btn-sm btn-danger btn-ajustar-stock" data-id="{obj.id}" data-operacion="restar" title="Quitar Stock"><i class="fas fa-minus"></i></button>'
+
+        standard_actions = self.get_actions(obj)
+        actions = f'<div class="btn-group">{btn_plus}{btn_minus}{standard_actions}</div>'
+
         return {
             'ID': obj.id,
+            'actions': actions,
             'Producto': obj.producto,
             'Stock Actual': obj.stock_actual,
             'Categoría': obj.categoria.nombre if obj.categoria else 'N/A',
@@ -158,19 +167,68 @@ class InventarioMantencionHistoryListView(LoginRequiredMixin, GenericHistoryList
 
 
 class InventarioMantencionUpdateStatusView(LoginRequiredMixin, View):
+    def update_stock_status(self, p):
+        if p.stock_minimo == 0 and (p.stock_maximo == 0 or p.stock_maximo is None):
+            return
+        if p.stock_actual < p.stock_minimo:
+            p.status_stock = 'REPOSICIÓN'
+        elif p.stock_maximo is not None and p.stock_actual > p.stock_maximo:
+            p.status_stock = 'SOBRESTOCK'
+        else:
+            p.status_stock = 'OK'
+        p.save()
+
     def get(self, request, *args, **kwargs):
         productos = InventarioMantencion.objects.all()
         for p in productos:
-            if p.stock_minimo == 0 and (p.stock_maximo == 0 or p.stock_maximo is None):
-                continue
-
-            if p.stock_actual < p.stock_minimo:
-                p.status_stock = 'REPOSICIÓN'
-            elif p.stock_maximo is not None and p.stock_actual > p.stock_maximo:
-                p.status_stock = 'SOBRESTOCK'
-            else:
-                p.status_stock = 'OK'
-            p.save()
+            self.update_stock_status(p)
 
         messages.success(request, 'Estados de stock actualizados correctamente.')
         return redirect('list_inventarios_mantencion')
+
+
+class InventarioMantencionAjustarStockView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        import json
+        from django.http import JsonResponse
+        try:
+            data = json.loads(request.body)
+            pk = data.get('pk')
+            cantidad = data.get('cantidad')
+            operacion = data.get('operacion')
+
+            try:
+                cantidad = int(cantidad)
+            except (ValueError, TypeError):
+                return JsonResponse({'status': 'error', 'message': 'La cantidad debe ser un número entero.'},
+                                    status=400)
+
+            if cantidad <= 0:
+                return JsonResponse({'status': 'error', 'message': 'La cantidad debe ser mayor a cero.'}, status=400)
+
+            producto = InventarioMantencion.objects.get(pk=pk)
+            producto.updated_by = request.user
+
+            if operacion == 'sumar':
+                producto.stock_actual += cantidad
+            elif operacion == 'restar':
+                if producto.stock_actual < cantidad:
+                    return JsonResponse(
+                        {'status': 'error', 'message': f'No hay suficiente stock. Disponible: {producto.stock_actual}'},
+                        status=400)
+                producto.stock_actual -= cantidad
+                producto.ultima_salida = timezone.now().date()
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Operación no válida.'}, status=400)
+
+            producto.save()
+
+            # Actualizar estado automáticamente
+            status_view = InventarioMantencionUpdateStatusView()
+            status_view.update_stock_status(producto)
+
+            return JsonResponse({'status': 'success', 'message': 'Stock actualizado correctamente.'})
+        except InventarioMantencion.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Producto no encontrado.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

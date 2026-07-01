@@ -6,7 +6,8 @@ from inventario.views.inventariotic import (
     InventarioTICCreateView,
     InventarioTICUpdateView,
     InventarioTICHistoryListView,
-    InventarioTICUpdateStatusView
+    InventarioTICUpdateStatusView,
+    InventarioTICAjustarStockView
 )
 from inventario.views.mantencion import (
     InventarioMantencionListView,
@@ -14,7 +15,8 @@ from inventario.views.mantencion import (
     InventarioMantencionCreateView,
     InventarioMantencionUpdateView,
     InventarioMantencionHistoryListView,
-    InventarioMantencionUpdateStatusView
+    InventarioMantencionUpdateStatusView,
+    InventarioMantencionAjustarStockView
 )
 
 urlpatterns = [
@@ -29,6 +31,8 @@ urlpatterns = [
          name='historical_inventarios_mantencion'),
     path('mantencion/actualizar-estados/', InventarioMantencionUpdateStatusView.as_view(),
          name='update_status_inventario_mantencion'),
+    path('mantencion/ajustar-stock/', InventarioMantencionAjustarStockView.as_view(),
+         name='ajustar_stock_mantencion'),
 
     # INVENTARIO TIC
     path('tic/lista/', InventarioTICListView.as_view(), name='list_inventarios_tic'),
@@ -38,4 +42,6 @@ urlpatterns = [
     path('tic/historial/', InventarioTICHistoryListView.as_view(), name='historical_inventarios_tic'),
     path('tic/actualizar-estados/', InventarioTICUpdateStatusView.as_view(),
          name='update_status_inventario_tic'),
+    path('tic/ajustar-stock/', InventarioTICAjustarStockView.as_view(),
+         name='ajustar_stock_tic'),
 ]

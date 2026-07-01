@@ -36,7 +36,7 @@
                     <th>Acciones</th>
                     {% for col in columns %}
                         {% if col != 'ID' %}
-                            <th>{{ col }}</th>
+                            <th>{{ col|capfirst }}</th>
                         {% endif %}
                     {% endfor %}
                 </tr>
@@ -46,4 +46,85 @@
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).on('click', '.btn-ajustar-stock', function () {
+            const id = $(this).data('id');
+            const operacion = $(this).data('operacion');
+            const titulo = operacion === 'sumar' ? 'Agregar Stock' : 'Quitar Stock';
+            const confirmButtonText = operacion === 'sumar' ? 'Agregar' : 'Quitar';
+            const color = operacion === 'sumar' ? '#28a745' : '#dc3545';
+
+            Swal.fire({
+                title: titulo,
+                text: 'Ingrese la cantidad:',
+                input: 'number',
+                inputAttributes: {
+                    min: 1,
+                    step: 1
+                },
+                showCancelButton: true,
+                confirmButtonText: confirmButtonText,
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: color,
+                inputValidator: (value) => {
+                    if (!value || value <= 0) {
+                        return 'Debe ingresar una cantidad mayor a cero';
+                    }
+                    if (!Number.isInteger(Number(value))) {
+                        return 'Debe ingresar un número entero';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const cantidad = result.value;
+                    $.ajax({
+                        url: '{% url "ajustar_stock_tic" %}',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            pk: id,
+                            cantidad: cantidad,
+                            operacion: operacion
+                        }),
+                        contentType: 'application/json',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Éxito',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    $('#Table').DataTable().ajax.reload(null, false);
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr) {
+                            let msg = 'Ocurrió un error al procesar la solicitud.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: msg
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

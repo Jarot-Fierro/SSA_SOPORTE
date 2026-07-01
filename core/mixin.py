@@ -138,7 +138,8 @@ class DataTableMixin:
         data = []
         for obj in qs_page:
             row = self.render_row(obj)
-            row['actions'] = self.get_actions(obj)
+            if 'actions' not in row:
+                row['actions'] = self.get_actions(obj)
             data.append(row)
 
         return JsonResponse({
@@ -344,7 +345,8 @@ class DataTableMixinAuto:
         data = []
         for obj in qs_page:
             row = self.render_row(obj)
-            row['actions'] = self.get_actions(obj)
+            if 'actions' not in row:
+                row['actions'] = self.get_actions(obj)
             data.append(row)
 
         response_data = {
